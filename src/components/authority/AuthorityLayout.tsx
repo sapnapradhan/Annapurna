@@ -40,6 +40,7 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
     { id: 'consumption', label: 'Post-Meal Consumption', icon: BarChart2 },
     { id: 'surplus', label: 'Surplus & Rescue', icon: Truck, badge: 'Active' },
     { id: 'forecasting', label: 'Demand Forecasting', icon: TrendingUp },
+    { id: 'settings', label: 'Profile / Settings', icon: Shield },
   ];
 
   return (

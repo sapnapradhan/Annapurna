@@ -5,10 +5,12 @@ import {
   MOCK_MEALS, MOCK_CHECKINS, MOCK_REVIEWS, MOCK_CONSUMPTION, 
   MOCK_SURPLUS, MOCK_FORECASTS, MOCK_PROFILES, MOCK_MESSES, TODAY_STR 
 } from './mockData';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 class Store {
   private role: UserRole | 'landing' = 'landing';
   private currentUser: Profile = MOCK_PROFILES[0]; // Default student
+  private profiles: Profile[] = [...MOCK_PROFILES];
   private meals: Meal[] = [...MOCK_MEALS];
   private checkins: Checkin[] = [...MOCK_CHECKINS];
   private reviews: Review[] = [...MOCK_REVIEWS];
@@ -23,10 +25,11 @@ class Store {
 
   constructor() {
     // Load local storage overrides if available
-    const saved = localStorage.getItem('annapurna_store_v1');
+    const saved = localStorage.getItem('annapurna_store_v2');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
+        if (parsed.profiles) this.profiles = parsed.profiles;
         if (parsed.meals) this.meals = parsed.meals;
         if (parsed.checkins) this.checkins = parsed.checkins;
         if (parsed.reviews) this.reviews = parsed.reviews;
@@ -40,7 +43,8 @@ class Store {
 
   private persist() {
     try {
-      localStorage.setItem('annapurna_store_v1', JSON.stringify({
+      localStorage.setItem('annapurna_store_v2', JSON.stringify({
+        profiles: this.profiles,
         meals: this.meals,
         checkins: this.checkins,
         reviews: this.reviews,
@@ -65,6 +69,123 @@ class Store {
   // Auth getters & actions
   public getRole() { return this.role; }
   public getCurrentUser() { return this.currentUser; }
+
+  public async registerStudent(data: { name: string; email: string; password: string }) {
+    const cleanEmail = data.email.trim().toLowerCase();
+
+    // Check duplicate email
+    const existing = this.profiles.find(p => (p as any).email === cleanEmail);
+    if (existing) {
+      return { 
+        success: false, 
+        message: 'This email is already registered. Please log in instead.' 
+      };
+    }
+
+    if (isSupabaseConfigured && supabase) {
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: cleanEmail,
+        password: data.password,
+        options: {
+          data: {
+            name: data.name,
+            role: 'student' // Strictly forced as student
+          }
+        }
+      });
+
+      if (error) {
+        if (error.message.includes('already registered')) {
+          return { success: false, message: 'This email is already registered. Please log in instead.' };
+        }
+        return { success: false, message: error.message };
+      }
+    }
+
+    // Create student profile with role strictly forced as 'student'
+    const newStudent: Profile = {
+      id: `student-${Date.now()}`,
+      role: 'student', // Public registration MUST always assign role = 'student'
+      name: data.name,
+      student_id: `2026CS${Math.floor(1000 + Math.random() * 9000)}`,
+      hostel: 'Nilgiri Hall',
+      block: 'A-Block',
+      dietary_pref: 'Vegetarian'
+    };
+
+    (newStudent as any).email = cleanEmail;
+    this.profiles.push(newStudent);
+    this.persist();
+
+    return { 
+      success: true, 
+      user: newStudent,
+      message: 'Registration successful! You can now log in with your credentials.' 
+    };
+  }
+
+  public async login(data: { email: string; password: string }) {
+    const cleanEmail = data.email.trim().toLowerCase();
+
+    if (isSupabaseConfigured && supabase) {
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
+        email: cleanEmail,
+        password: data.password
+      });
+
+      if (error) {
+        return { success: false, message: error.message };
+      }
+
+      // Fetch user profile from Supabase to resolve secure role
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authData.user.id)
+        .single();
+
+      const userRole: UserRole = profileData?.role || 'student';
+      this.role = userRole;
+      this.currentUser = {
+        id: authData.user.id,
+        role: userRole,
+        name: profileData?.name || authData.user.user_metadata?.name || 'Campus User',
+        student_id: profileData?.student_id,
+        hostel: profileData?.hostel || 'Nilgiri Hall',
+        block: profileData?.block || 'Main Block',
+        dietary_pref: profileData?.dietary_pref || 'Vegetarian'
+      };
+
+      this.notify();
+      return { success: true, role: userRole, user: this.currentUser };
+    }
+
+    // Offline / Mock fallback auth matching
+    if (cleanEmail.includes('admin') || cleanEmail.includes('authority')) {
+      this.role = 'authority';
+      this.currentUser = MOCK_PROFILES[2]; // Admin Rameshwar
+    } else {
+      this.role = 'student';
+      const found = this.profiles.find(p => (p as any).email === cleanEmail);
+      this.currentUser = found || MOCK_PROFILES[0];
+    }
+
+    this.notify();
+    return { success: true, role: this.role, user: this.currentUser };
+  }
+
+  public async changeAuthorityPassword(newPassword: string) {
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+      if (error) {
+        return { success: false, message: error.message };
+      }
+    }
+
+    return { success: true, message: 'Authority password updated successfully!' };
+  }
 
   public loginAs(role: UserRole) {
     this.role = role;

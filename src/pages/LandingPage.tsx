@@ -10,9 +10,15 @@ import { LiveStatusWidget } from '../components/landing/LiveStatusWidget';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
+  onNavigateRegister: () => void;
+  onNavigateLogin: () => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
+export const LandingPage: React.FC<LandingPageProps> = ({ 
+  onLoginSuccess,
+  onNavigateRegister,
+  onNavigateLogin
+}) => {
   const [scrolled, setScrolled] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>('student');
@@ -76,16 +82,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLoginSuccess }) => {
 
           <div className="flex items-center gap-4">
             <button
-              onClick={() => { setSelectedRole('student'); setLoginModalOpen(true); }}
+              onClick={onNavigateRegister}
               className="px-4 py-2 rounded-full text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
             >
-              Student Portal
+              Student Register
             </button>
             <button
-              onClick={() => { setSelectedRole('authority'); setLoginModalOpen(true); }}
+              onClick={onNavigateLogin}
               className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-950 font-bold text-xs tracking-wider uppercase shadow-xl shadow-amber-900/20 hover:shadow-amber-500/20 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
             >
-              Authority Login
+              Account Login
             </button>
           </div>
         </div>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { appStore } from './services/store';
 import { UserRole } from './types';
 import { LandingPage } from './pages/LandingPage';
+import { RegisterPage } from './pages/auth/RegisterPage';
+import { LoginPage } from './pages/auth/LoginPage';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -14,6 +16,7 @@ import { FeedbackDashboardPage } from './pages/authority/FeedbackDashboardPage';
 import { PostMealConsumptionPage } from './pages/authority/PostMealConsumptionPage';
 import { SurplusRedistributionPage } from './pages/authority/SurplusRedistributionPage';
 import { ForecastingPage } from './pages/authority/ForecastingPage';
+import { AuthoritySettingsPage } from './pages/authority/AuthoritySettingsPage';
 
 // Student Pages
 import { StudentLayout } from './components/student/StudentLayout';
@@ -28,21 +31,29 @@ import { StudentImpactPage } from './pages/student/StudentImpactPage';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
+  const [authView, setAuthView] = useState<'none' | 'register' | 'login'>('none');
   const [authorityTab, setAuthorityTab] = useState('today');
   const [studentTab, setStudentTab] = useState('home');
   const [selectedMealId, setSelectedMealId] = useState<string | undefined>();
 
   useEffect(() => {
-    const update = () => setRole(appStore.getRole());
+    const update = () => {
+      const currentRole = appStore.getRole();
+      setRole(currentRole);
+      if (currentRole !== 'landing') {
+        setAuthView('none');
+      }
+    };
     return appStore.subscribe(update);
   }, []);
 
   const handleLoginSuccess = (selectedRole: UserRole) => {
-    appStore.loginAs(selectedRole);
+    setAuthView('none');
   };
 
   const handleLogout = () => {
     appStore.logout();
+    setAuthView('none');
   };
 
   const handleNavigateAuthority = (tab: string, mealId?: string) => {
@@ -55,12 +66,37 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
-  // 1. Landing Page
-  if (role === 'landing') {
-    return <LandingPage onLoginSuccess={handleLoginSuccess} />;
+  // Auth Views
+  if (authView === 'register') {
+    return (
+      <RegisterPage
+        onNavigateLogin={() => setAuthView('login')}
+        onSuccessRedirect={() => setAuthView('login')}
+      />
+    );
   }
 
-  // 2. Authority Dashboard
+  if (authView === 'login') {
+    return (
+      <LoginPage
+        onNavigateRegister={() => setAuthView('register')}
+        onLoginSuccess={handleLoginSuccess}
+      />
+    );
+  }
+
+  // Landing Page
+  if (role === 'landing') {
+    return (
+      <LandingPage
+        onLoginSuccess={handleLoginSuccess}
+        onNavigateRegister={() => setAuthView('register')}
+        onNavigateLogin={() => setAuthView('login')}
+      />
+    );
+  }
+
+  // Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -77,11 +113,12 @@ export const App: React.FC = () => {
         {authorityTab === 'consumption' && <PostMealConsumptionPage />}
         {authorityTab === 'surplus' && <SurplusRedistributionPage />}
         {authorityTab === 'forecasting' && <ForecastingPage />}
+        {authorityTab === 'settings' && <AuthoritySettingsPage />}
       </AuthorityLayout>
     );
   }
 
-  // 3. Student Mobile App
+  // Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}

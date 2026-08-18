@@ -18,14 +18,34 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   role user_role NOT NULL DEFAULT 'student',
   name TEXT NOT NULL,
   student_id TEXT,
-  hostel TEXT,
-  block TEXT,
+  hostel TEXT DEFAULT 'Nilgiri Hall',
+  block TEXT DEFAULT 'Main Block',
   dietary_pref TEXT DEFAULT 'Vegetarian',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 4. MESSES TABLE
+-- 4. AUTOMATIC NEW USER TRIGGER (ROLE SECURITY: FORCE ROLE = 'student')
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, role, name, student_id)
+  VALUES (
+    NEW.id,
+    'student', -- Public registration ALWAYS forces role = 'student'
+    COALESCE(NEW.raw_user_meta_data->>'name', 'Campus Student'),
+    COALESCE(NEW.raw_user_meta_data->>'student_id', CONCAT('2026CS', FLOOR(1000 + RANDOM() * 9000)::TEXT))
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- 5. MESSES TABLE
 CREATE TABLE IF NOT EXISTS public.messes (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT NOT NULL,
@@ -34,7 +54,7 @@ CREATE TABLE IF NOT EXISTS public.messes (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 5. MEALS TABLE
+-- 6. MEALS TABLE
 CREATE TABLE IF NOT EXISTS public.meals (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   date DATE NOT NULL,
@@ -53,7 +73,7 @@ CREATE TABLE IF NOT EXISTS public.meals (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 6. MEAL SESSIONS (Dynamic QR Validation)
+-- 7. MEAL SESSIONS (Dynamic QR Validation)
 CREATE TABLE IF NOT EXISTS public.meal_sessions (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   meal_id UUID NOT NULL REFERENCES public.meals(id) ON DELETE CASCADE,
@@ -62,7 +82,7 @@ CREATE TABLE IF NOT EXISTS public.meal_sessions (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 7. CHECKINS TABLE (Turnstile Check-in Logs)
+-- 8. CHECKINS TABLE (Turnstile Check-in Logs)
 CREATE TABLE IF NOT EXISTS public.checkins (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   student_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -71,7 +91,7 @@ CREATE TABLE IF NOT EXISTS public.checkins (
   UNIQUE(student_id, meal_id) -- Blocks duplicate check-ins per meal
 );
 
--- 8. REVIEWS TABLE (Multi-attribute Post-meal Feedback)
+-- 9. REVIEWS TABLE (Multi-attribute Post-meal Feedback)
 CREATE TABLE IF NOT EXISTS public.reviews (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   student_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
@@ -87,7 +107,7 @@ CREATE TABLE IF NOT EXISTS public.reviews (
   UNIQUE(student_id, meal_id)
 );
 
--- 9. CONSUMPTION TABLE (Post-meal Operational Entry)
+-- 10. CONSUMPTION TABLE (Post-meal Operational Entry)
 CREATE TABLE IF NOT EXISTS public.consumption (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   meal_id UUID UNIQUE NOT NULL REFERENCES public.meals(id) ON DELETE CASCADE,
@@ -99,7 +119,7 @@ CREATE TABLE IF NOT EXISTS public.consumption (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 10. SURPLUS TABLE (Food Rescue & Redistribution)
+-- 11. SURPLUS TABLE (Food Rescue & Redistribution)
 CREATE TABLE IF NOT EXISTS public.surplus (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   meal_id UUID REFERENCES public.meals(id) ON DELETE CASCADE,
@@ -117,7 +137,7 @@ CREATE TABLE IF NOT EXISTS public.surplus (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 11. FORECASTS VIEW (Calculated Demand Predictor)
+-- 12. FORECASTS VIEW (Calculated Demand Predictor)
 CREATE OR REPLACE VIEW public.forecasts AS
 SELECT 
   m.id AS meal_id,
@@ -135,7 +155,7 @@ LEFT JOIN public.checkins c ON c.meal_id = m.id
 GROUP BY m.id, m.date, m.meal_type, m.name, m.mess_id, m.expected_qty;
 
 -- ==========================================
--- ROW LEVEL SECURITY (RLS) POLICIES
+-- ROW LEVEL SECURITY (RLS) & ROLE PROTECTION
 -- ==========================================
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -155,14 +175,21 @@ $$ LANGUAGE sql STABLE SECURITY DEFINER;
 
 -- PROFILES POLICIES
 CREATE POLICY "Public profiles reading" ON public.profiles FOR SELECT USING (true);
-CREATE POLICY "Users update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
+
+-- CRITICAL ROLE SECURITY: Users can update name/dietary_pref but CANNOT mutate their own role column!
+CREATE POLICY "Users update own profile non-sensitive fields" 
+ON public.profiles FOR UPDATE 
+USING (auth.uid() = id)
+WITH CHECK (
+  auth.uid() = id AND 
+  role = (SELECT role FROM public.profiles WHERE id = auth.uid()) -- Prevents self-escalation to authority
+);
 
 -- MESSES POLICIES
 CREATE POLICY "Anyone can view messes" ON public.messes FOR SELECT USING (true);
 CREATE POLICY "Authorities manage messes" ON public.messes FOR ALL USING (public.get_auth_role() = 'authority');
 
 -- MEALS POLICIES
--- Students only see published, open, or closed meals (never drafts)
 CREATE POLICY "Students view non-draft meals" ON public.meals FOR SELECT 
   USING (status IN ('published', 'open', 'closed') OR public.get_auth_role() = 'authority');
 CREATE POLICY "Authorities manage meals" ON public.meals FOR ALL 
@@ -188,8 +215,14 @@ CREATE POLICY "Anyone views surplus" ON public.surplus FOR SELECT USING (true);
 CREATE POLICY "Authorities manage surplus" ON public.surplus FOR ALL USING (public.get_auth_role() = 'authority');
 
 -- ==========================================
--- REALTIME SETUP
+-- INITIAL SEEDED AUTHORITY ACCOUNT SETUP
 -- ==========================================
+-- Note: Initial authority accounts are created via database seed/admin query, never public registration.
+-- Example SQL command to create initial authority profile:
+-- INSERT INTO public.profiles (id, role, name, hostel, block)
+-- VALUES ('<INITIAL-AUTHORITY-UUID>', 'authority', 'Dr. Rameshwar V. Verma', 'Administration', 'Food Ops Directorate');
+
+-- REALTIME SETUP
 BEGIN;
   DROP PUBLICATION IF EXISTS supabase_realtime;
   CREATE PUBLICATION supabase_realtime FOR TABLE checkins, meals, meal_sessions, reviews;
