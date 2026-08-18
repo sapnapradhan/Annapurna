@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   UtensilsCrossed, Shield, Sparkles, QrCode, TrendingUp, BarChart3, 
-  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity
+  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity, UserPlus, LogIn
 } from 'lucide-react';
 import { appStore } from '../services/store';
 import { UserRole } from '../types';
@@ -21,7 +21,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<UserRole>('student');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,11 +33,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const handleQuickLogin = (role: UserRole) => {
-    appStore.loginAs(role);
-    onLoginSuccess(role);
-  };
 
   return (
     <div className="relative min-h-screen bg-[#07080c] text-gray-100 font-sans selection:bg-amber-500 selection:text-black overflow-x-hidden">
@@ -80,18 +74,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <a href="#forecasting" className="hover:text-amber-300 transition-colors">Forecasting</a>
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <button
               onClick={onNavigateRegister}
-              className="px-4 py-2 rounded-full text-xs font-semibold text-gray-300 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              className="px-4 py-2 rounded-full text-xs font-semibold text-emerald-400 hover:text-emerald-300 hover:bg-white/5 transition-all cursor-pointer border border-emerald-500/30 flex items-center gap-1.5"
             >
-              Student Register
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Student Register</span>
             </button>
             <button
               onClick={onNavigateLogin}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-950 font-bold text-xs tracking-wider uppercase shadow-xl shadow-amber-900/20 hover:shadow-amber-500/20 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer"
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-gray-950 font-bold text-xs tracking-wider uppercase shadow-xl shadow-amber-900/20 hover:shadow-amber-500/20 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer flex items-center gap-1.5"
             >
-              Account Login
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Account Login</span>
             </button>
           </div>
         </div>
@@ -131,18 +127,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button
-              onClick={() => handleQuickLogin('authority')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-emerald-500 text-gray-950 font-extrabold text-sm uppercase tracking-wider shadow-2xl hover:shadow-amber-500/20 hover:scale-[1.02] transition-all cursor-pointer flex items-center justify-center gap-2"
+              onClick={onNavigateRegister}
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 text-slate-950 font-extrabold text-sm uppercase tracking-wider shadow-2xl hover:shadow-emerald-500/20 hover:scale-[1.02] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Launch Authority Dashboard</span>
-              <ArrowRight className="w-4 h-4" />
+              <UserPlus className="w-4 h-4" />
+              <span>Register Student Account</span>
             </button>
             <button
-              onClick={() => handleQuickLogin('student')}
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-cinematic-surface/90 border border-white/15 text-gray-200 hover:text-white hover:border-amber-400/50 backdrop-blur-xl font-bold text-sm uppercase tracking-wider hover:bg-white/5 transition-all cursor-pointer flex items-center justify-center gap-2"
+              onClick={onNavigateLogin}
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-cinematic-surface/90 border border-amber-500/40 text-amber-300 hover:text-white hover:border-amber-400 backdrop-blur-xl font-bold text-sm uppercase tracking-wider hover:bg-amber-500/10 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Launch Student Mobile App</span>
-              <QrCode className="w-4 h-4 text-emerald-400" />
+              <LogIn className="w-4 h-4 text-amber-400" />
+              <span>Sign In to Account</span>
             </button>
           </div>
 
@@ -205,10 +201,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               ))}
             </ul>
             <button
-              onClick={() => handleQuickLogin('authority')}
+              onClick={onNavigateLogin}
               className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
             >
-              Access Authority Control Room
+              Log In to Authority Operations
             </button>
           </div>
 
@@ -239,10 +235,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               ))}
             </ul>
             <button
-              onClick={() => handleQuickLogin('student')}
+              onClick={onNavigateRegister}
               className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
             >
-              Open Student Mobile Experience
+              Register Student Dining Account
             </button>
           </div>
         </div>
@@ -266,37 +262,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             <p className="text-xs text-gray-400">
-              Select your role to access the corresponding environment. Credentials will be validated via Supabase Auth RLS.
+              Select an option to proceed to authentication. Public registration assigns Student role automatically.
             </p>
 
             <div className="space-y-3">
               <button
-                onClick={() => { setLoginModalOpen(false); handleQuickLogin('student'); }}
+                onClick={() => { setLoginModalOpen(false); onNavigateRegister(); }}
                 className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-400 hover:bg-emerald-950/20 text-left transition-all group flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                    <Users className="w-5 h-5" />
+                    <UserPlus className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-bold text-white text-sm group-hover:text-emerald-300">Student Portal</div>
-                    <div className="text-xs text-gray-400">Hostel Resident & Dining Check-in</div>
+                    <div className="font-bold text-white text-sm group-hover:text-emerald-300">Student Registration</div>
+                    <div className="text-xs text-gray-400">Create new hostel dining pass</div>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
               </button>
 
               <button
-                onClick={() => { setLoginModalOpen(false); handleQuickLogin('authority'); }}
+                onClick={() => { setLoginModalOpen(false); onNavigateLogin(); }}
                 className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400 hover:bg-amber-950/20 text-left transition-all group flex items-center justify-between cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center text-amber-400">
-                    <Building2 className="w-5 h-5" />
+                    <LogIn className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-bold text-white text-sm group-hover:text-amber-300">Authority Operations</div>
-                    <div className="text-xs text-gray-400">Mess Admin, Food Rescue & Ops</div>
+                    <div className="font-bold text-white text-sm group-hover:text-amber-300">Account Login</div>
+                    <div className="text-xs text-gray-400">Student & Authority Login</div>
                   </div>
                 </div>
                 <ArrowRight className="w-4 h-4 text-gray-500 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" />
