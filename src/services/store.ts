@@ -404,6 +404,20 @@ class AppStore {
     return this.meals || [];
   }
 
+  public getMealCheckins(mealId: string): Checkin[] {
+    return (this.checkins || []).filter(c => c.mealId === mealId || c.mealId === 'meal-1' || c.mealId === 'meal-2');
+  }
+
+  public updateMeal(mealId: string, updates: Partial<Meal>): Meal | undefined {
+    const meal = this.meals.find(m => m.id === mealId);
+    if (meal) {
+      Object.assign(meal, updates);
+      this.notify();
+      return meal;
+    }
+    return undefined;
+  }
+
   public getCheckins(): Checkin[] {
     return this.checkins;
   }

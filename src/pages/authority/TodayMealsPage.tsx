@@ -60,9 +60,10 @@ export const TodayMealsPage: React.FC<TodayMealsPageProps> = ({ onNavigate }) =>
       {/* Meals Grid */}
       <div className="grid gap-4 md:grid-cols-2">
         {meals.map((meal) => {
-          const checkins = appStore.getMealCheckins(meal.id);
+          const checkins = (typeof appStore.getMealCheckins === 'function' ? appStore.getMealCheckins(meal.id) : appStore.getCheckins()) || [];
           const checkedInCount = checkins.length;
-          const pct = Math.round((checkedInCount / meal.expected_qty) * 100);
+          const expected = meal.expected_qty || 400;
+          const pct = Math.round((checkedInCount / expected) * 100);
 
           return (
             <div 
