@@ -1,178 +1,186 @@
-import React, { useState, useEffect } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import React, { useState } from 'react';
 import { appStore } from '../../services/store';
-import { Meal } from '../../types';
-import { QrCode, RefreshCw, ShieldCheck, Clock, Monitor, Copy, CheckCircle2 } from 'lucide-react';
+import { 
+  QrCode, Clock, Copy, Printer, CheckCircle2, ShieldCheck, RefreshCw, AlertCircle, Sparkles, Building 
+} from 'lucide-react';
 
 interface QRGeneratorPageProps {
   selectedMealId?: string;
 }
 
-export const QRGeneratorPage: React.FC<QRGeneratorPageProps> = ({ selectedMealId }) => {
-  const todayMeals = appStore.getTodayMeals();
-  const [activeMealId, setActiveMealId] = useState<string>(
-    selectedMealId || todayMeals.find(m => m.status === 'open')?.id || todayMeals[1]?.id || todayMeals[0]?.id || ''
-  );
+export const QRGeneratorPage: React.FC<QRGeneratorPageProps> = ({ 
+  selectedMealId = 'meal-today-dinner' 
+}) => {
+  const meals = appStore.getMeals();
+  const [mealId, setMealId] = useState(selectedMealId);
+  const [expiryMins, setExpiryMins] = useState(30);
+  const [isGenerated, setIsGenerated] = useState(true);
+  const [copied, setCopied] = useState(false);
 
-  const [sessionToken, setSessionToken] = useState<string>('');
-  const [toast, setToast] = useState<string | null>(null);
+  const selectedMeal = meals.find(m => m.id === mealId) || meals[0];
 
-  const activeMeal = appStore.getMealById(activeMealId);
+  const passToken = `ANNAPURNA-GATE-PASS-${selectedMeal.id}-${Date.now().toString().slice(-6)}`;
+  const qrDataUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(
+    passToken
+  )}`;
 
-  useEffect(() => {
-    if (activeMealId) {
-      const existing = appStore.getSessionForMeal(activeMealId);
-      if (existing) {
-        setSessionToken(existing.token);
-      } else {
-        const newToken = appStore.generateQRSession(activeMealId);
-        setSessionToken(newToken);
-      }
-    }
-  }, [activeMealId]);
-
-  const handleRegenerate = () => {
-    if (!activeMealId) return;
-    const newToken = appStore.generateQRSession(activeMealId);
-    setSessionToken(newToken);
-    setToast('Generated new dynamic session token! Previous QR invalidated.');
-    setTimeout(() => setToast(null), 3000);
+  const handleGenerate = () => {
+    setIsGenerated(false);
+    setTimeout(() => {
+      setIsGenerated(true);
+    }, 400);
   };
 
   const handleCopyToken = () => {
-    navigator.clipboard.writeText(sessionToken);
-    setToast('Session token copied to clipboard!');
-    setTimeout(() => setToast(null), 3000);
+    navigator.clipboard.writeText(passToken);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handlePrintPoster = () => {
+    window.print();
   };
 
   return (
-    <div className="space-y-6">
-      {toast && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>{toast}</span>
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
+    <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">
+      <div className="border-b border-[#EBE4D8] dark:border-[#2C2724] pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-            <QrCode className="w-5 h-5 text-amber-400" />
-            <span>Turnstile QR Session Display</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider">
+            <QrCode className="w-3.5 h-3.5" />
+            <span>AUTHORITY QR SESSION GENERATOR</span>
+          </div>
+          <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-white mt-1">
+            Mess Turnstile QR Session Generator
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Display this high-resolution QR on the mess entry kiosk monitor. Tied to date, meal session, and dynamic cryptographic token.
+          <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+            Bhubaneswar Central University • Turnstile Gate Control
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <select
-            value={activeMealId}
-            onChange={(e) => setActiveMealId(e.target.value)}
-            className="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-amber-200 focus:outline-none font-semibold"
-          >
-            {todayMeals.map(m => (
-              <option key={m.id} value={m.id}>
-                [{m.meal_type.toUpperCase()}] {m.name} ({m.open_time} - {m.close_time})
-              </option>
-            ))}
-          </select>
-        </div>
+        <button
+          onClick={handleGenerate}
+          className="px-5 py-2.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer self-start sm:self-auto"
+        >
+          <RefreshCw className="w-4 h-4" />
+          <span>RE-GENERATE QR SESSION</span>
+        </button>
       </div>
 
-      {activeMeal ? (
-        <div className="grid lg:grid-cols-12 gap-6 items-start">
-          {/* Main QR Display Screen (Simulates Kiosk Screen) */}
-          <div className="lg:col-span-7 p-8 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl flex flex-col items-center text-center space-y-6 relative overflow-hidden">
-            <div className="absolute top-4 left-4 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono font-bold flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-              <span>LIVE TURNSTILE ACTIVE</span>
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Left Column: Controls & Configuration */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-6">
+          <h2 className="font-serif font-bold text-xl text-[#2C221E] dark:text-white">
+            1. Configure Dining Session
+          </h2>
+
+          <div className="space-y-4">
+            {/* Select Meal Session */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Select Meal Service:
+              </label>
+              <select
+                value={mealId}
+                onChange={(e) => setMealId(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/40 border border-white/20 text-xs font-semibold rounded-2xl p-3 text-[#C86D44] dark:text-amber-300 focus:outline-none backdrop-blur-md"
+              >
+                {meals.map(m => (
+                  <option key={m.id} value={m.id}>
+                    {m.title} ({m.meal_type.toUpperCase()})
+                  </option>
+                ))}
+              </select>
             </div>
 
-            <div className="pt-4">
-              <div className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
-                {activeMeal.meal_type} SERVICE SESSION
-              </div>
-              <h2 className="font-serif font-bold text-2xl text-slate-100 mt-1">{activeMeal.name}</h2>
-              <div className="text-xs text-slate-400 mt-1 flex items-center justify-center gap-2">
-                <Clock className="w-3.5 h-3.5 text-amber-400" />
-                <span>{activeMeal.open_time} – {activeMeal.close_time}</span>
-              </div>
-            </div>
-
-            {/* QR Box */}
-            <div className="p-6 rounded-3xl bg-white shadow-2xl border-4 border-amber-500/30 flex flex-col items-center">
-              <QRCodeSVG
-                value={JSON.stringify({
-                  meal_id: activeMeal.id,
-                  token: sessionToken,
-                  mess_id: activeMeal.mess_id,
-                  date: activeMeal.date
-                })}
-                size={220}
-                level="H"
-                includeMargin={true}
-              />
-              <div className="mt-3 font-mono font-bold text-slate-900 text-sm tracking-wider">
-                {sessionToken}
+            {/* Select Expiration Duration */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                Session Expiration Duration:
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {[15, 30, 60, 120].map((mins) => (
+                  <button
+                    key={mins}
+                    onClick={() => setExpiryMins(mins)}
+                    className={`py-2.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                      expiryMins === mins
+                        ? 'bg-[#C86D44] text-white shadow-md'
+                        : 'bg-white/10 dark:bg-black/30 text-slate-700 dark:text-slate-300 hover:bg-white/20 border border-white/20'
+                    }`}
+                  >
+                    {mins}m
+                  </button>
+                ))}
               </div>
             </div>
 
-            <p className="text-xs text-slate-400 max-w-sm">
-              Scan using the <span className="text-emerald-400 font-semibold">Student App</span> to validate meal entry and prevent duplicate check-ins.
+            {/* Action Buttons Cluster */}
+            <div className="pt-4 space-y-3">
+              <button
+                onClick={handleGenerate}
+                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>🍱 GENERATE DYNAMIC SESSION QR</span>
+              </button>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={handleCopyToken}
+                  className="py-3 rounded-full bg-white/10 dark:bg-black/30 border border-white/20 text-slate-800 dark:text-slate-200 hover:border-[#C86D44] text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer backdrop-blur-md"
+                >
+                  <Copy className="w-3.5 h-3.5 text-[#C86D44]" />
+                  <span>{copied ? 'COPIED!' : 'COPY TOKEN'}</span>
+                </button>
+
+                <button
+                  onClick={handlePrintPoster}
+                  className="py-3 rounded-full bg-white/10 dark:bg-black/30 border border-white/20 text-slate-800 dark:text-slate-200 hover:border-[#C86D44] text-xs font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer backdrop-blur-md"
+                >
+                  <Printer className="w-3.5 h-3.5 text-[#C86D44]" />
+                  <span>PRINT POSTER</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Live Generated QR Display */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl text-center space-y-6 flex flex-col justify-between">
+          <div className="space-y-2">
+            <h2 className="font-serif font-bold text-xl text-[#2C221E] dark:text-white">
+              2. Live Turnstile Poster Preview
+            </h2>
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+              Display at Hostel Mess Gate Entrance for Student QR Check-in
             </p>
-
-            <div className="w-full pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs font-mono text-slate-400">
-              <span>Token Expires: End of Service</span>
-              <button
-                onClick={handleCopyToken}
-                className="flex items-center gap-1 hover:text-amber-300 text-amber-400"
-              >
-                <Copy className="w-3.5 h-3.5" />
-                <span>Copy Token</span>
-              </button>
-            </div>
           </div>
 
-          {/* Controls & Security Info */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-              <h3 className="font-bold text-sm text-slate-200 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-amber-400" />
-                <span>Session Control Room</span>
-              </h3>
-
-              <div className="text-xs text-slate-400 space-y-2">
-                <div>
-                  <span className="text-slate-300 font-semibold block">Session ID:</span>
-                  <span className="font-mono text-amber-300">{sessionToken}</span>
-                </div>
-                <div>
-                  <span className="text-slate-300 font-semibold block">Meal Items:</span>
-                  <span className="text-slate-400">{activeMeal.items.join(', ')}</span>
-                </div>
-                <div>
-                  <span className="text-slate-300 font-semibold block">Turnstile State:</span>
-                  <span className="text-emerald-400 font-mono font-bold uppercase">{activeMeal.status}</span>
-                </div>
+          <div className="relative w-60 h-60 mx-auto p-4 rounded-3xl bg-white border-4 border-[#C86D44]/40 shadow-2xl flex items-center justify-center">
+            {isGenerated ? (
+              <img
+                src={qrDataUrl}
+                alt="Active Turnstile Session QR Code"
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center text-slate-500 text-xs font-mono">
+                <RefreshCw className="w-8 h-8 animate-spin text-[#C86D44] mb-2" />
+                <span>GENERATING TOKEN...</span>
               </div>
+            )}
+          </div>
 
-              <button
-                onClick={handleRegenerate}
-                className="w-full py-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <RefreshCw className="w-4 h-4" />
-                <span>Regenerate Dynamic QR Token</span>
-              </button>
+          <div className="p-4 rounded-2xl bg-white/10 dark:bg-black/40 border border-white/10 space-y-1">
+            <div className="text-xs font-mono font-bold text-[#C86D44] dark:text-amber-300">
+              ACTIVE TOKEN: {passToken}
+            </div>
+            <div className="text-[10px] text-slate-500 font-mono">
+              Valid for next {expiryMins} minutes at Gate A1
             </div>
           </div>
         </div>
-      ) : (
-        <div className="p-12 text-center text-slate-500 bg-slate-900 rounded-2xl">
-          No active meal selected. Please pick a meal session above.
-        </div>
-      )}
+      </div>
     </div>
   );
 };
