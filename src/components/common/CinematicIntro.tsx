@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, UtensilsCrossed, Play } from 'lucide-react';
+import { ArrowRight, Sparkles, Play } from 'lucide-react';
 
 interface CinematicIntroProps {
   onComplete: () => void;
@@ -16,48 +16,49 @@ const SCENES: StoryScene[] = [
   {
     id: 1,
     image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=2000&q=80',
-    slogan: 'Every meal begins with a simple idea.',
-    subtext: 'Food is crafted to bring energy and life.'
+    slogan: 'EVERY MEAL BEGINS SOMEWHERE.',
+    subtext: 'Crafted with intent, care, and energy.'
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2000&q=80',
-    slogan: 'Food is meant to be shared.',
-    subtext: 'Connecting people around the table.'
+    image: 'https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?auto=format&fit=crop&w=2000&q=80',
+    slogan: 'SOMEONE COOKS.',
+    subtext: 'Dedicated hands preparing sustenance.'
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=2000&q=80',
-    slogan: 'What is surplus to one can be a meal for another.',
-    subtext: 'Good food deserves a second table.'
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=80',
+    slogan: 'SOMEONE SERVES.',
+    subtext: 'Nourishment brought to the table.'
   },
   {
     id: 4,
-    image: '/background.jpg',
-    slogan: 'Let\'s keep good food moving.',
-    subtext: 'From campus messes directly to communities in need.'
+    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2000&q=80',
+    slogan: 'SOMEONE SHARES.',
+    subtext: 'Bringing communities together.'
+  },
+  {
+    id: 5,
+    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=2000&q=80',
+    slogan: 'GOOD FOOD SHOULD REACH PEOPLE.',
+    subtext: 'What is surplus to one becomes a meal for another.'
   }
 ];
 
 export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
   const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
   const [isFinalResolve, setIsFinalResolve] = useState(false);
-  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
   const [started, setStarted] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleFinish = () => {
     localStorage.setItem('annapurna_intro_seen', 'true');
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
     onComplete();
   };
 
   const startIntro = async () => {
     setStarted(true);
-    // Try starting audio
     const audio = new Audio('/audio/background-music.mp3');
     audio.loop = true;
     audio.volume = 0.5;
@@ -65,10 +66,8 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
 
     try {
       await audio.play();
-      setAutoplayBlocked(false);
     } catch (e) {
-      // Audio fallback / non-blocking
-      setAutoplayBlocked(false);
+      // Non-blocking
     }
   };
 
@@ -76,14 +75,14 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     startIntro();
   }, []);
 
-  // Scene progression timer (1.2 seconds per scene, total 5 seconds)
+  // Scene progression timer (1.1s per scene)
   useEffect(() => {
     if (!started) return;
 
     if (currentSceneIdx < SCENES.length - 1) {
       const timer = setTimeout(() => {
         setCurrentSceneIdx(prev => prev + 1);
-      }, 1300);
+      }, 1250);
       return () => clearTimeout(timer);
     } else if (currentSceneIdx === SCENES.length - 1 && !isFinalResolve) {
       const timer = setTimeout(() => {
@@ -101,7 +100,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
   const scene = SCENES[currentSceneIdx];
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#07080c] text-white font-sans overflow-hidden flex items-center justify-center select-none">
+    <div className="fixed inset-0 z-50 bg-[#07080c] text-white font-sans overflow-hidden flex items-center justify-center select-none w-screen h-screen">
       {/* Background Image Scene Transition with Ken Burns Slow Zoom */}
       {SCENES.map((sc, idx) => (
         <div
@@ -127,20 +126,20 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
         }`}
       >
         <div className="absolute inset-0 bg-[#07080c]/90 backdrop-blur-sm" />
-        <div className="relative z-10 text-center space-y-6 px-6 max-w-2xl animate-in zoom-in-95 duration-700">
-          <div className="w-16 h-16 rounded-2xl bg-[#C86D44] text-white flex items-center justify-center font-serif font-bold text-3xl shadow-2xl mx-auto">
+        <div className="relative z-10 text-center space-y-6 px-6 max-w-3xl animate-in zoom-in-95 duration-700">
+          <div className="w-16 h-16 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cinzel font-bold text-3xl shadow-2xl mx-auto border-2 border-amber-300/40">
             A
           </div>
           <div>
-            <h1 className="font-serif font-bold text-4xl sm:text-5xl tracking-widest text-amber-100 uppercase">
+            <h1 className="font-cinzel font-bold text-5xl sm:text-7xl tracking-widest text-amber-100 uppercase drop-shadow-2xl">
               ANNAPURNA
             </h1>
-            <p className="text-xs font-mono font-bold tracking-widest text-[#C86D44] mt-2 uppercase">
-              Campus Food Operations & Rescue Platform
+            <p className="text-xs font-mono font-bold tracking-widest text-[#C86D44] mt-3 uppercase">
+              CAMPUS FOOD OPERATIONS & RESCUE PLATFORM
             </p>
           </div>
-          <div className="pt-2">
-            <h2 className="text-[#C86D44] font-mono font-bold text-sm uppercase tracking-widest border-y border-[#C86D44]/30 py-2 inline-block">
+          <div className="pt-4">
+            <h2 className="text-[#C86D44] dark:text-amber-300 font-cinzel font-bold text-sm sm:text-base uppercase tracking-widest border-y border-[#C86D44]/40 py-2.5 inline-block">
               FEED PEOPLE. REDUCE WASTE. CREATE IMPACT.
             </h2>
           </div>
@@ -149,17 +148,17 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
 
       {/* Scene Text Overlay */}
       {!isFinalResolve && (
-        <div className="relative z-20 text-center max-w-3xl px-6 space-y-3 animate-in fade-in duration-700">
+        <div className="relative z-20 text-center max-w-4xl px-6 space-y-4 animate-in fade-in duration-700">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold uppercase tracking-wider backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Story {currentSceneIdx + 1} of 4</span>
+            <span>Story {currentSceneIdx + 1} of 5</span>
           </div>
 
-          <h2 className="font-serif font-bold text-3xl sm:text-5xl tracking-tight text-white leading-tight drop-shadow-lg">
-            "<span className="italic font-serif-display font-normal text-amber-200">{scene.slogan}</span>"
+          <h2 className="font-cinzel font-bold text-3xl sm:text-6xl tracking-widest text-white leading-tight drop-shadow-2xl uppercase">
+            {scene.slogan}
           </h2>
 
-          <p className="text-sm sm:text-base text-slate-300 font-light drop-shadow">
+          <p className="text-sm sm:text-lg text-slate-300 font-light drop-shadow">
             {scene.subtext}
           </p>
 
@@ -174,19 +173,6 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
               />
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Autoplay Manual Trigger if restricted */}
-      {autoplayBlocked && (
-        <div className="absolute top-8 z-30">
-          <button
-            onClick={startIntro}
-            className="px-6 py-3 rounded-full bg-[#C86D44] text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-2xl animate-pulse cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-white" />
-            <span>ENTER EXPERIENCE</span>
-          </button>
         </div>
       )}
 

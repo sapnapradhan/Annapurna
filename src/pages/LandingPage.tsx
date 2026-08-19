@@ -48,11 +48,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 backdrop-blur-xl border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
             {/* Logo Emblem */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-serif font-bold text-base shadow-md">
+              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cinzel font-bold text-base shadow-md border border-amber-300/30">
                 A
               </div>
               <div>
-                <span className="font-serif font-bold text-base tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
+                <span className="font-cinzel font-bold text-base tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
                   ANNAPURNA
                 </span>
               </div>
@@ -113,11 +113,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
             </div>
 
-            {/* Editorial Serif Display Headline */}
-            <h1 className="font-serif font-bold text-4xl sm:text-6xl md:text-7xl tracking-tight text-[#2C221E] dark:text-white leading-[1.1]">
-              "Designed to Nourish. <br />
-              <span className="italic font-normal text-[#C86D44] dark:text-amber-300 font-serif-display">
-                Built to Share."
+            {/* Editorial Chiseled Serif Headline (Matching Reference Screenshot) */}
+            <h1 className="font-cinzel font-bold text-4xl sm:text-6xl md:text-7xl tracking-widest text-[#2C221E] dark:text-white leading-[1.15] uppercase">
+              DESIGNED TO NOURISH. <br />
+              <span className="text-[#C86D44] dark:text-amber-300 font-cinzel">
+                BUILT TO SHARE.
               </span>
             </h1>
 
@@ -147,77 +147,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Scroll Indicator */}
             <div className="pt-8 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
-              <span>EXPLORE STORY & TELEMETRY</span>
+              <span>EXPLORE PLATFORM & TELEMETRY</span>
               <ChevronDown className="w-4 h-4 mt-1 text-[#C86D44]" />
             </div>
-          </div>
-        </section>
-
-        {/* Food Story Section 01 — THE PROBLEM */}
-        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
-            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
-              01 — THE PROBLEM
-            </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
-              "Good food shouldn't become waste."
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
-              Every day, university messes prepare thousands of meals. Minor forecasting discrepancies lead to untouched surplus food being discarded while local community shelters face daily shortages.
-            </p>
-          </div>
-        </section>
-
-        {/* Food Story Section 02 — THE CONNECTION */}
-        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
-            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
-              02 — THE CONNECTION
-            </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
-              "One campus. Thousands of meals. <br />
-              <span className="italic font-normal text-[#C86D44] dark:text-amber-300">One shared responsibility."</span>
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
-              Annapurna automates turnstile check-ins, tracks real-time meal attendance, and computes precise prep quantities — eliminating waste before it happens.
-            </p>
-          </div>
-        </section>
-
-        {/* Food Story Section 03 — THE IMPACT */}
-        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
-            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
-              03 — THE IMPACT
-            </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
-              "Surplus becomes nourishment."
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
-              When unavoidable surplus occurs, Annapurna triggers an immediate 4-step food rescue workflow connecting mess staff to verified local NGO partners.
-            </p>
-          </div>
-        </section>
-
-        {/* Food Story Section 04 — THE NETWORK */}
-        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
-            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
-              04 — THE NETWORK
-            </div>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
-              "From Bhubaneswar to communities across India."
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
-              Defaulting to Bhubaneswar, Odisha, our rescue dispatch network bridges campus food logistics with community kitchens state-wide.
-            </p>
-            <button
-              onClick={onNavigateRescue}
-              className="group px-6 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest inline-flex items-center gap-2"
-            >
-              <span>LAUNCH RESCUE NETWORK</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </button>
           </div>
         </section>
 
@@ -225,7 +157,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
           <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724]">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white">Campus Climate & Weather Forecast</h3>
+            <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
@@ -234,7 +166,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
           <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] space-y-2">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white">Designed for Ops Authority & Hostel Students</h3>
+            <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Designed for Ops Authority & Hostel Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -244,7 +176,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-serif text-2xl font-bold text-[#2C221E] dark:text-white">Operational Density & Control</h4>
+              <h4 className="font-cinzel text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Operational Density & Control</h4>
               <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200">
                 {[
                   'Under-1-minute menu creation & CSV bulk importer',
@@ -275,7 +207,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Users className="w-3.5 h-3.5" />
                 <span>Student Mobile App</span>
               </div>
-              <h4 className="font-serif text-2xl font-bold text-[#2C221E] dark:text-white">Personalized & Mobile-First</h4>
+              <h4 className="font-cinzel text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Personalized & Mobile-First</h4>
               <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200">
                 {[
                   'Personalized greeting & next-upcoming meal card',
@@ -305,7 +237,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Footer */}
         <footer className="py-10 border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80 text-center text-xs text-slate-600 dark:text-slate-400 bg-[#FDFBF7]/80 dark:bg-[#12100F]/80">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 font-serif text-sm font-bold text-[#2C221E] dark:text-slate-200">
+            <div className="flex items-center gap-2 font-cinzel text-sm font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
               <UtensilsCrossed className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
               <span>ANNAPURNA • BHUBANESWAR, ODISHA</span>
             </div>

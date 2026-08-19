@@ -32,8 +32,10 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
-        'serif-display': ['Cormorant Garamond', 'Playfair Display', 'serif'],
+        cinzel: ['Cinzel', 'Cinzel Decorative', 'serif'],
+        'cinzel-dec': ['Cinzel Decorative', 'Cinzel', 'serif'],
+        serif: ['Cinzel', 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        'serif-display': ['Cormorant Garamond', 'Cinzel', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
