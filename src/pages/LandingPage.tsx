@@ -43,143 +43,189 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Top Navbar */}
-        <header
-          className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-            scrolled
-              ? 'py-3.5 bg-[#FDFBF7]/95 dark:bg-[#12100F]/95 backdrop-blur-md border-b border-[#EBE4D8] dark:border-[#2C2724] shadow-md'
-              : 'py-6 bg-transparent'
-          }`}
-        >
-          <div className="max-w-7xl mx-auto px-6 sm:px-10 flex items-center justify-between">
+        {/* Floating Pill Navigation Bar */}
+        <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
+          <div className="bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 backdrop-blur-xl border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
+            {/* Logo Emblem */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#C86D44] text-white flex items-center justify-center shadow-lg font-serif font-bold text-xl">
+              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-serif font-bold text-base shadow-md">
                 A
               </div>
               <div>
-                <span className="font-serif font-bold text-xl tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
+                <span className="font-serif font-bold text-base tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
                   ANNAPURNA
-                </span>
-                <span className="hidden sm:inline-block ml-2 px-2 py-0.5 rounded text-[10px] font-mono bg-[#C86D44]/20 border border-[#C86D44]/30 text-[#C86D44] dark:text-amber-300 font-bold">
-                  BHUBANESWAR, ODISHA
                 </span>
               </div>
             </div>
 
-            <nav className="hidden md:flex items-center gap-6 text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-              <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">Features</a>
-              <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">Campus Weather</a>
-              
-              {/* Working Food Rescue Button */}
+            {/* Nav Links */}
+            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-mono font-bold tracking-widest text-slate-700 dark:text-slate-300 uppercase">
+              <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">FEATURES</a>
+              <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">WEATHER</a>
               <button
                 onClick={onNavigateRescue}
-                className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors font-bold flex items-center gap-1 cursor-pointer text-[#C86D44] dark:text-amber-300"
+                className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors flex items-center gap-1 cursor-pointer text-[#C86D44] dark:text-amber-300"
               >
-                <Truck className="w-3.5 h-3.5" />
-                <span>Food Rescue</span>
+                <Truck className="w-3 h-3" />
+                <span>FOOD RESCUE</span>
               </button>
             </nav>
 
-            <div className="flex items-center gap-3">
+            {/* Controls & CTAs */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <AudioPlayer />
               <ThemeToggle />
 
               <button
                 onClick={onReplayIntro}
-                className="px-3 py-1.5 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-[#C86D44] dark:hover:text-amber-300 transition-all cursor-pointer border border-[#EBE4D8] dark:border-[#2C2724] bg-[#FDFBF7]/80 dark:bg-[#1A1715]/80"
-                title="Replay Cinematic Story Intro"
+                className="hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-[#C86D44] dark:hover:text-amber-300 border border-[#EBE4D8] dark:border-[#2C2724] bg-[#F5EFE6] dark:bg-[#1A1715] transition-colors"
+                title="Replay Story"
               >
-                <span>Replay Intro</span>
+                Story
               </button>
 
               <button
                 onClick={onNavigateRescue}
-                className="px-3.5 py-1.5 rounded-full text-xs font-bold text-[#C86D44] dark:text-amber-300 bg-[#C86D44]/15 hover:bg-[#C86D44]/25 border border-[#C86D44]/40 transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold text-[#C86D44] dark:text-amber-300 bg-[#C86D44]/15 hover:bg-[#C86D44]/25 border border-[#C86D44]/40 transition-all cursor-pointer flex items-center gap-1"
               >
-                <Truck className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Food Rescue</span>
-              </button>
-
-              <button
-                onClick={onNavigateRegister}
-                className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 transition-all cursor-pointer"
-              >
-                <UserPlus className="w-3.5 h-3.5" />
-                <span>Register</span>
+                <Truck className="w-3 h-3" />
+                <span className="hidden sm:inline">Rescue</span>
               </button>
 
               <button
                 onClick={onNavigateLogin}
-                className="px-4 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-1.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-[11px] uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-1.5"
               >
-                <LogIn className="w-3.5 h-3.5" />
+                <LogIn className="w-3 h-3" />
                 <span>Login</span>
               </button>
             </div>
           </div>
         </header>
 
-        {/* Hero Section with Localized Text Scrim */}
-        <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-16 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-8 p-8 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl backdrop-blur-md">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/15 border border-[#C86D44]/30 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Campus Dining Operations & Food Rescue Platform • Bhubaneswar, Odisha</span>
+        {/* Full-Screen Editorial Hero Section */}
+        <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl backdrop-blur-md">
+            
+            {/* Small Eyebrow Label */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/15 border border-[#C86D44]/30 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest">
+              <MapPin className="w-3 h-3" />
+              <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
             </div>
 
-            <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-[#2C221E] dark:text-white leading-[1.15]">
-              Campus Dining Operations, <br />
-              <span className="italic font-normal text-[#C86D44] dark:text-amber-300">
-                Precision Tech & Food Rescue Network.
+            {/* Editorial Serif Display Headline */}
+            <h1 className="font-serif font-bold text-4xl sm:text-6xl md:text-7xl tracking-tight text-[#2C221E] dark:text-white leading-[1.1]">
+              "Designed to Nourish. <br />
+              <span className="italic font-normal text-[#C86D44] dark:text-amber-300 font-serif-display">
+                Built to Share."
               </span>
             </h1>
 
-            <p className="max-w-2xl mx-auto text-base sm:text-lg text-slate-800 dark:text-slate-200 font-medium leading-relaxed">
-              Eliminate mess food waste, automate turnstile check-ins, capture student feedback, 
-              and rescue surplus meals across Bhubaneswar & India.
+            {/* Supporting Short Statement */}
+            <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-700 dark:text-slate-300 font-normal leading-relaxed">
+              Every meal has a story. Annapurna connects campus dining facilities directly with local community food rescue networks.
             </p>
 
+            {/* Editorial Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <button
                 onClick={onNavigateRescue}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#C86D44] hover:bg-[#B35C33] text-white font-extrabold text-xs uppercase tracking-wider shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <Truck className="w-4 h-4" />
-                <span>Open Food Rescue Network</span>
+                <span>EXPLORE FOOD RESCUE</span>
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
 
               <button
                 onClick={onNavigateRegister}
-                className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-[#F5EFE6] dark:bg-[#1A1715] border border-[#EBE4D8] dark:border-[#2C2724] text-[#2C221E] dark:text-slate-200 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Register Student Account</span>
+                <span>REGISTER STUDENT ACCOUNT</span>
+                <ArrowRight className="w-4 h-4 text-[#C86D44] dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
 
-            {/* Metrics Row */}
-            <div className="pt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto text-left">
-              {[
-                { label: 'Turnstile Scan Time', val: '< 1.8 sec', icon: QrCode },
-                { label: 'Average Waste Saved', val: '28.4%', icon: Leaf },
-                { label: 'Default Location', val: 'Bhubaneswar', icon: MapPin },
-                { label: 'Food Rescue Rate', val: '100%', icon: Shield },
-              ].map((m, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-[#F5EFE6] dark:bg-[#1A1715] border border-[#EBE4D8] dark:border-[#2C2724]">
-                  <m.icon className="w-4 h-4 text-[#C86D44] dark:text-amber-400 mb-1.5" />
-                  <div className="text-xl font-bold font-mono text-[#2C221E] dark:text-white">{m.val}</div>
-                  <div className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{m.label}</div>
-                </div>
-              ))}
+            {/* Scroll Indicator */}
+            <div className="pt-8 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
+              <span>EXPLORE STORY & TELEMETRY</span>
+              <ChevronDown className="w-4 h-4 mt-1 text-[#C86D44]" />
             </div>
           </div>
         </section>
 
-        {/* Native Weather Forecast Section */}
+        {/* Food Story Section 01 — THE PROBLEM */}
+        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
+          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
+            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
+              01 — THE PROBLEM
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
+              "Good food shouldn't become waste."
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
+              Every day, university messes prepare thousands of meals. Minor forecasting discrepancies lead to untouched surplus food being discarded while local community shelters face daily shortages.
+            </p>
+          </div>
+        </section>
+
+        {/* Food Story Section 02 — THE CONNECTION */}
+        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
+          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
+            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
+              02 — THE CONNECTION
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
+              "One campus. Thousands of meals. <br />
+              <span className="italic font-normal text-[#C86D44] dark:text-amber-300">One shared responsibility."</span>
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
+              Annapurna automates turnstile check-ins, tracks real-time meal attendance, and computes precise prep quantities — eliminating waste before it happens.
+            </p>
+          </div>
+        </section>
+
+        {/* Food Story Section 03 — THE IMPACT */}
+        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
+          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
+            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
+              03 — THE IMPACT
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
+              "Surplus becomes nourishment."
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
+              When unavoidable surplus occurs, Annapurna triggers an immediate 4-step food rescue workflow connecting mess staff to verified local NGO partners.
+            </p>
+          </div>
+        </section>
+
+        {/* Food Story Section 04 — THE NETWORK */}
+        <section className="py-20 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
+          <div className="p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6">
+            <div className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
+              04 — THE NETWORK
+            </div>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2C221E] dark:text-white leading-tight">
+              "From Bhubaneswar to communities across India."
+            </h2>
+            <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">
+              Defaulting to Bhubaneswar, Odisha, our rescue dispatch network bridges campus food logistics with community kitchens state-wide.
+            </p>
+            <button
+              onClick={onNavigateRescue}
+              className="group px-6 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest inline-flex items-center gap-2"
+            >
+              <span>LAUNCH RESCUE NETWORK</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        </section>
+
+        {/* Campus Weather Telemetry */}
         <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="text-center max-w-xl mx-auto mb-10 space-y-2 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724]">
-            <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">Live Campus Weather Telemetry</h2>
-            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white">Bhubaneswar, Odisha Forecast</h3>
+          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724]">
+            <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
+            <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
@@ -217,7 +263,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateLogin}
-                className="w-full py-3.5 rounded-xl bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Log In to Authority Operations
               </button>
@@ -248,7 +294,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateRegister}
-                className="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Register Student Dining Account
               </button>
@@ -261,7 +307,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 font-serif text-sm font-bold text-[#2C221E] dark:text-slate-200">
               <UtensilsCrossed className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
-              <span>ANNAPURNA Campus Food Operations & Rescue Platform • Bhubaneswar, Odisha</span>
+              <span>ANNAPURNA • BHUBANESWAR, ODISHA</span>
             </div>
             <div>© {new Date().getFullYear()} ANNAPURNA Food Operations. All rights reserved.</div>
           </div>

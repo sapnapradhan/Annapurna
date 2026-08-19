@@ -32,8 +32,9 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Playfair Display', 'Merriweather', 'Georgia', 'serif'],
-        sans: ['Inter', 'Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        serif: ['Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        'serif-display': ['Cormorant Garamond', 'Playfair Display', 'serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'culinary-pattern': "url('/background.jpg')",

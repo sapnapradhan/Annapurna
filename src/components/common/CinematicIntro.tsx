@@ -155,8 +155,8 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
             <span>Story {currentSceneIdx + 1} of 4</span>
           </div>
 
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white leading-tight drop-shadow-lg">
-            "{scene.slogan}"
+          <h2 className="font-serif font-bold text-3xl sm:text-5xl tracking-tight text-white leading-tight drop-shadow-lg">
+            "<span className="italic font-serif-display font-normal text-amber-200">{scene.slogan}</span>"
           </h2>
 
           <p className="text-sm sm:text-base text-slate-300 font-light drop-shadow">
