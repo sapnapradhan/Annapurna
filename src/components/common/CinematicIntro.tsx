@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 
 interface CinematicIntroProps {
-  enableMusic: boolean;
   onComplete: () => void;
 }
 
@@ -46,32 +45,14 @@ const SCENES: StoryScene[] = [
   }
 ];
 
-export const CinematicIntro: React.FC<CinematicIntroProps> = ({ enableMusic, onComplete }) => {
+export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
   const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
   const [isFinalResolve, setIsFinalResolve] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleFinish = () => {
     localStorage.setItem('annapurna_intro_seen', 'true');
     onComplete();
   };
-
-  useEffect(() => {
-    if (enableMusic) {
-      const audio = new Audio('/audio/background-music.mp3');
-      audio.loop = true;
-      audio.volume = 0.5;
-      audioRef.current = audio;
-
-      audio.play().catch(e => {
-        console.warn('Audio playback error', e);
-      });
-    }
-
-    return () => {
-      // Keep audio playing into homepage if enabled!
-    };
-  }, [enableMusic]);
 
   // Scene progression timer (1.1s per scene)
   useEffect(() => {
@@ -123,11 +104,11 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ enableMusic, onC
       >
         <div className="absolute inset-0 bg-[#07080c]/90 backdrop-blur-sm" />
         <div className="relative z-10 text-center space-y-6 px-6 max-w-3xl animate-in zoom-in-95 duration-700">
-          <div className="w-16 h-16 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cinzel font-bold text-3xl shadow-2xl mx-auto border-2 border-amber-300/40">
+          <div className="w-16 h-16 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-crayon font-bold text-3xl shadow-2xl mx-auto border-2 border-amber-300/40">
             A
           </div>
           <div>
-            <h1 className="font-cinzel font-bold text-5xl sm:text-7xl tracking-widest text-amber-100 uppercase drop-shadow-2xl">
+            <h1 className="font-crayon font-bold text-5xl sm:text-7xl tracking-widest text-amber-100 uppercase drop-shadow-2xl">
               ANNAPURNA
             </h1>
             <p className="text-xs font-mono font-bold tracking-widest text-[#C86D44] mt-3 uppercase">
@@ -135,7 +116,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ enableMusic, onC
             </p>
           </div>
           <div className="pt-4">
-            <h2 className="text-[#C86D44] dark:text-amber-300 font-cinzel font-bold text-sm sm:text-base uppercase tracking-widest border-y border-[#C86D44]/40 py-2.5 inline-block">
+            <h2 className="text-[#C86D44] dark:text-amber-300 font-crayon font-bold text-sm sm:text-lg uppercase tracking-widest border-y border-[#C86D44]/40 py-2.5 inline-block">
               FEED PEOPLE. REDUCE WASTE. CREATE IMPACT.
             </h2>
           </div>
@@ -150,7 +131,8 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ enableMusic, onC
             <span>Story {currentSceneIdx + 1} of 5</span>
           </div>
 
-          <h2 className="font-cinzel font-bold text-3xl sm:text-6xl tracking-widest text-white leading-tight drop-shadow-2xl uppercase">
+          {/* Crayon Font Headline */}
+          <h2 className="font-crayon font-bold text-3xl sm:text-6xl tracking-widest text-white leading-tight drop-shadow-2xl uppercase">
             {scene.slogan}
           </h2>
 

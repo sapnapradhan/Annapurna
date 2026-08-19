@@ -6,7 +6,6 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
 import { CinematicIntro } from './components/common/CinematicIntro';
-import { MusicChoiceModal } from './components/common/MusicChoiceModal';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -32,23 +31,19 @@ import { StudentMyReviewsPage } from './pages/student/StudentMyReviewsPage';
 import { StudentProfilePage } from './pages/student/StudentProfilePage';
 import { StudentImpactPage } from './pages/student/StudentImpactPage';
 
-type AppStep = 'music-choice' | 'intro' | 'main';
+type AppStep = 'intro' | 'main';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
 
-  // Determine initial step
+  // STEP 1: Website opens IMMEDIATELY into the Cinematic Intro on first visit
   const [step, setStep] = useState<AppStep>(() => {
     const seen = localStorage.getItem('annapurna_intro_seen');
     if (seen !== 'true') {
-      return 'music-choice';
+      return 'intro';
     }
     return 'main';
-  });
-
-  const [enableMusic, setEnableMusic] = useState<boolean>(() => {
-    return localStorage.getItem('annapurna_music_consent') === 'enabled';
   });
 
   const [authorityTab, setAuthorityTab] = useState('today');
@@ -62,11 +57,6 @@ export const App: React.FC = () => {
     };
     return appStore.subscribe(update);
   }, []);
-
-  const handleMusicChoiceMade = (musicChoice: boolean) => {
-    setEnableMusic(musicChoice);
-    setStep('intro');
-  };
 
   const handleIntroComplete = () => {
     setStep('main');
@@ -95,22 +85,17 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
-  // STEP 1: Music Choice Consent Modal (Zero audio / zero homepage DOM)
-  if (step === 'music-choice') {
-    return <MusicChoiceModal onChoiceMade={handleMusicChoiceMade} />;
-  }
-
-  // STEP 2: 100vw x 100vh Full-Screen Cinematic Story Entry
+  // 1. Immediate Cinematic Story Entry (100vw x 100vh)
   if (step === 'intro') {
-    return <CinematicIntro enableMusic={enableMusic} onComplete={handleIntroComplete} />;
+    return <CinematicIntro onComplete={handleIntroComplete} />;
   }
 
-  // STEP 3: Dedicated Food Rescue Hub Route
+  // 2. Dedicated Food Rescue Hub Route
   if (mainView === 'rescue') {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // STEP 4: Auth Views
+  // 3. Auth Views
   if (mainView === 'register') {
     return (
       <RegisterPage
@@ -129,7 +114,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // STEP 5: Main Landing Page
+  // 4. Main Landing Page (Renders Music Choice Popup if consent is pending)
   if (role === 'landing') {
     return (
       <LandingPage
@@ -142,7 +127,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // STEP 6: Authority Dashboard
+  // 5. Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -164,7 +149,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // STEP 7: Student Mobile App
+  // 6. Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}

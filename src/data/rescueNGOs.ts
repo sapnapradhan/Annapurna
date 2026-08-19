@@ -115,7 +115,7 @@ export const RESCUE_NGO_DATABASE: StateData[] = [
         city: 'Cuttack',
         organizations: [
           {
-            id: 'ngo-[#C86D44]-ctk-1',
+            id: 'ngo-ctk-1',
             name: 'Silver City Food Rescue Network',
             type: 'Food Rescue',
             city: 'Cuttack',
@@ -150,6 +150,157 @@ export const RESCUE_NGO_DATABASE: StateData[] = [
     ]
   },
   {
+    state: 'Gujarat',
+    cities: [
+      {
+        city: 'Ahmedabad',
+        organizations: [
+          {
+            id: 'ngo-guj-1',
+            name: 'Annashetra Food Rescue Ahmedabad',
+            type: 'Food Rescue',
+            city: 'Ahmedabad',
+            state: 'Gujarat',
+            address: 'Navrangpura Campus Belt, Ahmedabad, Gujarat 380009',
+            phone: '+917926301234',
+            email: 'ahmedabad@annashetra.org',
+            website: 'https://annashetra.org',
+            description: 'Retrieves surplus meals from wedding halls and university dining rooms to serve labor settlements.',
+            services: ['Banquet Rescue', 'Daily Food Bank']
+          }
+        ]
+      },
+      {
+        city: 'Surat',
+        organizations: [
+          {
+            id: 'ngo-guj-2',
+            name: 'Surat Diamond Food Bank',
+            type: 'Food Distribution',
+            city: 'Surat',
+            state: 'Gujarat',
+            address: 'Ring Road Textile Hub, Surat, Gujarat 395002',
+            phone: '+912612401122',
+            email: 'surat@foodbank.in',
+            website: 'https://foodbank.in',
+            description: 'Community food bank distributing hot afternoon meals to migrant worker families.',
+            services: ['Hot Meal Vans', 'Ration Distribution']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Uttar Pradesh',
+    cities: [
+      {
+        city: 'Lucknow',
+        organizations: [
+          {
+            id: 'ngo-up-1',
+            name: 'Roti Bank Lucknow',
+            type: 'Food Rescue',
+            city: 'Lucknow',
+            state: 'Uttar Pradesh',
+            address: 'Hazratganj Central Dock, Lucknow, Uttar Pradesh 226001',
+            phone: '+915222201122',
+            email: 'lucknow@rotibank.org',
+            website: 'https://rotibank.org',
+            description: 'Volunteers collect untouched food from hostels, caterers, and canteens across Lucknow.',
+            services: ['Night Meal Vans', 'Shelter Supply']
+          }
+        ]
+      },
+      {
+        city: 'Varanasi',
+        organizations: [
+          {
+            id: 'ngo-up-2',
+            name: 'Kashi Annapurna Prasadam Trust',
+            type: 'Community Kitchen',
+            city: 'Varanasi',
+            state: 'Uttar Pradesh',
+            address: 'Godowlia Corridor, Varanasi, Uttar Pradesh 221001',
+            phone: '+915422409988',
+            email: 'kashi@annapurna.org',
+            website: 'https://annapurnakashi.org',
+            description: 'Provides free warm nutritious meals daily to pilgrims, destitute, and night shelter residents.',
+            services: ['Community Kitchen', 'Emergency Food Distribution']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Rajasthan',
+    cities: [
+      {
+        city: 'Jaipur',
+        organizations: [
+          {
+            id: 'ngo-[#C86D44]-raj-1',
+            name: 'Annakshetra Foundation Jaipur',
+            type: 'Food Rescue',
+            city: 'Jaipur',
+            state: 'Rajasthan',
+            address: 'Malviya Nagar Sector 3, Jaipur, Rajasthan 302017',
+            phone: '+911412520112',
+            email: 'jaipur@annakshetra.org',
+            website: 'https://annakshetra.org',
+            description: 'Pioneer food rescue non-profit recovering unserved food from resort events and educational institutes.',
+            services: ['Resort Food Rescue', 'Institutional Surplus']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Punjab',
+    cities: [
+      {
+        city: 'Amritsar',
+        organizations: [
+          {
+            id: 'ngo-pb-1',
+            name: 'Seva Food Relief Punjab',
+            type: 'Community Kitchen',
+            city: 'Amritsar',
+            state: 'Punjab',
+            address: 'Heritage Street, Amritsar, Punjab 143001',
+            phone: '+911832551122',
+            email: 'seva@punjabfood.org',
+            website: 'https://punjabfood.org',
+            description: 'Coordinates community langars and surplus grain rescue for rural welfare centers.',
+            services: ['Langar Outreach', 'Grain Rescue']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Kerala',
+    cities: [
+      {
+        city: 'Kochi',
+        organizations: [
+          {
+            id: 'ngo-ker-1',
+            name: 'Kochi Hunger Free City Initiative',
+            type: 'Food Distribution',
+            city: 'Kochi',
+            state: 'Kerala',
+            address: 'MG Road North End, Kochi, Kerala 682011',
+            phone: '+914842361122',
+            email: 'kochi@hungerfree.org',
+            website: 'https://hungerfree.org',
+            description: 'State-supported meal network distributing afternoon food packets to street dwellers and hospital wards.',
+            services: ['Hospital Meal Vans', 'Pantry Supply']
+          }
+        ]
+      }
+    ]
+  },
+  {
     state: 'Delhi',
     cities: [
       {
@@ -178,7 +329,7 @@ export const RESCUE_NGO_DATABASE: StateData[] = [
             phone: '+911140506070',
             email: 'delhi@annamrita.org',
             website: 'https://annamrita.org',
-            description: 'Large-scale automated kitchen facility preparing wholesome meals for underprivileged students and emergency hunger spots.',
+            description: 'Large-scale automated kitchen facility preparing wholesome meals for underprivileged students and emergency spots.',
             services: ['Mid-Day Meal Program', 'Emergency Food Supply']
           }
         ]
@@ -244,6 +395,52 @@ export const RESCUE_NGO_DATABASE: StateData[] = [
             website: 'https://www.akshayapatra.org',
             description: 'World’s largest NGO-run mid-day meal program leveraging high-capacity kitchens for daily food distribution.',
             services: ['Mega Kitchen Relief', 'School Meal Program']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Tamil Nadu',
+    cities: [
+      {
+        city: 'Chennai',
+        organizations: [
+          {
+            id: 'ngo-tn-1',
+            name: 'No Food Waste Chennai',
+            type: 'Food Rescue',
+            city: 'Chennai',
+            state: 'Tamil Nadu',
+            address: 'T. Nagar Central Hub, Chennai, Tamil Nadu 600017',
+            phone: '+914424301122',
+            email: 'chennai@nofoodwaste.org',
+            website: 'https://nofoodwaste.org',
+            description: 'Recovers surplus food from college canteens and tech parks to feed community shelters across Chennai.',
+            services: ['Campus Rescue', 'Tech Park Relief']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    state: 'Telangana',
+    cities: [
+      {
+        city: 'Hyderabad',
+        organizations: [
+          {
+            id: 'ngo-hyd-1',
+            name: 'Apple Home Food Rescue Hyderabad',
+            type: 'Food Rescue',
+            city: 'Hyderabad',
+            state: 'Telangana',
+            address: 'HITEC City Phase 2, Hyderabad, Telangana 500081',
+            phone: '+914023119988',
+            email: 'hyderabad@applehome.org',
+            website: 'https://applehome.org',
+            description: 'Operates evening meal pickup vans from IT campus dining halls for night shelter redistribution.',
+            services: ['IT Campus Pickup', 'Shelter Meal Vans']
           }
         ]
       }

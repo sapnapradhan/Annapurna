@@ -9,6 +9,7 @@ import { AudioPlayer } from '../components/common/AudioPlayer';
 import { ThemeToggle } from '../components/common/ThemeToggle';
 import { WeatherWidget } from '../components/common/WeatherWidget';
 import { LiveStatusWidget } from '../components/landing/LiveStatusWidget';
+import { MusicChoiceModal } from '../components/common/MusicChoiceModal';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
@@ -25,6 +26,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onReplayIntro
 }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [showMusicPopup, setShowMusicPopup] = useState<boolean>(() => {
+    return localStorage.getItem('annapurna_music_consent') === null;
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,32 +38,47 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleMusicChoice = (enableMusic: boolean) => {
+    setShowMusicPopup(false);
+    if (enableMusic) {
+      const audio = new Audio('/audio/background-music.mp3');
+      audio.loop = true;
+      audio.volume = 0.5;
+      audio.play().catch(e => console.warn('Audio play error', e));
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300">
-      {/* Light Localized Backdrop Overlay preserving Bold Background Visibility */}
-      <div className="fixed inset-0 bg-[#FDFBF7]/40 dark:bg-[#12100F]/50 pointer-events-none z-0" />
+      {/* Light Backdrop Scrim for Background Image Visibility */}
+      <div className="fixed inset-0 bg-transparent pointer-events-none z-0" />
+
+      {/* Main Page Music Choice Consent Popup */}
+      {showMusicPopup && (
+        <MusicChoiceModal onChoiceMade={handleMusicChoice} />
+      )}
 
       <div className="relative z-10">
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Pill Navigation Bar */}
+        {/* Floating Pill Navigation Bar (Transparent Glass Styling) */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
-          <div className="bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 backdrop-blur-xl border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
+          <div className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
             {/* Logo Emblem */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cinzel font-bold text-base shadow-md border border-amber-300/30">
+              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-crayon font-bold text-base shadow-md border border-amber-300/30">
                 A
               </div>
               <div>
-                <span className="font-cinzel font-bold text-base tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
+                <span className="font-crayon font-bold text-lg tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
                   ANNAPURNA
                 </span>
               </div>
             </div>
 
             {/* Nav Links */}
-            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-mono font-bold tracking-widest text-slate-700 dark:text-slate-300 uppercase">
+            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-mono font-bold tracking-widest text-slate-800 dark:text-slate-200 uppercase">
               <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">FEATURES</a>
               <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">WEATHER</a>
               <button
@@ -78,7 +97,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onReplayIntro}
-                className="hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-[#C86D44] dark:hover:text-amber-300 border border-[#EBE4D8] dark:border-[#2C2724] bg-[#F5EFE6] dark:bg-[#1A1715] transition-colors"
+                className="hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 hover:text-[#C86D44] dark:hover:text-amber-300 border border-white/20 bg-white/10 dark:bg-black/30 transition-colors backdrop-blur-md"
                 title="Replay Story"
               >
                 Story
@@ -86,7 +105,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRescue}
-                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold text-[#C86D44] dark:text-amber-300 bg-[#C86D44]/15 hover:bg-[#C86D44]/25 border border-[#C86D44]/40 transition-all cursor-pointer flex items-center gap-1"
+                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold text-[#C86D44] dark:text-amber-300 bg-[#C86D44]/20 hover:bg-[#C86D44]/30 border border-[#C86D44]/40 transition-all cursor-pointer flex items-center gap-1 backdrop-blur-md"
               >
                 <Truck className="w-3 h-3" />
                 <span className="hidden sm:inline">Rescue</span>
@@ -103,26 +122,26 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </header>
 
-        {/* Full-Screen Editorial Hero Section */}
+        {/* Full-Screen Editorial Hero Section (Transparent Glass Container) */}
         <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] shadow-2xl backdrop-blur-md">
+          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
             
             {/* Small Eyebrow Label */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/15 border border-[#C86D44]/30 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest backdrop-blur-md">
               <MapPin className="w-3 h-3" />
               <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
             </div>
 
-            {/* Editorial Chiseled Serif Headline (Matching Reference Screenshot) */}
-            <h1 className="font-cinzel font-bold text-4xl sm:text-6xl md:text-7xl tracking-widest text-[#2C221E] dark:text-white leading-[1.15] uppercase">
+            {/* Crayon Font Display Headline */}
+            <h1 className="font-crayon font-bold text-4xl sm:text-6xl md:text-7xl tracking-widest text-[#2C221E] dark:text-white leading-[1.15] uppercase drop-shadow-lg">
               DESIGNED TO NOURISH. <br />
-              <span className="text-[#C86D44] dark:text-amber-300 font-cinzel">
+              <span className="text-[#C86D44] dark:text-amber-300 font-crayon">
                 BUILT TO SHARE.
               </span>
             </h1>
 
-            {/* Supporting Short Statement */}
-            <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-700 dark:text-slate-300 font-normal leading-relaxed">
+            {/* Supporting Statement */}
+            <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-800 dark:text-slate-200 font-medium leading-relaxed drop-shadow">
               Every meal has a story. Annapurna connects campus dining facilities directly with local community food rescue networks.
             </p>
 
@@ -138,7 +157,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRegister}
-                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-[#F5EFE6] dark:bg-[#1A1715] border border-[#EBE4D8] dark:border-[#2C2724] text-[#2C221E] dark:text-slate-200 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 dark:bg-black/30 border border-white/30 text-[#2C221E] dark:text-slate-100 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
               >
                 <span>REGISTER STUDENT ACCOUNT</span>
                 <ArrowRight className="w-4 h-4 text-[#C86D44] dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
@@ -153,31 +172,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </section>
 
-        {/* Campus Weather Telemetry */}
-        <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724]">
+        {/* Campus Weather Telemetry (Transparent Glass Container) */}
+        <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/20 dark:border-white/10">
+          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 backdrop-blur-xl">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Campus Climate & Weather Forecast</h3>
+            <h3 className="font-crayon text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
 
         {/* Feature Showcase Grid */}
-        <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80">
-          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-[#FDFBF7]/90 dark:bg-[#12100F]/90 border border-[#EBE4D8] dark:border-[#2C2724] space-y-2">
+        <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/20 dark:border-white/10">
+          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Designed for Ops Authority & Hostel Students</h3>
+            <h3 className="font-crayon text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Designed for Ops Authority & Hostel Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Authority Side Card */}
-            <div className="p-8 rounded-3xl bg-[#FDFBF7]/95 dark:bg-[#1A1715]/95 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6 backdrop-blur-md">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/15 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold">
+            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-cinzel text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Operational Density & Control</h4>
-              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200">
+              <h4 className="font-crayon text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Operational Density & Control</h4>
+              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
                 {[
                   'Under-1-minute menu creation & CSV bulk importer',
                   'Per-date meal timing overrides for campus holidays',
@@ -202,13 +221,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Student Side Card */}
-            <div className="p-8 rounded-3xl bg-[#FDFBF7]/95 dark:bg-[#1A1715]/95 border border-[#EBE4D8] dark:border-[#2C2724] shadow-xl space-y-6 backdrop-blur-md">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold">
+            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold">
                 <Users className="w-3.5 h-3.5" />
                 <span>Student Mobile App</span>
               </div>
-              <h4 className="font-cinzel text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Personalized & Mobile-First</h4>
-              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200">
+              <h4 className="font-crayon text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Personalized & Mobile-First</h4>
+              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
                 {[
                   'Personalized greeting & next-upcoming meal card',
                   '5-tab bottom navigation optimized for single-hand use',
@@ -235,9 +254,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </section>
 
         {/* Footer */}
-        <footer className="py-10 border-t border-[#EBE4D8]/80 dark:border-[#2C2724]/80 text-center text-xs text-slate-600 dark:text-slate-400 bg-[#FDFBF7]/80 dark:bg-[#12100F]/80">
+        <footer className="py-10 border-t border-white/20 dark:border-white/10 text-center text-xs text-slate-700 dark:text-slate-300 bg-white/5 dark:bg-black/30 backdrop-blur-md">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 font-cinzel text-sm font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
+            <div className="flex items-center gap-2 font-crayon text-sm font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
               <UtensilsCrossed className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
               <span>ANNAPURNA • BHUBANESWAR, ODISHA</span>
             </div>

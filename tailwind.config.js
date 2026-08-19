@@ -32,9 +32,11 @@ export default {
         }
       },
       fontFamily: {
+        crayon: ['Fredericka the Great', 'Cabin Sketch', 'Cinzel', 'serif'],
+        sketch: ['Cabin Sketch', 'Fredericka the Great', 'serif'],
         cinzel: ['Cinzel', 'Cinzel Decorative', 'serif'],
         'cinzel-dec': ['Cinzel Decorative', 'Cinzel', 'serif'],
-        serif: ['Cinzel', 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
+        serif: ['Fredericka the Great', 'Cinzel', 'Playfair Display', 'Cormorant Garamond', 'Georgia', 'serif'],
         'serif-display': ['Cormorant Garamond', 'Cinzel', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
