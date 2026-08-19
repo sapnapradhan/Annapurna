@@ -1,193 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { appStore } from '../../services/store';
-import { BarChart2, Save, TrendingDown, DollarSign, Leaf, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { 
+  Calculator, AlertTriangle, CheckCircle2, Truck, Users, Activity, Bell, Send, ArrowRight
+} from 'lucide-react';
 
 export const PostMealConsumptionPage: React.FC = () => {
-  const todayMeals = appStore.getTodayMeals();
-  const [selectedMealId, setSelectedMealId] = useState(todayMeals[0]?.id || '');
+  const meals = appStore.getMeals();
+  const activeMeal = meals.find(m => m.id === 'meal-2') || meals[0];
 
-  // Form Inputs
-  const [prepared, setPrepared] = useState(480);
-  const [served, setServed] = useState(432);
-  const [remaining, setRemaining] = useState(48);
-  const [wasted, setWasted] = useState(12);
-  const [redistributed, setRedistributed] = useState(36);
-  const [toast, setToast] = useState<string | null>(null);
+  const [preparedQty, setPreparedQtyInput] = useState(400);
+  const [surplusCalc, setSurplusCalc] = useState(
+    appStore.getSurplusCalculation(activeMeal.id)
+  );
 
-  // Derived Calculations
-  const totalAccounted = served + remaining;
-  const consumptionRate = Math.round((served / (prepared || 1)) * 100);
-  const wastePct = Math.round((wasted / (prepared || 1)) * 100);
-  const redistributionPct = Math.round((redistributed / (prepared || 1)) * 100);
-  const foodSavedKg = Math.round(redistributed * 0.35); // ~350g per meal portion saved
-  const estimatedCostSaved = redistributed * 45; // ~₹45 per meal portion cost saved
+  useEffect(() => {
+    const update = () => {
+      setSurplusCalc(appStore.getSurplusCalculation(activeMeal.id));
+    };
+    return appStore.subscribe(update);
+  }, [activeMeal.id]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    appStore.logConsumption({
-      meal_id: selectedMealId,
-      prepared,
-      served,
-      remaining,
-      wasted,
-      redistributed
-    });
-
-    setToast(`Post-service metrics logged! Calculated ${foodSavedKg} kg food saved (${redistributionPct}% rescue rate).`);
-    setTimeout(() => setToast(null), 4000);
+  const handleUpdatePrepared = (val: number) => {
+    setPreparedQtyInput(val);
+    appStore.setPreparedQuantity(activeMeal.id, val);
   };
 
   return (
-    <div className="space-y-6">
-      {toast && (
-        <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>{toast}</span>
+    <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">
+      <div className="border-b border-[#EBE4D8] dark:border-[#2C2724] pb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <Calculator className="w-3 h-3 text-[#C86D44]" />
+          <span>AUTOMATIC SURPLUS ENGINE</span>
         </div>
-      )}
+        <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-white mt-1">
+          Post-Meal Consumption & Automatic Surplus Calculation
+        </h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+          {activeMeal.title} • Live Turnstile Computation
+        </p>
+      </div>
 
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-            <BarChart2 className="w-5 h-5 text-amber-400" />
-            <span>Post-Meal Consumption & Yield Entry</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Manual post-service entry of prepared, served, un-served remaining, and wasted quantities.
+      {/* Manual Authority Input vs Automatic Dynamic Attendance */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Step 1: Authority Prepared Qty Input */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-3">
+          <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 uppercase">
+            1. Manually Set Prepared Qty (Authority)
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              value={preparedQty}
+              onChange={(e) => handleUpdatePrepared(parseInt(e.target.value) || 0)}
+              className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-2xl p-3 font-mono font-bold text-2xl text-[#C86D44] dark:text-amber-300 focus:outline-none"
+            />
+            <span className="text-xs font-mono font-bold text-slate-500">Meals</span>
+          </div>
+          <p className="text-[10px] text-slate-500">
+            Total meal portions prepared by mess kitchen staff.
           </p>
         </div>
 
-        <select
-          value={selectedMealId}
-          onChange={(e) => setSelectedMealId(e.target.value)}
-          className="bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-amber-200 font-semibold focus:outline-none"
-        >
-          {todayMeals.map(m => (
-            <option key={m.id} value={m.id}>
-              {m.meal_type.toUpperCase()}: {m.name}
-            </option>
-          ))}
-        </select>
+        {/* Step 2: Real-time Attended Students Count */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-3">
+          <div className="text-xs font-mono font-bold text-slate-600 dark:text-slate-400 uppercase">
+            2. Real-Time Attended Students (Live Scans)
+          </div>
+          <div className="text-3xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+            {surplusCalc.attendedCount} Students
+          </div>
+          <p className="text-[10px] text-slate-500">
+            Logged dynamically as students sign in & scan QR passes.
+          </p>
+        </div>
+
+        {/* Step 3: Automatic Surplus Calculation Result */}
+        <div className="p-6 rounded-3xl bg-[#C86D44]/15 border border-[#C86D44]/40 shadow-xl backdrop-blur-xl space-y-3">
+          <div className="text-xs font-mono font-bold text-[#C86D44] dark:text-amber-300 uppercase flex items-center gap-1.5">
+            <Activity className="w-3.5 h-3.5" />
+            <span>3. Automatic Surplus Result</span>
+          </div>
+          <div className="text-4xl font-bold font-mono text-[#C86D44] dark:text-amber-300">
+            {surplusCalc.surplusQty} Meals
+          </div>
+          <div className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase">
+            {surplusCalc.rescueStatus}
+          </div>
+        </div>
       </div>
 
-      {/* Form & Real-time System Metrics */}
-      <div className="grid lg:grid-cols-12 gap-6">
-        {/* Entry Form */}
-        <form onSubmit={handleSubmit} className="lg:col-span-7 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-          <h3 className="font-bold text-sm text-slate-200 border-b border-slate-800 pb-3">
-            Manual Service Yield Record
-          </h3>
+      {/* Formula & Notification Alert Card */}
+      <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4">
+        <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#C86D44] dark:text-amber-400 uppercase">
+          <Bell className="w-4 h-4 text-amber-500 animate-bounce" />
+          <span>INSTANT ADMIN SURPLUS NOTIFICATION STREAM</span>
+        </div>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Total Portions Prepared</label>
-              <input
-                type="number"
-                value={prepared}
-                onChange={(e) => setPrepared(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Portions Served to Students</label>
-              <input
-                type="number"
-                value={served}
-                onChange={(e) => setServed(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
+        <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+          <div className="text-xs font-mono font-bold text-amber-400">
+            AUTOMATIC CALCULATION FORMULA:
           </div>
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Un-served Remaining</label>
-              <input
-                type="number"
-                value={remaining}
-                onChange={(e) => setRemaining(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Trimming & Tray Waste</label>
-              <input
-                type="number"
-                value={wasted}
-                onChange={(e) => setWasted(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Rescued / Redistributed</label>
-              <input
-                type="number"
-                value={redistributed}
-                onChange={(e) => setRedistributed(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs font-mono text-emerald-300 focus:border-emerald-500 focus:outline-none"
-                required
-              />
-            </div>
+          <div className="text-xs font-mono text-slate-200">
+            Surplus Meals ({surplusCalc.surplusQty}) = Prepared Quantity ({surplusCalc.preparedQty}) - Real-Time Attended ({surplusCalc.attendedCount})
           </div>
+        </div>
 
+        <div className="flex items-center justify-between pt-2">
+          <div className="text-xs text-slate-700 dark:text-slate-300">
+            Dispatch verified surplus food trays directly to Bhubaneswar NGO partner rescue network.
+          </div>
           <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-950/30"
+            onClick={() => alert(`Dispatch initiated for ${surplusCalc.surplusQty} surplus meals to Bhubaneswar Food Rescue NGOs!`)}
+            className="px-6 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer flex items-center gap-2 shrink-0"
           >
-            <Save className="w-4 h-4" />
-            <span>Commit Post-Meal Yield Metrics</span>
+            <Truck className="w-4 h-4" />
+            <span>DISPATCH TO NGO RESCUE</span>
           </button>
-        </form>
-
-        {/* Calculated System Metrics Display */}
-        <div className="lg:col-span-5 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h3 className="font-bold text-sm text-slate-200">System-Derived Operational Impact</h3>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-              CALCULATED
-            </span>
-          </div>
-
-          <div className="space-y-3 text-xs">
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <span className="text-slate-400">Consumption Rate</span>
-              <span className="font-mono font-bold text-amber-300 text-sm">{consumptionRate}%</span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <span className="text-slate-400">Food Waste %</span>
-              <span className="font-mono font-bold text-rose-400 text-sm">{wastePct}%</span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 flex items-center justify-between">
-              <span className="text-emerald-300 font-semibold">Surplus Rescue %</span>
-              <span className="font-mono font-bold text-emerald-400 text-sm">{redistributionPct}%</span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Leaf className="w-4 h-4 text-emerald-400" />
-                <span className="text-slate-300">Food Mass Rescued</span>
-              </div>
-              <span className="font-mono font-bold text-emerald-300 text-sm">~{foodSavedKg} kg</span>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-amber-400" />
-                <span className="text-slate-300">Estimated Cost Rescued</span>
-              </div>
-              <span className="font-mono font-bold text-amber-300 text-sm">₹{estimatedCostSaved.toLocaleString()}</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

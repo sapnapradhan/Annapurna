@@ -1,6 +1,15 @@
 import { Meal, Mess, Checkin, Review, UserProfile, ForecastItem, UserRole } from '../types';
 import { MOCK_MESSES, MOCK_MEALS, MOCK_REVIEWS, MOCK_FORECASTS } from './mockData';
 
+export interface AdminNotification {
+  id: string;
+  type: 'surplus' | 'checkin' | 'rescue';
+  title: string;
+  message: string;
+  timestamp: string;
+  read: boolean;
+}
+
 class AppStore {
   private currentRole: UserRole | 'landing' = 'landing';
   private currentUser: UserProfile = {
@@ -18,6 +27,13 @@ class AppStore {
   private reviews: Review[] = [];
   private forecasts: ForecastItem[] = [];
   private registeredUsers: UserProfile[] = [];
+  private adminNotifications: AdminNotification[] = [];
+  private preparedQuantities: Record<string, number> = {
+    'meal-1': 400,
+    'meal-2': 400,
+    'meal-today-dinner': 400
+  };
+
   private listeners: Set<() => void> = new Set();
 
   constructor() {
@@ -66,10 +82,17 @@ class AppStore {
         this.saveCheckins();
       }
 
+      const savedPrepared = localStorage.getItem('annapurna_prepared_qty');
+      if (savedPrepared) {
+        this.preparedQuantities = JSON.parse(savedPrepared);
+      }
+
       this.messes = [...MOCK_MESSES];
       this.meals = [...MOCK_MEALS];
       this.reviews = [...(MOCK_REVIEWS as unknown as Review[])];
       this.forecasts = [...(MOCK_FORECASTS as unknown as ForecastItem[])];
+      
+      this.generateInitialNotifications();
     } catch (e) {
       console.warn('Error loading store state:', e);
       this.messes = [...MOCK_MESSES];
@@ -81,16 +104,54 @@ class AppStore {
   }
 
   private saveState() {
-    localStorage.setItem('annapurna_role', this.currentRole);
-    localStorage.setItem('annapurna_current_user', JSON.stringify(this.currentUser));
+    try {
+      localStorage.setItem('annapurna_role', this.currentRole);
+      localStorage.setItem('annapurna_current_user', JSON.stringify(this.currentUser));
+    } catch (e) {
+      console.warn('saveState error:', e);
+    }
   }
 
   private saveRegisteredUsers() {
-    localStorage.setItem('annapurna_registered_users', JSON.stringify(this.registeredUsers));
+    try {
+      localStorage.setItem('annapurna_registered_users', JSON.stringify(this.registeredUsers));
+    } catch (e) {
+      console.warn('saveRegisteredUsers error:', e);
+    }
   }
 
   private saveCheckins() {
-    localStorage.setItem('annapurna_live_checkins', JSON.stringify(this.checkins));
+    try {
+      localStorage.setItem('annapurna_live_checkins', JSON.stringify(this.checkins));
+    } catch (e) {
+      console.warn('saveCheckins error:', e);
+    }
+  }
+
+  private savePreparedQuantities() {
+    try {
+      localStorage.setItem('annapurna_prepared_qty', JSON.stringify(this.preparedQuantities));
+    } catch (e) {
+      console.warn('savePreparedQuantities error:', e);
+    }
+  }
+
+  private generateInitialNotifications() {
+    const mealId = 'meal-2';
+    const prepared = this.preparedQuantities[mealId] || 400;
+    const attended = this.checkins.filter(c => c.mealId === mealId).length;
+    const surplus = Math.max(prepared - attended, 0);
+
+    this.adminNotifications = [
+      {
+        id: 'notif-1',
+        type: 'surplus',
+        title: 'AUTOMATIC SURPLUS CALCULATION ALERT',
+        message: `Prepared for ${prepared} students. Real-time Attended: ${attended}. ${surplus} Surplus Meals calculated and ready for Food Rescue dispatch to NGOs.`,
+        timestamp: new Date().toLocaleTimeString(),
+        read: false
+      }
+    ];
   }
 
   public getRole(): UserRole | 'landing' {
@@ -109,7 +170,7 @@ class AppStore {
       this.currentUser = {
         id: 'user-auth-1',
         name: 'Dr. Rajesh Mohanty',
-        email: 'rajesh.mohanty@university.edu.in',
+        email: 'admin@authority.edu',
         role: 'authority',
         hostel: 'Central Dining Operations',
         block: 'Admin Block, Chief Warden'
@@ -118,7 +179,7 @@ class AppStore {
       this.currentUser = this.registeredUsers[0] || {
         id: 'user-std-1',
         name: 'Aarav Sharma',
-        email: 'aarav.sharma@university.edu.in',
+        email: 'aarav@student.edu',
         role: 'student',
         hostel: 'Hostel 1 - Mahanadi Hall',
         block: 'Block A, Room 204'
@@ -128,16 +189,34 @@ class AppStore {
     this.notify();
   }
 
+  // Universal login method fixing "M.login is not a function" error
+  public login(email: string, password?: string): UserProfile {
+    return this.loginUser(email);
+  }
+
+  // Universal signup method
+  public signup(data: { name: string; email: string; hostel?: string; block?: string }): UserProfile {
+    return this.registerStudent(data);
+  }
+
   public logout() {
     this.currentRole = 'landing';
-    localStorage.removeItem('annapurna_role');
+    try {
+      localStorage.removeItem('annapurna_role');
+    } catch (e) {
+      console.warn('Logout storage error:', e);
+    }
     this.notify();
   }
 
   public registerStudent(data: { name: string; email: string; hostel?: string; block?: string }): UserProfile {
     const existing = this.registeredUsers.find(u => u.email.toLowerCase() === data.email.toLowerCase());
     if (existing) {
-      throw new Error('This email address is already registered. Please log in instead.');
+      this.currentUser = existing;
+      this.currentRole = 'student';
+      this.saveState();
+      this.notify();
+      return existing;
     }
 
     const newUser: UserProfile = {
@@ -161,7 +240,10 @@ class AppStore {
   }
 
   public loginUser(email: string): UserProfile {
-    const user = this.registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Check if user exists
+    const user = this.registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
     if (user) {
       this.currentUser = user;
       this.currentRole = user.role;
@@ -170,11 +252,12 @@ class AppStore {
       return user;
     }
 
-    if (email.includes('authority') || email.includes('admin')) {
+    // Check authority credentials
+    if (cleanEmail.includes('authority') || cleanEmail.includes('admin') || cleanEmail.includes('rajesh')) {
       const authUser: UserProfile = {
         id: 'user-auth-1',
         name: 'Dr. Rajesh Mohanty',
-        email,
+        email: cleanEmail,
         role: 'authority',
         hostel: 'Central Dining Operations',
         block: 'Admin Block, Chief Warden'
@@ -186,15 +269,19 @@ class AppStore {
       return authUser;
     }
 
-    // Default dynamic login for student
+    // Auto-create new student profile for public capacity (up to 400+ students)
+    const formattedName = cleanEmail.split('@')[0].replace('.', ' ').replace('_', ' ');
+    const capitalName = formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
+
     const newStd: UserProfile = {
       id: `user-std-${Date.now()}`,
-      name: email.split('@')[0].replace('.', ' '),
-      email,
+      name: capitalName,
+      email: cleanEmail,
       role: 'student',
       hostel: 'Hostel 1 - Mahanadi Hall',
       block: 'Block A'
     };
+
     this.registeredUsers.push(newStd);
     this.saveRegisteredUsers();
 
@@ -203,6 +290,27 @@ class AppStore {
     this.saveState();
     this.notify();
     return newStd;
+  }
+
+  public setPreparedQuantity(mealId: string, qty: number) {
+    this.preparedQuantities[mealId] = qty;
+    this.savePreparedQuantities();
+
+    // Trigger automatic surplus calculation notification
+    const attended = this.checkins.filter(c => c.mealId === mealId).length;
+    const surplus = Math.max(qty - attended, 0);
+
+    const notif: AdminNotification = {
+      id: `notif-${Date.now()}`,
+      type: 'surplus',
+      title: 'AUTOMATIC SURPLUS CALCULATION ALERT',
+      message: `Manually set Prepared Quantity: ${qty} meals. Real-time Attended: ${attended} students. ${surplus} Surplus Meals calculated automatically for NGO Food Rescue.`,
+      timestamp: new Date().toLocaleTimeString(),
+      read: false
+    };
+
+    this.adminNotifications.unshift(notif);
+    this.notify();
   }
 
   public recordCheckin(mealId: string, messId: string = 'mess-1'): Checkin {
@@ -230,9 +338,39 @@ class AppStore {
 
     this.checkins.unshift(newCheckin);
     this.saveCheckins();
+
+    // Update automatic surplus calculation notification for Admin
+    const prep = this.preparedQuantities[mealId] || 400;
+    const attended = this.checkins.filter(c => c.mealId === mealId).length;
+    const surplus = Math.max(prep - attended, 0);
+
+    const notif: AdminNotification = {
+      id: `notif-${Date.now()}`,
+      type: 'surplus',
+      title: 'REAL-TIME SURPLUS RE-CALCULATION',
+      message: `Student check-in recorded (${user.name}). Real-time Attended: ${attended} / Prepared: ${prep}. Updated Surplus: ${surplus} Meals remaining.`,
+      timestamp: now.toLocaleTimeString(),
+      read: false
+    };
+
+    this.adminNotifications.unshift(notif);
     this.notify();
 
     return newCheckin;
+  }
+
+  // Automatic Surplus Calculation Engine
+  public getSurplusCalculation(mealId: string = 'meal-2'): { preparedQty: number; attendedCount: number; surplusQty: number; rescueStatus: string } {
+    const preparedQty = this.preparedQuantities[mealId] || 400;
+    const attendedCount = this.checkins.filter(c => c.mealId === mealId).length;
+    const surplusQty = Math.max(preparedQty - attendedCount, 0);
+
+    let rescueStatus = 'CALCULATING';
+    if (surplusQty > 100) rescueStatus = 'HIGH SURPLUS — NGO DISPATCH READY';
+    else if (surplusQty > 0) rescueStatus = 'MODERATE SURPLUS — DISPATCH RECOMMENDED';
+    else rescueStatus = 'OPTIMAL — ZERO SURPLUS';
+
+    return { preparedQty, attendedCount, surplusQty, rescueStatus };
   }
 
   public getLiveAttendance(mealId?: string): { checkinCount: number; totalRegistered: number; percentage: number } {
@@ -244,6 +382,10 @@ class AppStore {
     const percentage = Math.min(Math.round((checkinCount / totalRegistered) * 100), 100);
 
     return { checkinCount, totalRegistered, percentage };
+  }
+
+  public getAdminNotifications(): AdminNotification[] {
+    return this.adminNotifications;
   }
 
   public getCurrentUser(): UserProfile {
