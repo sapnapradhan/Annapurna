@@ -15,12 +15,14 @@ interface LandingPageProps {
   onNavigateRegister: () => void;
   onNavigateLogin: () => void;
   onNavigateRescue: () => void;
+  onReplayIntro: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ 
   onNavigateRegister,
   onNavigateLogin,
-  onNavigateRescue
+  onNavigateRescue,
+  onReplayIntro
 }) => {
   const [scrolled, setScrolled] = useState(false);
 
@@ -81,6 +83,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="flex items-center gap-3">
               <AudioPlayer />
               <ThemeToggle />
+
+              <button
+                onClick={onReplayIntro}
+                className="px-3 py-1.5 rounded-full text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-[#C86D44] dark:hover:text-amber-300 transition-all cursor-pointer border border-[#EBE4D8] dark:border-[#2C2724] bg-[#FDFBF7]/80 dark:bg-[#1A1715]/80"
+                title="Replay Cinematic Story Intro"
+              >
+                <span>Replay Intro</span>
+              </button>
 
               <button
                 onClick={onNavigateRescue}

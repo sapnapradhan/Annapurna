@@ -5,6 +5,7 @@ import { LandingPage } from './pages/LandingPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
+import { CinematicIntro } from './components/common/CinematicIntro';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -33,6 +34,10 @@ import { StudentImpactPage } from './pages/student/StudentImpactPage';
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
+  const [showIntro, setShowIntro] = useState<boolean>(() => {
+    return localStorage.getItem('annapurna_intro_seen') !== 'true';
+  });
+
   const [authorityTab, setAuthorityTab] = useState('today');
   const [studentTab, setStudentTab] = useState('home');
   const [selectedMealId, setSelectedMealId] = useState<string | undefined>();
@@ -44,6 +49,10 @@ export const App: React.FC = () => {
     };
     return appStore.subscribe(update);
   }, []);
+
+  const handleReplayIntro = () => {
+    setShowIntro(true);
+  };
 
   const handleLoginSuccess = (selectedRole: UserRole) => {
     setMainView('landing');
@@ -64,12 +73,17 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
-  // Dedicated Food Rescue Hub Route
+  // 1. Cinematic Intro Overlay (First Visit or Replay)
+  if (showIntro) {
+    return <CinematicIntro onComplete={() => setShowIntro(false)} />;
+  }
+
+  // 2. Dedicated Food Rescue Hub Route
   if (mainView === 'rescue') {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // Auth Views
+  // 3. Auth Views
   if (mainView === 'register') {
     return (
       <RegisterPage
@@ -88,7 +102,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // Landing Page
+  // 4. Landing Page
   if (role === 'landing') {
     return (
       <LandingPage
@@ -96,11 +110,12 @@ export const App: React.FC = () => {
         onNavigateRegister={() => setMainView('register')}
         onNavigateLogin={() => setMainView('login')}
         onNavigateRescue={() => setMainView('rescue')}
+        onReplayIntro={handleReplayIntro}
       />
     );
   }
 
-  // Authority Dashboard
+  // 5. Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -122,7 +137,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // Student Mobile App
+  // 6. Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}
