@@ -4,7 +4,8 @@ import {
   LogOut, Shield, ChevronRight, Menu, X, Utensils, AlertTriangle, Activity
 } from 'lucide-react';
 import { appStore } from '../../services/store';
-import { UserRole } from '../../types';
+import { ThemeToggle } from '../common/ThemeToggle';
+import { AudioPlayer } from '../common/AudioPlayer';
 
 interface AuthorityLayoutProps {
   activeTab: string;
@@ -44,150 +45,157 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex font-sans antialiased">
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div 
-          onClick={() => setSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden"
-        />
-      )}
+    <div className="min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 flex font-sans antialiased">
+      {/* Editorial Overlay */}
+      <div className="fixed inset-0 bg-[#FDFBF7]/90 dark:bg-[#12100F]/95 backdrop-blur-[2px] pointer-events-none z-0" />
 
-      {/* Sidebar */}
-      <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between transition-transform duration-300
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        <div>
-          {/* Brand */}
-          <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-bold">
-                A
+      <div className="relative z-10 flex w-full min-h-screen">
+        {/* Mobile Sidebar Overlay */}
+        {sidebarOpen && (
+          <div 
+            onClick={() => setSidebarOpen(false)}
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`
+          fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#F5EFE6] dark:bg-[#1A1715] border-r border-[#EBE4D8] dark:border-[#2C2724] flex flex-col justify-between transition-transform duration-300
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}>
+          <div>
+            {/* Brand */}
+            <div className="p-4 border-b border-[#EBE4D8] dark:border-[#2C2724] flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-lg bg-[#C86D44] text-white flex items-center justify-center font-bold font-serif">
+                  A
+                </div>
+                <div>
+                  <div className="font-serif font-bold text-sm text-[#2C221E] dark:text-slate-100 tracking-wider">ANNAPURNA</div>
+                  <div className="text-[10px] font-mono text-[#C86D44] dark:text-amber-400 font-bold">AUTHORITY CONTROL</div>
+                </div>
               </div>
-              <div>
-                <div className="font-serif font-bold text-sm text-slate-100 tracking-wider">ANNAPURNA</div>
-                <div className="text-[10px] font-mono text-amber-400">AUTHORITY CONTROL</div>
+              <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-500">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Active Mess Selector */}
+            <div className="p-3 bg-[#FDFBF7]/60 dark:bg-[#12100F]/60 border-b border-[#EBE4D8] dark:border-[#2C2724]">
+              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
+                Active Dining Facility
+              </label>
+              <select
+                value={selectedMessId}
+                onChange={(e) => setSelectedMessId(e.target.value)}
+                className="w-full bg-[#FDFBF7] dark:bg-[#201D1A] border border-[#EBE4D8] dark:border-[#2C2724] text-xs rounded-lg p-2 text-[#C86D44] dark:text-amber-300 font-semibold focus:outline-none"
+              >
+                {messes.map(m => (
+                  <option key={m.id} value={m.id}>{m.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Navigation Links */}
+            <nav className="p-2 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = activeTab === item.id;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setSidebarOpen(false);
+                    }}
+                    className={`
+                      w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer
+                      ${isActive 
+                        ? 'bg-[#C86D44]/15 text-[#C86D44] dark:text-amber-300 border border-[#C86D44]/30 shadow-sm' 
+                        : 'text-slate-600 dark:text-slate-400 hover:text-[#2C221E] dark:hover:text-slate-200 hover:bg-[#EBE4D8]/50 dark:hover:bg-[#24201D]'}
+                    `}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#C86D44] dark:text-amber-400' : 'text-slate-400'}`} />
+                      <span>{item.label}</span>
+                    </div>
+                    {item.badge && (
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+                        {item.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* User Info & Controls */}
+          <div className="p-3 border-t border-[#EBE4D8] dark:border-[#2C2724] bg-[#FDFBF7]/40 dark:bg-[#12100F]/40 space-y-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 flex items-center justify-center text-[#C86D44] dark:text-amber-300 text-xs font-bold font-serif">
+                {user.name.charAt(0)}
+              </div>
+              <div className="overflow-hidden">
+                <div className="text-xs font-semibold text-[#2C221E] dark:text-slate-200 truncate">{user.name}</div>
+                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.block}</div>
               </div>
             </div>
-            <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400">
-              <X className="w-5 h-5" />
-            </button>
-          </div>
 
-          {/* Active Mess Selector */}
-          <div className="p-3 bg-slate-950/60 border-b border-slate-800">
-            <label className="text-[10px] font-mono text-slate-400 uppercase tracking-wider block mb-1">
-              Active Dining Facility
-            </label>
-            <select
-              value={selectedMessId}
-              onChange={(e) => setSelectedMessId(e.target.value)}
-              className="w-full bg-slate-800 border border-slate-700 text-xs rounded-md p-2 text-amber-200 focus:outline-none focus:border-amber-500"
-            >
-              {messes.map(m => (
-                <option key={m.id} value={m.id}>{m.name}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Navigation Links */}
-          <nav className="p-2 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setSidebarOpen(false);
-                  }}
-                  className={`
-                    w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all cursor-pointer
-                    ${isActive 
-                      ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-sm' 
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'}
-                  `}
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : 'text-slate-400'}`} />
-                    <span>{item.label}</span>
-                  </div>
-                  {item.badge && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-        </div>
-
-        {/* User Info & Switch Roles */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/40">
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-7 h-7 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 text-xs font-bold">
-              {user.name.charAt(0)}
-            </div>
-            <div className="overflow-hidden">
-              <div className="text-xs font-semibold text-slate-200 truncate">{user.name}</div>
-              <div className="text-[10px] text-slate-400 truncate">{user.block}</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => appStore.loginAs('student')}
-              className="flex-1 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-[10px] font-medium text-slate-300 border border-slate-700 transition-colors text-center"
-            >
-              Student View
-            </button>
-            <button
-              onClick={onLogout}
-              className="p-1.5 rounded bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 border border-rose-800/40 transition-colors"
-              title="Logout"
-            >
-              <LogOut className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Operational Container */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header Bar */}
-        <header className="h-14 bg-slate-900 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-400 p-1">
-              <Menu className="w-5 h-5" />
-            </button>
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-mono font-semibold text-slate-300">
-                MESS OPS ENGINE
-              </span>
+              <button
+                onClick={() => appStore.loginAs('student')}
+                className="flex-1 py-1.5 rounded-lg bg-[#EBE4D8] dark:bg-[#24201D] hover:bg-[#DCD1C0] dark:hover:bg-[#2E2824] text-[10px] font-semibold text-[#2C221E] dark:text-slate-300 transition-colors text-center"
+              >
+                Student View
+              </button>
+              <button
+                onClick={onLogout}
+                className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 transition-colors"
+                title="Logout"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
             </div>
           </div>
+        </aside>
 
-          <div className="flex items-center gap-4 text-xs font-mono">
-            <div className="hidden sm:flex items-center gap-2 text-slate-400">
-              <Clock className="w-3.5 h-3.5 text-amber-400" />
-              <span>{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-              <span className="text-amber-300 font-bold">{currentTime.toLocaleTimeString()}</span>
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Top Header */}
+          <header className="h-14 bg-[#F5EFE6] dark:bg-[#1A1715] border-b border-[#EBE4D8] dark:border-[#2C2724] px-4 sm:px-6 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-500 p-1">
+                <Menu className="w-5 h-5" />
+              </button>
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="text-xs font-mono font-bold text-[#2C221E] dark:text-slate-300">
+                  MESS OPS ENGINE
+                </span>
+              </div>
             </div>
-            <div className="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span>SYSTEM ONLINE</span>
-            </div>
-          </div>
-        </header>
 
-        {/* Dynamic Page Content */}
-        <main className="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto">
-          {children}
-        </main>
+            <div className="flex items-center gap-3 text-xs font-mono">
+              <AudioPlayer />
+              <ThemeToggle />
+              <div className="hidden sm:flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                <Clock className="w-3.5 h-3.5 text-[#C86D44] dark:text-amber-400" />
+                <span>{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                <span className="text-[#C86D44] dark:text-amber-300 font-bold">{currentTime.toLocaleTimeString()}</span>
+              </div>
+              <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+                <span>ONLINE</span>
+              </div>
+            </div>
+          </header>
+
+          {/* Sub-page Container */}
+          <main className="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto">
+            {children}
+          </main>
+        </div>
       </div>
     </div>
   );
