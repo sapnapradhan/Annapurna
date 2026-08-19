@@ -6,6 +6,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
 import { CinematicIntro } from './components/common/CinematicIntro';
+import { MusicChoiceModal } from './components/common/MusicChoiceModal';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -31,11 +32,23 @@ import { StudentMyReviewsPage } from './pages/student/StudentMyReviewsPage';
 import { StudentProfilePage } from './pages/student/StudentProfilePage';
 import { StudentImpactPage } from './pages/student/StudentImpactPage';
 
+type AppStep = 'music-choice' | 'intro' | 'main';
+
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
-  const [showIntro, setShowIntro] = useState<boolean>(() => {
-    return localStorage.getItem('annapurna_intro_seen') !== 'true';
+
+  // Determine initial step
+  const [step, setStep] = useState<AppStep>(() => {
+    const seen = localStorage.getItem('annapurna_intro_seen');
+    if (seen !== 'true') {
+      return 'music-choice';
+    }
+    return 'main';
+  });
+
+  const [enableMusic, setEnableMusic] = useState<boolean>(() => {
+    return localStorage.getItem('annapurna_music_consent') === 'enabled';
   });
 
   const [authorityTab, setAuthorityTab] = useState('today');
@@ -50,8 +63,17 @@ export const App: React.FC = () => {
     return appStore.subscribe(update);
   }, []);
 
+  const handleMusicChoiceMade = (musicChoice: boolean) => {
+    setEnableMusic(musicChoice);
+    setStep('intro');
+  };
+
+  const handleIntroComplete = () => {
+    setStep('main');
+  };
+
   const handleReplayIntro = () => {
-    setShowIntro(true);
+    setStep('intro');
   };
 
   const handleLoginSuccess = (selectedRole: UserRole) => {
@@ -73,17 +95,22 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
-  // 1. Cinematic Intro Overlay (First Visit or Replay)
-  if (showIntro) {
-    return <CinematicIntro onComplete={() => setShowIntro(false)} />;
+  // STEP 1: Music Choice Consent Modal (Zero audio / zero homepage DOM)
+  if (step === 'music-choice') {
+    return <MusicChoiceModal onChoiceMade={handleMusicChoiceMade} />;
   }
 
-  // 2. Dedicated Food Rescue Hub Route
+  // STEP 2: 100vw x 100vh Full-Screen Cinematic Story Entry
+  if (step === 'intro') {
+    return <CinematicIntro enableMusic={enableMusic} onComplete={handleIntroComplete} />;
+  }
+
+  // STEP 3: Dedicated Food Rescue Hub Route
   if (mainView === 'rescue') {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // 3. Auth Views
+  // STEP 4: Auth Views
   if (mainView === 'register') {
     return (
       <RegisterPage
@@ -102,7 +129,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 4. Landing Page
+  // STEP 5: Main Landing Page
   if (role === 'landing') {
     return (
       <LandingPage
@@ -115,7 +142,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 5. Authority Dashboard
+  // STEP 6: Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -137,7 +164,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 6. Student Mobile App
+  // STEP 7: Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}

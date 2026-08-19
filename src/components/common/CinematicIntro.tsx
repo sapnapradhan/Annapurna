@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Sparkles, Play } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 interface CinematicIntroProps {
+  enableMusic: boolean;
   onComplete: () => void;
 }
 
@@ -45,11 +46,9 @@ const SCENES: StoryScene[] = [
   }
 ];
 
-export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) => {
+export const CinematicIntro: React.FC<CinematicIntroProps> = ({ enableMusic, onComplete }) => {
   const [currentSceneIdx, setCurrentSceneIdx] = useState(0);
   const [isFinalResolve, setIsFinalResolve] = useState(false);
-  const [started, setStarted] = useState(false);
-
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleFinish = () => {
@@ -57,28 +56,25 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     onComplete();
   };
 
-  const startIntro = async () => {
-    setStarted(true);
-    const audio = new Audio('/audio/background-music.mp3');
-    audio.loop = true;
-    audio.volume = 0.5;
-    audioRef.current = audio;
-
-    try {
-      await audio.play();
-    } catch (e) {
-      // Non-blocking
-    }
-  };
-
   useEffect(() => {
-    startIntro();
-  }, []);
+    if (enableMusic) {
+      const audio = new Audio('/audio/background-music.mp3');
+      audio.loop = true;
+      audio.volume = 0.5;
+      audioRef.current = audio;
+
+      audio.play().catch(e => {
+        console.warn('Audio playback error', e);
+      });
+    }
+
+    return () => {
+      // Keep audio playing into homepage if enabled!
+    };
+  }, [enableMusic]);
 
   // Scene progression timer (1.1s per scene)
   useEffect(() => {
-    if (!started) return;
-
     if (currentSceneIdx < SCENES.length - 1) {
       const timer = setTimeout(() => {
         setCurrentSceneIdx(prev => prev + 1);
@@ -95,7 +91,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
       }, 2200);
       return () => clearTimeout(timer);
     }
-  }, [started, currentSceneIdx, isFinalResolve]);
+  }, [currentSceneIdx, isFinalResolve]);
 
   const scene = SCENES[currentSceneIdx];
 
