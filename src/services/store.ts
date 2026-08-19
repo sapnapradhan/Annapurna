@@ -258,6 +258,10 @@ class AppStore {
     return this.meals;
   }
 
+  public getTodayMeals(): Meal[] {
+    return this.meals || [];
+  }
+
   public getCheckins(): Checkin[] {
     return this.checkins;
   }

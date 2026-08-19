@@ -12,7 +12,7 @@ export const LiveStatusWidget: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const todayMeals = appStore.getTodayMeals();
+  const todayMeals = (typeof appStore.getTodayMeals === 'function' ? appStore.getTodayMeals() : appStore.getMeals()) || [];
   const activeMeal = todayMeals.find(m => m.status === 'open') || todayMeals[1] || todayMeals[0];
 
   const faqs = [
