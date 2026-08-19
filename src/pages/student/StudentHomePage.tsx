@@ -1,163 +1,166 @@
 import React, { useState, useEffect } from 'react';
 import { appStore } from '../../services/store';
-import { Meal } from '../../types';
-import { QrCode, CheckCircle2, Clock, Calendar, Star, TrendingUp, Sparkles, ChevronRight } from 'lucide-react';
+import { 
+  QrCode, Utensils, Calendar, Clock, Star, ShieldCheck, Heart, 
+  MapPin, CheckCircle2, Building, ChevronRight, Award, AlertCircle 
+} from 'lucide-react';
 
 interface StudentHomePageProps {
   onNavigate: (tab: string, mealId?: string) => void;
 }
 
 export const StudentHomePage: React.FC<StudentHomePageProps> = ({ onNavigate }) => {
-  const [meals, setMeals] = useState<Meal[]>([]);
   const user = appStore.getCurrentUser();
-  const [todayCheckins, setTodayCheckins] = useState<string[]>([]);
+  const meals = appStore.getMeals();
+  const todayDinner = meals.find(m => m.id === 'meal-today-dinner') || meals[0];
+
+  const [selectedHostel, setSelectedHostel] = useState<string>(
+    user.hostel || 'Hostel 1 - Mahanadi Hall'
+  );
+
+  const [liveAttendance, setLiveAttendance] = useState(
+    appStore.getLiveAttendance(todayDinner?.id)
+  );
 
   useEffect(() => {
     const update = () => {
-      const today = appStore.getTodayMeals();
-      setMeals(today);
-      const chks = appStore.getCheckins().filter(c => c.student_id === user.id);
-      setTodayCheckins(chks.map(c => c.meal_id));
+      setLiveAttendance(appStore.getLiveAttendance(todayDinner?.id));
     };
-    update();
     return appStore.subscribe(update);
-  }, [user.id]);
+  }, [todayDinner?.id]);
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
-
-  const activeMeal = meals.find(m => m.status === 'open') || meals[1] || meals[0];
-  const isCheckedIn = activeMeal ? todayCheckins.includes(activeMeal.id) : false;
+  const hostels = [
+    'Hostel 1 - Mahanadi Hall',
+    'Hostel 2 - Daya Hall',
+    'Hostel 3 - Kathajodi Hall',
+    'Kalinga Boys Hostel',
+    'Rani Sukadei Girls Hostel'
+  ];
 
   return (
-    <div className="space-y-5">
-      {/* Greeting Header */}
-      <div>
-        <div className="text-xs font-mono text-emerald-400 font-semibold tracking-wider uppercase">
-          {getGreeting()},
+    <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">
+      {/* University Campus Student Dining Pass Card */}
+      <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl space-y-4">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider">
+              <Building className="w-3 h-3" />
+              <span>BHUBANESWAR CENTRAL UNIVERSITY</span>
+            </div>
+            <h1 className="font-cursive font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-amber-100">
+              Welcome back, {user.name.split(' ')[0]}!
+            </h1>
+            <p className="text-xs text-slate-700 dark:text-slate-300 font-mono">
+              Roll No: BCU-2026-8819 • {selectedHostel}
+            </p>
+          </div>
+
+          <div className="w-12 h-12 rounded-2xl bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-2xl shadow-lg border border-amber-300/30">
+            {user.name.charAt(0)}
+          </div>
         </div>
-        <h1 className="text-2xl font-bold font-serif text-slate-100">{user.name}</h1>
-        <p className="text-xs text-slate-400 mt-0.5">Nilgiri Mess • Dining Pass Active</p>
+
+        {/* Hostel Block Selector */}
+        <div className="pt-2 border-t border-white/20 dark:border-white/10">
+          <label className="text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-1">
+            Hostel Dining Hall Assignment:
+          </label>
+          <select
+            value={selectedHostel}
+            onChange={(e) => setSelectedHostel(e.target.value)}
+            className="w-full bg-white/10 dark:bg-black/40 border border-white/20 text-xs font-semibold rounded-xl p-2.5 text-[#C86D44] dark:text-amber-300 focus:outline-none backdrop-blur-md"
+          >
+            {hostels.map(h => (
+              <option key={h} value={h}>{h}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      {/* Highlighted Next Upcoming Meal Card */}
-      {activeMeal && (
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-slate-900 border border-emerald-500/30 shadow-2xl space-y-4 relative overflow-hidden">
+      {/* Foodish & Helping Action Buttons Grid */}
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          onClick={() => onNavigate('checkin', todayDinner?.id)}
+          className="p-4 rounded-2xl bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-xl transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-2"
+        >
+          <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+            <QrCode className="w-5 h-5 text-white" />
+          </div>
+          <span>🍱 Turnstile Check-in</span>
+        </button>
+
+        <button
+          onClick={() => onNavigate('meals')}
+          className="p-4 rounded-2xl bg-white/10 dark:bg-black/30 border border-white/20 text-[#2C221E] dark:text-slate-100 hover:border-[#C86D44] font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex flex-col items-center justify-center text-center space-y-2 backdrop-blur-md"
+        >
+          <div className="w-10 h-10 rounded-full bg-[#C86D44]/20 flex items-center justify-center text-[#C86D44] dark:text-amber-400">
+            <Utensils className="w-5 h-5" />
+          </div>
+          <span>🍲 Today's Mess Menu</span>
+        </button>
+      </div>
+
+      {/* Today's Active Hostel Meal Card */}
+      {todayDinner && (
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4">
           <div className="flex items-center justify-between">
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 uppercase">
-              {activeMeal.status === 'open' ? 'NOW SERVING' : 'UPCOMING SESSION'}
-            </span>
-            <div className="flex items-center gap-1.5 text-xs text-slate-300 font-mono">
-              <Clock className="w-3.5 h-3.5 text-emerald-400" />
-              <span>{activeMeal.open_time} – {activeMeal.close_time}</span>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
+              <span className="text-xs font-mono font-bold text-[#C86D44] dark:text-amber-300 uppercase">
+                UPCOMING DINNER SERVICE
+              </span>
             </div>
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+              OPEN NOW
+            </span>
           </div>
 
           <div>
-            <div className="text-xs font-mono text-emerald-400 uppercase font-semibold">{activeMeal.meal_type}</div>
-            <h2 className="text-lg font-bold text-slate-100">{activeMeal.name}</h2>
-            <p className="text-xs text-slate-300 line-clamp-2 mt-1">{activeMeal.description}</p>
+            <h3 className="font-cursive font-bold text-2xl text-[#2C221E] dark:text-white">
+              {todayDinner.title}
+            </h3>
+            <p className="text-xs text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">
+              {todayDinner.items.join(' • ')}
+            </p>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 pt-1">
-            {activeMeal.items.map((item, idx) => (
-              <span key={idx} className="px-2 py-0.5 rounded-md text-[11px] bg-slate-950/80 text-slate-300 border border-slate-800">
-                {item}
+          {/* Real-time Dynamic Attendance Bar */}
+          <div className="p-3 rounded-2xl bg-white/10 dark:bg-black/40 border border-white/10 space-y-1.5">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-slate-600 dark:text-slate-400">Hostel Turnstile Check-ins:</span>
+              <span className="font-bold text-[#C86D44] dark:text-amber-300">
+                {liveAttendance.checkinCount} / {liveAttendance.totalRegistered} Registered ({liveAttendance.percentage}%)
               </span>
-            ))}
+            </div>
+            <div className="w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-500 to-[#C86D44] transition-all duration-500"
+                style={{ width: `${liveAttendance.percentage}%` }}
+              />
+            </div>
           </div>
 
-          <div className="pt-2">
-            {isCheckedIn ? (
-              <div className="w-full py-3 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-bold text-xs flex items-center justify-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Checked In For This Meal</span>
-              </div>
-            ) : (
-              <button
-                onClick={() => onNavigate('checkin', activeMeal.id)}
-                className="w-full py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
-              >
-                <QrCode className="w-4 h-4" />
-                <span>Scan QR To Check In</span>
-              </button>
-            )}
+          <div className="flex gap-2 pt-2">
+            <button
+              onClick={() => onNavigate('checkin', todayDinner.id)}
+              className="flex-1 py-3 rounded-2xl bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <QrCode className="w-4 h-4" />
+              <span>SCAN QR TO EAT</span>
+            </button>
           </div>
         </div>
       )}
 
-      {/* "Your Month" Summary Strip */}
-      <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-3">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-slate-200">Your Month Summary</span>
-          <button 
-            onClick={() => onNavigate('attendance')} 
-            className="text-emerald-400 font-mono text-[11px] flex items-center gap-0.5"
-          >
-            <span>Details</span>
-            <ChevronRight className="w-3 h-3" />
-          </button>
+      {/* University Campus Impact */}
+      <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-3">
+        <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#C86D44] dark:text-amber-400">
+          <Heart className="w-4 h-4 text-rose-500 fill-current" />
+          <span>CAMPUS HUNGER RELIEF IMPACT</span>
         </div>
-
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-base font-bold font-mono text-emerald-400">92%</div>
-            <div className="text-[10px] text-slate-400">Attendance</div>
-          </div>
-          <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-base font-bold font-mono text-amber-300">42</div>
-            <div className="text-[10px] text-slate-400">Meals Attended</div>
-          </div>
-          <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800">
-            <div className="text-base font-bold font-mono text-slate-200">18</div>
-            <div className="text-[10px] text-slate-400">Reviews</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Compact List of Today's 4 Meals */}
-      <div className="space-y-3">
-        <h3 className="font-bold text-xs text-slate-400 uppercase font-mono tracking-wider">Today's Schedule</h3>
-
-        <div className="space-y-2.5">
-          {meals.map((meal) => {
-            const checked = todayCheckins.includes(meal.id);
-            return (
-              <div 
-                key={meal.id} 
-                className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-between text-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs uppercase ${checked ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-400'}`}>
-                    {meal.meal_type.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="font-bold text-slate-200">{meal.name}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{meal.open_time} – {meal.close_time}</div>
-                  </div>
-                </div>
-
-                {checked ? (
-                  <span className="px-2 py-1 rounded-full text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                    <span>Checked In</span>
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => onNavigate('checkin', meal.id)}
-                    className="px-2.5 py-1 rounded-full text-[10px] font-mono bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
-                  >
-                    Scan QR
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
+        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+          Your hostel dining hall check-ins help compute exact prep quantities. Zero food is wasted; unavoidable surplus feeds Bhubaneswar shelter homes.
+        </p>
       </div>
     </div>
   );

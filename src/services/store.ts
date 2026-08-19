@@ -1,60 +1,273 @@
-import { 
-  Meal, Checkin, Review, Consumption, Surplus, Forecast, Profile, UserRole 
-} from '../types';
-import { 
-  MOCK_MEALS, MOCK_CHECKINS, MOCK_REVIEWS, MOCK_CONSUMPTION, 
-  MOCK_SURPLUS, MOCK_FORECASTS, MOCK_PROFILES, MOCK_MESSES, TODAY_STR 
-} from './mockData';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { Meal, Mess, Checkin, Review, UserProfile, ForecastItem, UserRole } from '../types';
+import { MOCK_MESSES, MOCK_MEALS, MOCK_REVIEWS, MOCK_FORECASTS } from './mockData';
 
-class Store {
-  private role: UserRole | 'landing' = 'landing';
-  private currentUser: Profile = MOCK_PROFILES[0]; // Default student
-  private profiles: Profile[] = [...MOCK_PROFILES];
-  private meals: Meal[] = [...MOCK_MEALS];
-  private checkins: Checkin[] = [...MOCK_CHECKINS];
-  private reviews: Review[] = [...MOCK_REVIEWS];
-  private consumption: Consumption[] = [...MOCK_CONSUMPTION];
-  private surplus: Surplus[] = [...MOCK_SURPLUS];
-  private forecasts: Forecast[] = [...MOCK_FORECASTS];
-  private activeSessions: Record<string, { token: string; expiresAt: string }> = {
-    'meal-2': { token: 'ANNAPURNA-LUNCH-8842', expiresAt: `${TODAY_STR}T14:30:00Z` }
+class AppStore {
+  private currentRole: UserRole | 'landing' = 'landing';
+  private currentUser: UserProfile = {
+    id: 'user-std-1',
+    name: 'Aarav Sharma',
+    email: 'aarav.sharma@university.edu.in',
+    role: 'student',
+    hostel: 'Hostel 1 - Mahanadi Hall',
+    block: 'Block A, Room 204'
   };
 
+  private messes: Mess[] = [];
+  private meals: Meal[] = [];
+  private checkins: Checkin[] = [];
+  private reviews: Review[] = [];
+  private forecasts: ForecastItem[] = [];
+  private registeredUsers: UserProfile[] = [];
   private listeners: Set<() => void> = new Set();
 
   constructor() {
-    // Load local storage overrides if available
-    const saved = localStorage.getItem('annapurna_store_v2');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed.profiles) this.profiles = parsed.profiles;
-        if (parsed.meals) this.meals = parsed.meals;
-        if (parsed.checkins) this.checkins = parsed.checkins;
-        if (parsed.reviews) this.reviews = parsed.reviews;
-        if (parsed.consumption) this.consumption = parsed.consumption;
-        if (parsed.surplus) this.surplus = parsed.surplus;
-      } catch (e) {
-        console.error('Failed to parse local store', e);
+    this.loadState();
+  }
+
+  private loadState() {
+    try {
+      const savedRole = localStorage.getItem('annapurna_role');
+      if (savedRole) this.currentRole = savedRole as UserRole | 'landing';
+
+      const savedUser = localStorage.getItem('annapurna_current_user');
+      if (savedUser) this.currentUser = JSON.parse(savedUser);
+
+      const savedUsers = localStorage.getItem('annapurna_registered_users');
+      if (savedUsers) {
+        this.registeredUsers = JSON.parse(savedUsers);
+      } else {
+        this.registeredUsers = [
+          this.currentUser,
+          {
+            id: 'user-std-2',
+            name: 'Ananya Roy',
+            email: 'ananya.roy@university.edu.in',
+            role: 'student',
+            hostel: 'Hostel 2 - Daya Hall',
+            block: 'Block B, Room 102'
+          },
+          {
+            id: 'user-std-3',
+            name: 'Rohan Verma',
+            email: 'rohan.verma@university.edu.in',
+            role: 'student',
+            hostel: 'Kalinga Boys Hostel',
+            block: 'Block C, Room 305'
+          }
+        ];
+        this.saveRegisteredUsers();
       }
+
+      const savedCheckins = localStorage.getItem('annapurna_live_checkins');
+      if (savedCheckins) {
+        this.checkins = JSON.parse(savedCheckins);
+      } else {
+        this.checkins = [];
+        this.saveCheckins();
+      }
+
+      this.messes = [...MOCK_MESSES];
+      this.meals = [...MOCK_MEALS];
+      this.reviews = [...(MOCK_REVIEWS as unknown as Review[])];
+      this.forecasts = [...(MOCK_FORECASTS as unknown as ForecastItem[])];
+    } catch (e) {
+      console.warn('Error loading store state:', e);
+      this.messes = [...MOCK_MESSES];
+      this.meals = [...MOCK_MEALS];
+      this.checkins = [];
+      this.reviews = [];
+      this.forecasts = [];
     }
   }
 
-  private persist() {
-    try {
-      localStorage.setItem('annapurna_store_v2', JSON.stringify({
-        profiles: this.profiles,
-        meals: this.meals,
-        checkins: this.checkins,
-        reviews: this.reviews,
-        consumption: this.consumption,
-        surplus: this.surplus,
-      }));
-    } catch (e) {
-      console.error('Persist error', e);
-    }
+  private saveState() {
+    localStorage.setItem('annapurna_role', this.currentRole);
+    localStorage.setItem('annapurna_current_user', JSON.stringify(this.currentUser));
+  }
+
+  private saveRegisteredUsers() {
+    localStorage.setItem('annapurna_registered_users', JSON.stringify(this.registeredUsers));
+  }
+
+  private saveCheckins() {
+    localStorage.setItem('annapurna_live_checkins', JSON.stringify(this.checkins));
+  }
+
+  public getRole(): UserRole | 'landing' {
+    return this.currentRole;
+  }
+
+  public setRole(role: UserRole | 'landing') {
+    this.currentRole = role;
+    this.saveState();
     this.notify();
+  }
+
+  public loginAs(role: UserRole) {
+    this.currentRole = role;
+    if (role === 'authority') {
+      this.currentUser = {
+        id: 'user-auth-1',
+        name: 'Dr. Rajesh Mohanty',
+        email: 'rajesh.mohanty@university.edu.in',
+        role: 'authority',
+        hostel: 'Central Dining Operations',
+        block: 'Admin Block, Chief Warden'
+      };
+    } else {
+      this.currentUser = this.registeredUsers[0] || {
+        id: 'user-std-1',
+        name: 'Aarav Sharma',
+        email: 'aarav.sharma@university.edu.in',
+        role: 'student',
+        hostel: 'Hostel 1 - Mahanadi Hall',
+        block: 'Block A, Room 204'
+      };
+    }
+    this.saveState();
+    this.notify();
+  }
+
+  public logout() {
+    this.currentRole = 'landing';
+    localStorage.removeItem('annapurna_role');
+    this.notify();
+  }
+
+  public registerStudent(data: { name: string; email: string; hostel?: string; block?: string }): UserProfile {
+    const existing = this.registeredUsers.find(u => u.email.toLowerCase() === data.email.toLowerCase());
+    if (existing) {
+      throw new Error('This email address is already registered. Please log in instead.');
+    }
+
+    const newUser: UserProfile = {
+      id: `user-std-${Date.now()}`,
+      name: data.name,
+      email: data.email,
+      role: 'student',
+      hostel: data.hostel || 'Hostel 1 - Mahanadi Hall',
+      block: data.block || 'Block A'
+    };
+
+    this.registeredUsers.push(newUser);
+    this.saveRegisteredUsers();
+
+    this.currentUser = newUser;
+    this.currentRole = 'student';
+    this.saveState();
+    this.notify();
+
+    return newUser;
+  }
+
+  public loginUser(email: string): UserProfile {
+    const user = this.registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (user) {
+      this.currentUser = user;
+      this.currentRole = user.role;
+      this.saveState();
+      this.notify();
+      return user;
+    }
+
+    if (email.includes('authority') || email.includes('admin')) {
+      const authUser: UserProfile = {
+        id: 'user-auth-1',
+        name: 'Dr. Rajesh Mohanty',
+        email,
+        role: 'authority',
+        hostel: 'Central Dining Operations',
+        block: 'Admin Block, Chief Warden'
+      };
+      this.currentUser = authUser;
+      this.currentRole = 'authority';
+      this.saveState();
+      this.notify();
+      return authUser;
+    }
+
+    // Default dynamic login for student
+    const newStd: UserProfile = {
+      id: `user-std-${Date.now()}`,
+      name: email.split('@')[0].replace('.', ' '),
+      email,
+      role: 'student',
+      hostel: 'Hostel 1 - Mahanadi Hall',
+      block: 'Block A'
+    };
+    this.registeredUsers.push(newStd);
+    this.saveRegisteredUsers();
+
+    this.currentUser = newStd;
+    this.currentRole = 'student';
+    this.saveState();
+    this.notify();
+    return newStd;
+  }
+
+  public recordCheckin(mealId: string, messId: string = 'mess-1'): Checkin {
+    const user = this.currentUser;
+    const now = new Date();
+
+    const existingCheckin = this.checkins.find(
+      c => c.studentId === user.id && c.mealId === mealId && c.messId === messId
+    );
+
+    if (existingCheckin) {
+      return existingCheckin;
+    }
+
+    const newCheckin: Checkin = {
+      id: `chk-${Date.now()}`,
+      studentId: user.id,
+      studentName: user.name,
+      hostel: user.hostel || 'Hostel 1 - Mahanadi Hall',
+      mealId,
+      messId,
+      timestamp: now.toISOString(),
+      verifiedBy: 'Turnstile Scanner A1'
+    };
+
+    this.checkins.unshift(newCheckin);
+    this.saveCheckins();
+    this.notify();
+
+    return newCheckin;
+  }
+
+  public getLiveAttendance(mealId?: string): { checkinCount: number; totalRegistered: number; percentage: number } {
+    const targetMealId = mealId || 'meal-2';
+    const mealCheckins = this.checkins.filter(c => c.mealId === targetMealId);
+
+    const checkinCount = mealCheckins.length;
+    const totalRegistered = Math.max(this.registeredUsers.filter(u => u.role === 'student').length, 1);
+    const percentage = Math.min(Math.round((checkinCount / totalRegistered) * 100), 100);
+
+    return { checkinCount, totalRegistered, percentage };
+  }
+
+  public getCurrentUser(): UserProfile {
+    return this.currentUser;
+  }
+
+  public getMesses(): Mess[] {
+    return this.messes;
+  }
+
+  public getMeals(): Meal[] {
+    return this.meals;
+  }
+
+  public getCheckins(): Checkin[] {
+    return this.checkins;
+  }
+
+  public getReviews(): Review[] {
+    return this.reviews;
+  }
+
+  public getForecasts(): ForecastItem[] {
+    return this.forecasts;
   }
 
   public subscribe(listener: () => void) {
@@ -63,314 +276,8 @@ class Store {
   }
 
   private notify() {
-    this.listeners.forEach((l) => l());
-  }
-
-  // Auth getters & actions
-  public getRole() { return this.role; }
-  public getCurrentUser() { return this.currentUser; }
-
-  public async registerStudent(data: { name: string; email: string; password: string }) {
-    const cleanEmail = data.email.trim().toLowerCase();
-
-    // Check duplicate email
-    const existing = this.profiles.find(p => (p as any).email === cleanEmail);
-    if (existing) {
-      return { 
-        success: false, 
-        message: 'This email is already registered. Please log in instead.' 
-      };
-    }
-
-    if (isSupabaseConfigured && supabase) {
-      const { data: authData, error } = await supabase.auth.signUp({
-        email: cleanEmail,
-        password: data.password,
-        options: {
-          data: {
-            name: data.name,
-            role: 'student' // Strictly forced as student
-          }
-        }
-      });
-
-      if (error) {
-        if (error.message.includes('already registered')) {
-          return { success: false, message: 'This email is already registered. Please log in instead.' };
-        }
-        return { success: false, message: error.message };
-      }
-    }
-
-    // Create student profile with role strictly forced as 'student'
-    const newStudent: Profile = {
-      id: `student-${Date.now()}`,
-      role: 'student', // Public registration MUST always assign role = 'student'
-      name: data.name,
-      student_id: `2026CS${Math.floor(1000 + Math.random() * 9000)}`,
-      hostel: 'Nilgiri Hall',
-      block: 'A-Block',
-      dietary_pref: 'Vegetarian'
-    };
-
-    (newStudent as any).email = cleanEmail;
-    this.profiles.push(newStudent);
-    this.persist();
-
-    return { 
-      success: true, 
-      user: newStudent,
-      message: 'Registration successful! You can now log in with your credentials.' 
-    };
-  }
-
-  public async login(data: { email: string; password: string }) {
-    const cleanEmail = data.email.trim().toLowerCase();
-
-    if (isSupabaseConfigured && supabase) {
-      const { data: authData, error } = await supabase.auth.signInWithPassword({
-        email: cleanEmail,
-        password: data.password
-      });
-
-      if (error) {
-        return { success: false, message: error.message };
-      }
-
-      // Fetch user profile from Supabase to resolve secure role
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', authData.user.id)
-        .single();
-
-      const userRole: UserRole = profileData?.role || 'student';
-      this.role = userRole;
-      this.currentUser = {
-        id: authData.user.id,
-        role: userRole,
-        name: profileData?.name || authData.user.user_metadata?.name || 'Campus User',
-        student_id: profileData?.student_id,
-        hostel: profileData?.hostel || 'Nilgiri Hall',
-        block: profileData?.block || 'Main Block',
-        dietary_pref: profileData?.dietary_pref || 'Vegetarian'
-      };
-
-      this.notify();
-      return { success: true, role: userRole, user: this.currentUser };
-    }
-
-    // Offline / Mock fallback auth matching
-    if (cleanEmail.includes('admin') || cleanEmail.includes('authority')) {
-      this.role = 'authority';
-      this.currentUser = MOCK_PROFILES[2]; // Admin Rameshwar
-    } else {
-      this.role = 'student';
-      const found = this.profiles.find(p => (p as any).email === cleanEmail);
-      this.currentUser = found || MOCK_PROFILES[0];
-    }
-
-    this.notify();
-    return { success: true, role: this.role, user: this.currentUser };
-  }
-
-  public async changeAuthorityPassword(newPassword: string) {
-    if (isSupabaseConfigured && supabase) {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-      if (error) {
-        return { success: false, message: error.message };
-      }
-    }
-
-    return { success: true, message: 'Authority password updated successfully!' };
-  }
-
-  public loginAs(role: UserRole) {
-    this.role = role;
-    this.currentUser = role === 'authority' ? MOCK_PROFILES[2] : MOCK_PROFILES[0];
-    this.notify();
-  }
-
-  public logout() {
-    this.role = 'landing';
-    this.notify();
-  }
-
-  public updateProfile(updated: Partial<Profile>) {
-    this.currentUser = { ...this.currentUser, ...updated };
-    this.notify();
-  }
-
-  // Meals & Messes
-  public getMesses() { return MOCK_MESSES; }
-  public getMeals() { return this.meals; }
-
-  public getTodayMeals() {
-    return this.meals.filter(m => m.date === TODAY_STR);
-  }
-
-  public getMealById(id: string) {
-    return this.meals.find(m => m.id === id);
-  }
-
-  public addMeal(mealData: Omit<Meal, 'id'>) {
-    const newMeal: Meal = {
-      ...mealData,
-      id: `meal-${Date.now()}`
-    };
-    this.meals.push(newMeal);
-    this.persist();
-    return newMeal;
-  }
-
-  public updateMeal(id: string, updates: Partial<Meal>) {
-    this.meals = this.meals.map(m => m.id === id ? { ...m, ...updates } : m);
-    this.persist();
-  }
-
-  public copyPreviousDayMeals(targetDate: string) {
-    const prevDate = new Date(new Date(targetDate).getTime() - 86400000).toISOString().split('T')[0];
-    const prevMeals = this.meals.filter(m => m.date === prevDate);
-    if (prevMeals.length === 0) return 0;
-
-    const copied = prevMeals.map(m => ({
-      ...m,
-      id: `meal-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      date: targetDate,
-      status: 'draft' as const
-    }));
-
-    this.meals.push(...copied);
-    this.persist();
-    return copied.length;
-  }
-
-  // QR Session Management
-  public getSessionForMeal(mealId: string) {
-    return this.activeSessions[mealId];
-  }
-
-  public generateQRSession(mealId: string) {
-    const token = `ANNAPURNA-${mealId.toUpperCase()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    const expiresAt = new Date(Date.now() + 3600000 * 3).toISOString(); // 3 hours
-    this.activeSessions[mealId] = { token, expiresAt };
-    this.updateMeal(mealId, { status: 'open' });
-    this.notify();
-    return token;
-  }
-
-  // Checkins
-  public getCheckins() { return this.checkins; }
-
-  public getMealCheckins(mealId: string) {
-    return this.checkins.filter(c => c.meal_id === mealId);
-  }
-
-  public hasStudentCheckedIn(mealId: string, studentId: string) {
-    return this.checkins.some(c => c.meal_id === mealId && c.student_id === studentId);
-  }
-
-  public checkInStudent(mealId: string, tokenEntered?: string) {
-    const student = this.currentUser;
-    if (this.hasStudentCheckedIn(mealId, student.id)) {
-      return { success: false, message: 'Already checked in for this meal!' };
-    }
-
-    const session = this.activeSessions[mealId];
-    if (tokenEntered && session && tokenEntered !== session.token) {
-      return { success: false, message: 'Invalid or expired QR Session Token.' };
-    }
-
-    const checkin: Checkin = {
-      id: `chk-${Date.now()}`,
-      student_id: student.id,
-      meal_id: mealId,
-      checked_in_at: new Date().toISOString(),
-      student_name: student.name,
-      hostel: student.hostel
-    };
-
-    this.checkins.unshift(checkin);
-    this.persist();
-    return { success: true, checkin };
-  }
-
-  // Reviews
-  public getReviews() { return this.reviews; }
-  
-  public getStudentReviews(studentId: string) {
-    return this.reviews.filter(r => r.student_id === studentId);
-  }
-
-  public submitReview(reviewData: Omit<Review, 'id' | 'created_at' | 'student_id' | 'student_name'>) {
-    const student = this.currentUser;
-    const existingIdx = this.reviews.findIndex(r => r.student_id === student.id && r.meal_id === reviewData.meal_id);
-
-    const meal = this.getMealById(reviewData.meal_id);
-    const newRev: Review = {
-      ...reviewData,
-      id: existingIdx >= 0 ? this.reviews[existingIdx].id : `rev-${Date.now()}`,
-      student_id: student.id,
-      student_name: student.name,
-      meal_name: meal?.name || 'Campus Meal',
-      created_at: new Date().toISOString()
-    };
-
-    if (existingIdx >= 0) {
-      this.reviews[existingIdx] = newRev;
-    } else {
-      this.reviews.unshift(newRev);
-    }
-    this.persist();
-    return newRev;
-  }
-
-  public deleteReview(reviewId: string) {
-    this.reviews = this.reviews.filter(r => r.id !== reviewId);
-    this.persist();
-  }
-
-  // Consumption
-  public getConsumption() { return this.consumption; }
-
-  public logConsumption(data: Omit<Consumption, 'id' | 'created_at'>) {
-    const entry: Consumption = {
-      ...data,
-      id: `cons-${Date.now()}`,
-      created_at: new Date().toISOString()
-    };
-    this.consumption.unshift(entry);
-    this.persist();
-    return entry;
-  }
-
-  // Surplus & Rescue
-  public getSurplus() { return this.surplus; }
-
-  public declareSurplus(data: Omit<Surplus, 'id' | 'created_at' | 'safety_verified' | 'pickup_confirmed'>) {
-    const item: Surplus = {
-      ...data,
-      id: `surp-${Date.now()}`,
-      safety_verified: false,
-      pickup_confirmed: false,
-      created_at: new Date().toISOString()
-    };
-    this.surplus.unshift(item);
-    this.persist();
-    return item;
-  }
-
-  public updateSurplusStatus(id: string, updates: Partial<Surplus>) {
-    this.surplus = this.surplus.map(s => s.id === id ? { ...s, ...updates } : s);
-    this.persist();
-  }
-
-  // Forecasts
-  public getForecasts() {
-    return this.forecasts;
+    this.listeners.forEach(l => l());
   }
 }
 
-export const appStore = new Store();
+export const appStore = new AppStore();

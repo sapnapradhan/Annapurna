@@ -16,19 +16,19 @@ interface StoryScene {
 const SCENES: StoryScene[] = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=2000&q=80',
     slogan: 'No child should go to bed hungry.',
     subtext: 'Every surplus meal holds the power to nourish a growing child.'
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=80',
     slogan: 'Every surplus meal can feed a hungry child.',
     subtext: 'Connecting hostel mess kitchens directly to local children shelters.'
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?auto=format&fit=crop&w=2000&q=80',
     slogan: 'From mess surplus to community service.',
     subtext: 'Nourishment brought from campus tables to those in need.'
   },
@@ -40,7 +40,7 @@ const SCENES: StoryScene[] = [
   },
   {
     id: 5,
-    image: 'https://images.unsplash.com/photo-1507048331197-7d4ac70811cf?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=2000&q=80',
     slogan: 'Together, we can eliminate campus food waste.',
     subtext: 'Food should reach people, not bins.'
   }
