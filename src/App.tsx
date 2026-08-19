@@ -37,14 +37,8 @@ export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
 
-  // STEP 1: Website opens IMMEDIATELY into the Cinematic Intro on first visit
-  const [step, setStep] = useState<AppStep>(() => {
-    const seen = localStorage.getItem('annapurna_intro_seen');
-    if (seen !== 'true') {
-      return 'intro';
-    }
-    return 'main';
-  });
+  // Website opens directly into the main homepage; story plays on demand
+  const [step, setStep] = useState<AppStep>('main');
 
   const [authorityTab, setAuthorityTab] = useState('today');
   const [studentTab, setStudentTab] = useState('home');
@@ -85,7 +79,7 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
-  // 1. Immediate Cinematic Story Entry (100vw x 100vh)
+  // 1. Cinematic Story Entry (On Demand)
   if (step === 'intro') {
     return <CinematicIntro onComplete={handleIntroComplete} />;
   }
@@ -114,7 +108,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 4. Main Landing Page (Renders Music Choice Popup if consent is pending)
+  // 4. Main Landing Page
   if (role === 'landing') {
     return (
       <LandingPage
