@@ -10,6 +10,7 @@ import { ThemeToggle } from '../components/common/ThemeToggle';
 import { WeatherWidget } from '../components/common/WeatherWidget';
 import { LiveStatusWidget } from '../components/landing/LiveStatusWidget';
 import { MusicChoiceModal } from '../components/common/MusicChoiceModal';
+import { VoiceAssistWidget } from '../components/common/VoiceAssistWidget';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
@@ -93,6 +94,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Controls & CTAs */}
             <div className="flex items-center gap-2 sm:gap-3">
               <AudioPlayer />
+              <VoiceAssistWidget label="Read Screen" textToRead="Welcome to Annapurna. Designed to nourish, built to share. Annapurna connects campus dining facilities with local community food rescue networks in Bhubaneswar, Odisha and state-wide." />
               <ThemeToggle />
 
               <button

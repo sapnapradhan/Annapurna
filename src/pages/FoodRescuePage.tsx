@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { ThemeToggle } from '../components/common/ThemeToggle';
 import { AudioPlayer } from '../components/common/AudioPlayer';
+import { VoiceAssistWidget } from '../components/common/VoiceAssistWidget';
 
 interface FoodRescuePageProps {
   onBackToHome: () => void;
@@ -119,6 +120,7 @@ export const FoodRescuePage: React.FC<FoodRescuePageProps> = ({ onBackToHome }) 
 
           <div className="flex items-center gap-3">
             <AudioPlayer />
+            <VoiceAssistWidget label="Read Rescue Partners" textToRead="Annapurna Food Rescue Network. Default location: Bhubaneswar, Odisha. Connecting campus mess surplus food directly to verified NGOs including Robin Hood Army Bhubaneswar, Feeding India, and Capital Hospital Aahaar Kendra." />
             <ThemeToggle />
             <button
               onClick={onBackToHome}
