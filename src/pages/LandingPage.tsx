@@ -11,6 +11,7 @@ import { WeatherWidget } from '../components/common/WeatherWidget';
 import { LiveStatusWidget } from '../components/landing/LiveStatusWidget';
 import { MusicChoiceModal } from '../components/common/MusicChoiceModal';
 import { VoiceAssistWidget } from '../components/common/VoiceAssistWidget';
+import { DynamicParticles } from '../components/common/DynamicParticles';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
@@ -50,8 +51,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="relative min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300">
-      {/* Light Backdrop Scrim for Background Image Visibility */}
+    <div className="relative min-h-screen bg-homepage-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300">
+      {/* Ambient Dynamic Background Particles */}
+      <DynamicParticles />
+
+      {/* Light Backdrop Scrim */}
       <div className="fixed inset-0 bg-transparent pointer-events-none z-0" />
 
       {/* Main Page Music Choice Consent Popup */}
@@ -63,17 +67,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Pill Navigation Bar (Transparent Glass Styling) */}
+        {/* Floating Pill Navigation Bar (Translucent Glass Styling) */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
-          <div className="bg-white/10 dark:bg-black/20 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
+          <div className="bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
             {/* Logo Emblem */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-crayon font-bold text-base shadow-md border border-amber-300/30">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-lg shadow-md border border-amber-300/30">
                 A
               </div>
               <div>
-                <span className="font-crayon font-bold text-lg tracking-widest text-[#2C221E] dark:text-amber-100 uppercase">
-                  ANNAPURNA
+                <span className="font-cursive font-bold text-xl tracking-wider text-[#2C221E] dark:text-amber-100">
+                  Annapurna
                 </span>
               </div>
             </div>
@@ -124,9 +128,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </header>
 
-        {/* Full-Screen Editorial Hero Section (Transparent Glass Container) */}
+        {/* Full-Screen Editorial Hero Section (Translucent Glass Container) */}
         <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
+          <div className="max-w-4xl mx-auto text-center space-y-7 p-10 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
             
             {/* Small Eyebrow Label */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest backdrop-blur-md">
@@ -134,24 +138,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
             </div>
 
-            {/* Crayon Font Display Headline */}
-            <h1 className="font-crayon font-bold text-4xl sm:text-6xl md:text-7xl tracking-widest text-[#2C221E] dark:text-white leading-[1.15] uppercase drop-shadow-lg">
-              DESIGNED TO NOURISH. <br />
-              <span className="text-[#C86D44] dark:text-amber-300 font-crayon">
-                BUILT TO SHARE.
+            {/* Cursive Display Headline with Refined Scaled Sizing */}
+            <h1 className="font-cursive font-bold text-4xl sm:text-5xl md:text-6xl text-[#2C221E] dark:text-amber-100 leading-[1.15] drop-shadow-lg">
+              Designed to Nourish. <br />
+              <span className="text-[#C86D44] dark:text-amber-300 font-cursive">
+                Built to Share.
               </span>
             </h1>
 
             {/* Supporting Statement */}
-            <p className="max-w-xl mx-auto text-base sm:text-lg text-slate-800 dark:text-slate-200 font-medium leading-relaxed drop-shadow">
+            <p className="max-w-xl mx-auto text-xs sm:text-base text-slate-800 dark:text-slate-200 font-normal leading-relaxed drop-shadow">
               Every meal has a story. Annapurna connects campus dining facilities directly with local community food rescue networks.
             </p>
 
-            {/* Editorial Action Buttons */}
+            {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <button
                 onClick={onNavigateRescue}
-                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
               >
                 <span>EXPLORE FOOD RESCUE</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -159,7 +163,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRegister}
-                className="group w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 dark:bg-black/30 border border-white/30 text-[#2C221E] dark:text-slate-100 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 dark:bg-black/30 border border-white/30 text-[#2C221E] dark:text-slate-100 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
               >
                 <span>REGISTER STUDENT ACCOUNT</span>
                 <ArrowRight className="w-4 h-4 text-[#C86D44] dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
@@ -167,37 +171,37 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Scroll Indicator */}
-            <div className="pt-8 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
+            <div className="pt-6 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
               <span>EXPLORE PLATFORM & TELEMETRY</span>
               <ChevronDown className="w-4 h-4 mt-1 text-[#C86D44]" />
             </div>
           </div>
         </section>
 
-        {/* Campus Weather Telemetry (Transparent Glass Container) */}
+        {/* Campus Weather Telemetry */}
         <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/20 dark:border-white/10">
-          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 backdrop-blur-xl">
+          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-crayon text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Campus Climate & Weather Forecast</h3>
+            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white tracking-wide">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
 
         {/* Feature Showcase Grid */}
         <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/20 dark:border-white/10">
-          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
+          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
             <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-crayon text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white uppercase tracking-widest">Designed for Ops Authority & Hostel Students</h3>
+            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white tracking-wide">Designed for Ops Authority & Hostel Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Authority Side Card */}
-            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-crayon text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Operational Density & Control</h4>
+              <h4 className="font-cursive text-2xl font-bold text-[#2C221E] dark:text-white tracking-wide">Operational Density & Control</h4>
               <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
                 {[
                   'Under-1-minute menu creation & CSV bulk importer',
@@ -216,19 +220,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateLogin}
-                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Log In to Authority Operations
               </button>
             </div>
 
             {/* Student Side Card */}
-            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/20 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold">
                 <Users className="w-3.5 h-3.5" />
                 <span>Student Mobile App</span>
               </div>
-              <h4 className="font-crayon text-2xl font-bold text-[#2C221E] dark:text-white uppercase tracking-wider">Personalized & Mobile-First</h4>
+              <h4 className="font-cursive text-2xl font-bold text-[#2C221E] dark:text-white tracking-wide">Personalized & Mobile-First</h4>
               <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
                 {[
                   'Personalized greeting & next-upcoming meal card',
@@ -247,7 +251,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateRegister}
-                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Register Student Dining Account
               </button>
@@ -256,11 +260,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </section>
 
         {/* Footer */}
-        <footer className="py-10 border-t border-white/20 dark:border-white/10 text-center text-xs text-slate-700 dark:text-slate-300 bg-white/5 dark:bg-black/30 backdrop-blur-md">
+        <footer className="py-10 border-t border-white/20 dark:border-white/10 text-center text-xs text-slate-700 dark:text-slate-300 bg-white/5 dark:bg-black/40 backdrop-blur-md">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 font-crayon text-sm font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
+            <div className="flex items-center gap-2 font-cursive text-base font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
               <UtensilsCrossed className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
-              <span>ANNAPURNA • BHUBANESWAR, ODISHA</span>
+              <span>Annapurna • Bhubaneswar, Odisha</span>
             </div>
             <div>© {new Date().getFullYear()} ANNAPURNA Food Operations. All rights reserved.</div>
           </div>

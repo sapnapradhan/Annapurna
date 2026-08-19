@@ -3,6 +3,8 @@ import { Home, Utensils, QrCode, CalendarCheck, User, LogOut } from 'lucide-reac
 import { appStore } from '../../services/store';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { AudioPlayer } from '../common/AudioPlayer';
+import { VoiceAssistWidget } from '../common/VoiceAssistWidget';
+import { DynamicParticles } from '../common/DynamicParticles';
 
 interface StudentLayoutProps {
   activeTab: string;
@@ -28,35 +30,39 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 font-sans pb-24 transition-colors duration-300 selection:bg-emerald-500 selection:text-white">
-      {/* Editorial Background Overlay */}
-      <div className="fixed inset-0 bg-[#FDFBF7]/90 dark:bg-[#12100F]/95 backdrop-blur-[2px] pointer-events-none z-0" />
+    <div className="min-h-screen bg-student-image text-[#2C221E] dark:text-slate-100 font-sans pb-24 transition-colors duration-300 selection:bg-emerald-500 selection:text-white relative">
+      {/* Ambient Floating Particles */}
+      <DynamicParticles />
+
+      {/* Editorial Translucent Background Scrim Overlay over Student Hostel Mess Background Image */}
+      <div className="fixed inset-0 bg-[#FDFBF7]/85 dark:bg-[#090807]/90 backdrop-blur-[2px] pointer-events-none z-0" />
 
       <div className="relative z-10">
         {/* Mobile Header */}
-        <header className="sticky top-0 z-40 bg-[#F5EFE6]/90 dark:bg-[#1A1715]/90 backdrop-blur-md border-b border-[#EBE4D8] dark:border-[#2C2724] px-4 py-3 flex items-center justify-between shadow-sm">
+        <header className="sticky top-0 z-40 bg-white/10 dark:bg-black/30 backdrop-blur-md border-b border-white/20 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-serif font-bold text-xs shadow-sm">
+            <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-base shadow-sm">
               {user.name.charAt(0)}
             </div>
             <div>
-              <div className="font-bold text-xs text-[#2C221E] dark:text-slate-100 leading-tight">ANNAPURNA</div>
-              <div className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">{user.hostel} • {user.block}</div>
+              <div className="font-cursive font-bold text-sm text-[#2C221E] dark:text-slate-100 leading-tight">Annapurna Student</div>
+              <div className="text-[10px] text-slate-600 dark:text-slate-300 font-mono">{user.hostel} • {user.block}</div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <AudioPlayer />
+            <VoiceAssistWidget label="Listen" textToRead={`Welcome back ${user.name}. Your next meal pass is ready. hostel ${user.hostel}.`} />
             <ThemeToggle />
             <button
               onClick={() => appStore.loginAs('authority')}
-              className="px-2.5 py-1 rounded-full bg-[#EBE4D8] dark:bg-[#24201D] hover:bg-[#DCD1C0] dark:hover:bg-[#2E2824] text-[#2C221E] dark:text-slate-300 text-[10px] font-semibold border border-[#EBE4D8] dark:border-[#38322E] transition-colors"
+              className="px-2.5 py-1 rounded-full bg-white/10 dark:bg-black/30 hover:bg-white/20 text-[#2C221E] dark:text-slate-200 text-[10px] font-semibold border border-white/20 transition-colors backdrop-blur-md"
             >
               Authority View
             </button>
             <button
               onClick={onLogout}
-              className="p-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition-colors"
+              className="p-1.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
@@ -70,7 +76,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
         </main>
 
         {/* 5-Item Bottom Navigation Bar */}
-        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#F5EFE6]/95 dark:bg-[#1A1715]/95 backdrop-blur-xl border-t border-[#EBE4D8] dark:border-[#2C2724] px-2 py-2 max-w-lg mx-auto shadow-lg">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/10 dark:bg-black/40 backdrop-blur-xl border-t border-white/20 dark:border-white/10 px-2 py-2 max-w-lg mx-auto shadow-2xl">
           <div className="grid grid-cols-5 gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -82,8 +88,8 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                   className={`
                     flex flex-col items-center justify-center py-1.5 rounded-xl transition-all cursor-pointer relative
                     ${isActive 
-                      ? 'text-emerald-700 dark:text-emerald-400 font-bold' 
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}
+                      ? 'text-emerald-600 dark:text-emerald-400 font-bold' 
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'}
                   `}
                 >
                   {item.highlight ? (
