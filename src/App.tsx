@@ -48,6 +48,9 @@ export const App: React.FC = () => {
     const update = () => {
       const currentRole = appStore.getRole();
       setRole(currentRole);
+      if (currentRole === 'authority' || currentRole === 'student') {
+        setMainView('landing');
+      }
     };
     return appStore.subscribe(update);
   }, []);
@@ -61,11 +64,14 @@ export const App: React.FC = () => {
   };
 
   const handleLoginSuccess = (selectedRole: UserRole) => {
+    appStore.setRole(selectedRole);
+    setRole(selectedRole);
     setMainView('landing');
   };
 
   const handleLogout = () => {
     appStore.logout();
+    setRole('landing');
     setMainView('landing');
   };
 
@@ -89,8 +95,8 @@ export const App: React.FC = () => {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // 3. Auth Views
-  if (mainView === 'register') {
+  // 3. Auth Views (Only if role is landing)
+  if (role === 'landing' && mainView === 'register') {
     return (
       <RegisterPage
         onNavigateLogin={() => setMainView('login')}
@@ -99,7 +105,7 @@ export const App: React.FC = () => {
     );
   }
 
-  if (mainView === 'login') {
+  if (role === 'landing' && mainView === 'login') {
     return (
       <LoginPage
         onNavigateRegister={() => setMainView('register')}

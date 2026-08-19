@@ -30,16 +30,16 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-student-image text-[#2C221E] dark:text-slate-100 font-sans pb-24 transition-colors duration-300 selection:bg-emerald-500 selection:text-white relative">
+    <div className="min-h-screen bg-student-image filter contrast-110 saturate-115 text-[#2C221E] dark:text-slate-100 font-sans pb-24 transition-colors duration-300 selection:bg-emerald-500 selection:text-white relative">
       {/* Ambient Floating Particles */}
       <DynamicParticles />
 
-      {/* Editorial Translucent Background Scrim Overlay over Student Hostel Mess Background Image */}
-      <div className="fixed inset-0 bg-[#FDFBF7]/85 dark:bg-[#090807]/90 backdrop-blur-[2px] pointer-events-none z-0" />
+      {/* Lightweight Crystal Glass Scrim - High Visibility for Hostel Mess Illustration */}
+      <div className="fixed inset-0 bg-[#FDFBF7]/30 dark:bg-black/25 backdrop-blur-[1px] pointer-events-none z-0" />
 
       <div className="relative z-10">
         {/* Mobile Header */}
-        <header className="sticky top-0 z-40 bg-white/10 dark:bg-black/30 backdrop-blur-md border-b border-white/20 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
+        <header className="sticky top-0 z-40 bg-white/10 dark:bg-black/40 backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-base shadow-sm">
               {user.name.charAt(0)}
@@ -56,13 +56,13 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
             <ThemeToggle />
             <button
               onClick={() => appStore.loginAs('authority')}
-              className="px-2.5 py-1 rounded-full bg-white/10 dark:bg-black/30 hover:bg-white/20 text-[#2C221E] dark:text-slate-200 text-[10px] font-semibold border border-white/20 transition-colors backdrop-blur-md"
+              className="px-2.5 py-1 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white text-[10px] font-bold shadow-md transition-colors backdrop-blur-md cursor-pointer"
             >
               Authority View
             </button>
             <button
               onClick={onLogout}
-              className="p-1.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors"
+              className="p-1.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors cursor-pointer"
               title="Logout"
             >
               <LogOut className="w-4 h-4" />
