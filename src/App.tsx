@@ -4,6 +4,7 @@ import { UserRole } from './types';
 import { LandingPage } from './pages/LandingPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
+import { FoodRescuePage } from './pages/FoodRescuePage';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -31,7 +32,7 @@ import { StudentImpactPage } from './pages/student/StudentImpactPage';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
-  const [authView, setAuthView] = useState<'none' | 'register' | 'login'>('none');
+  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
   const [authorityTab, setAuthorityTab] = useState('today');
   const [studentTab, setStudentTab] = useState('home');
   const [selectedMealId, setSelectedMealId] = useState<string | undefined>();
@@ -40,20 +41,17 @@ export const App: React.FC = () => {
     const update = () => {
       const currentRole = appStore.getRole();
       setRole(currentRole);
-      if (currentRole !== 'landing') {
-        setAuthView('none');
-      }
     };
     return appStore.subscribe(update);
   }, []);
 
   const handleLoginSuccess = (selectedRole: UserRole) => {
-    setAuthView('none');
+    setMainView('landing');
   };
 
   const handleLogout = () => {
     appStore.logout();
-    setAuthView('none');
+    setMainView('landing');
   };
 
   const handleNavigateAuthority = (tab: string, mealId?: string) => {
@@ -66,20 +64,25 @@ export const App: React.FC = () => {
     if (mealId) setSelectedMealId(mealId);
   };
 
+  // Dedicated Food Rescue Hub Route
+  if (mainView === 'rescue') {
+    return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
+  }
+
   // Auth Views
-  if (authView === 'register') {
+  if (mainView === 'register') {
     return (
       <RegisterPage
-        onNavigateLogin={() => setAuthView('login')}
-        onSuccessRedirect={() => setAuthView('login')}
+        onNavigateLogin={() => setMainView('login')}
+        onSuccessRedirect={() => setMainView('login')}
       />
     );
   }
 
-  if (authView === 'login') {
+  if (mainView === 'login') {
     return (
       <LoginPage
-        onNavigateRegister={() => setAuthView('register')}
+        onNavigateRegister={() => setMainView('register')}
         onLoginSuccess={handleLoginSuccess}
       />
     );
@@ -90,8 +93,9 @@ export const App: React.FC = () => {
     return (
       <LandingPage
         onLoginSuccess={handleLoginSuccess}
-        onNavigateRegister={() => setAuthView('register')}
-        onNavigateLogin={() => setAuthView('login')}
+        onNavigateRegister={() => setMainView('register')}
+        onNavigateLogin={() => setMainView('login')}
+        onNavigateRescue={() => setMainView('rescue')}
       />
     );
   }

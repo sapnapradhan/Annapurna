@@ -20,16 +20,16 @@ export interface WeatherData {
 }
 
 const DEFAULT_WEATHER: WeatherData = {
-  locationName: 'Campus (New Delhi)',
-  currentTemp: 28,
+  locationName: 'Bhubaneswar, Odisha',
+  currentTemp: 29,
   condition: 'Partly Cloudy',
   iconType: 'partly_cloudy',
-  feelsLike: 30,
-  high: 32,
-  low: 24,
-  humidity: 62,
-  windSpeed: 12,
-  precipitationProb: 15,
+  feelsLike: 31,
+  high: 33,
+  low: 25,
+  humidity: 68,
+  windSpeed: 14,
+  precipitationProb: 20,
   dailyForecast: [
     { day: 'Mon', condition: 'Sunny', iconType: 'sunny', high: 32, low: 23, rainProb: 10 },
     { day: 'Tue', condition: 'Partly Cloudy', iconType: 'partly_cloudy', high: 31, low: 24, rainProb: 20 },

@@ -20,15 +20,15 @@ export const WeatherWidget: React.FC = () => {
           setLoading(false);
         },
         async () => {
-          // Fallback to New Delhi default
-          const data = await weatherService.getWeatherForLocation(28.6139, 77.2090, 'Campus (New Delhi)');
+          // Fallback to Bhubaneswar, Odisha default
+          const data = await weatherService.getWeatherForLocation(20.2961, 85.8245, 'Bhubaneswar, Odisha');
           setWeather(data);
           setLoading(false);
         },
         { timeout: 5000 }
       );
     } else {
-      const data = await weatherService.getWeatherForLocation(28.6139, 77.2090, 'Campus (New Delhi)');
+      const data = await weatherService.getWeatherForLocation(20.2961, 85.8245, 'Bhubaneswar, Odisha');
       setWeather(data);
       setLoading(false);
     }

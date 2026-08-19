@@ -18,7 +18,7 @@
   }
 }
 
-/* Background image overlay container rules */
+/* BOLD & SHARP BACKGROUND IMAGE - BOLD FOOD PHOTOGRAPHY IDENTITY */
 .bg-provided-image {
   background-image: url('/background.jpg');
   background-size: cover;
@@ -27,7 +27,16 @@
   background-attachment: fixed;
 }
 
-/* Custom smooth dark/light scrollbars */
+/* Localized Text Scrim Fades for Sharp Readability without Darkening Entire Background */
+.text-scrim-dark {
+  background: radial-gradient(circle at center, rgba(18, 16, 15, 0.85) 0%, rgba(18, 16, 15, 0.5) 70%, transparent 100%);
+}
+
+.text-scrim-light {
+  background: radial-gradient(circle at center, rgba(253, 251, 247, 0.92) 0%, rgba(253, 251, 247, 0.6) 75%, transparent 100%);
+}
+
+/* Custom smooth scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
