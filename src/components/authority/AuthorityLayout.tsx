@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Calendar, Clock, QrCode, Users, Star, BarChart2, Truck, TrendingUp, 
-  LogOut, Shield, ChevronRight, Menu, X, Utensils, AlertTriangle, Activity
+  LayoutDashboard, Utensils, Clock, QrCode, Users, MessageSquareQuote, 
+  Trash2, Truck, TrendingUp, Settings, LogOut, Bell, X, CheckCircle2 
 } from 'lucide-react';
 import { appStore } from '../../services/store';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { AudioPlayer } from '../common/AudioPlayer';
+import { VoiceAssistWidget } from '../common/VoiceAssistWidget';
 
 interface AuthorityLayoutProps {
   activeTab: string;
@@ -20,182 +21,155 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
   onLogout,
   children
 }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [currentTime, setCurrentTime] = useState(new Date());
   const user = appStore.getCurrentUser();
-  const messes = appStore.getMesses();
-  const [selectedMessId, setSelectedMessId] = useState(messes[0]?.id || '');
+  const [notifications, setNotifications] = useState(appStore.getAdminNotifications());
+  const [showNotifDrawer, setShowNotifDrawer] = useState(false);
 
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    const update = () => setNotifications([...appStore.getAdminNotifications()]);
+    return appStore.subscribe(update);
   }, []);
 
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   const navItems = [
-    { id: 'today', label: "Today's Meals", icon: Calendar },
+    { id: 'today', label: 'Today\'s Service', icon: LayoutDashboard },
     { id: 'menu', label: 'Menu Management', icon: Utensils },
-    { id: 'timing', label: 'Meal Timing & Overrides', icon: Clock },
-    { id: 'qr', label: 'Generate QR Session', icon: QrCode },
-    { id: 'live', label: 'Live Attendance', icon: Users, badge: 'Realtime' },
-    { id: 'feedback', label: 'Meal Feedback Dashboard', icon: Star },
-    { id: 'consumption', label: 'Post-Meal Consumption', icon: BarChart2 },
-    { id: 'surplus', label: 'Surplus & Rescue', icon: Truck, badge: 'Active' },
+    { id: 'timing', label: 'Meal Timings', icon: Clock },
+    { id: 'qr', label: 'QR Session Generator', icon: QrCode },
+    { id: 'live', label: 'Live Attendance', icon: Users },
+    { id: 'feedback', label: 'Feedback Dashboard', icon: MessageSquareQuote },
+    { id: 'consumption', label: 'Post-Meal Consumption', icon: Trash2 },
+    { id: 'surplus', label: 'Surplus Redistribution', icon: Truck },
     { id: 'forecasting', label: 'Demand Forecasting', icon: TrendingUp },
-    { id: 'settings', label: 'Profile / Settings', icon: Shield },
+    { id: 'settings', label: 'Authority Settings', icon: Settings },
   ];
 
   return (
-    <div className="min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 flex font-sans antialiased">
-      {/* Editorial Overlay */}
-      <div className="fixed inset-0 bg-[#FDFBF7]/90 dark:bg-[#12100F]/95 backdrop-blur-[2px] pointer-events-none z-0" />
-
-      <div className="relative z-10 flex w-full min-h-screen">
-        {/* Mobile Sidebar Overlay */}
-        {sidebarOpen && (
-          <div 
-            onClick={() => setSidebarOpen(false)}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
-          />
-        )}
-
-        {/* Sidebar */}
-        <aside className={`
-          fixed lg:static inset-y-0 left-0 z-50 w-64 bg-[#F5EFE6] dark:bg-[#1A1715] border-r border-[#EBE4D8] dark:border-[#2C2724] flex flex-col justify-between transition-transform duration-300
-          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        `}>
-          <div>
-            {/* Brand */}
-            <div className="p-4 border-b border-[#EBE4D8] dark:border-[#2C2724] flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#C86D44] text-white flex items-center justify-center font-bold font-serif">
-                  A
-                </div>
-                <div>
-                  <div className="font-serif font-bold text-sm text-[#2C221E] dark:text-slate-100 tracking-wider">ANNAPURNA</div>
-                  <div className="text-[10px] font-mono text-[#C86D44] dark:text-amber-400 font-bold">AUTHORITY CONTROL</div>
-                </div>
-              </div>
-              <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-500">
-                <X className="w-5 h-5" />
-              </button>
+    <div className="min-h-screen bg-provided-image text-[#2C221E] dark:text-slate-100 font-sans flex transition-colors duration-300">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white/10 dark:bg-black/40 border-r border-white/20 dark:border-white/10 hidden md:flex flex-col justify-between p-4 backdrop-blur-xl shrink-0">
+        <div className="space-y-6">
+          {/* Logo Header */}
+          <div className="flex items-center gap-3 px-2 pt-2">
+            <div className="w-9 h-9 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-xl shadow-md border border-amber-300/30">
+              A
             </div>
-
-            {/* Active Mess Selector */}
-            <div className="p-3 bg-[#FDFBF7]/60 dark:bg-[#12100F]/60 border-b border-[#EBE4D8] dark:border-[#2C2724]">
-              <label className="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase tracking-wider block mb-1">
-                Active Dining Facility
-              </label>
-              <select
-                value={selectedMessId}
-                onChange={(e) => setSelectedMessId(e.target.value)}
-                className="w-full bg-[#FDFBF7] dark:bg-[#201D1A] border border-[#EBE4D8] dark:border-[#2C2724] text-xs rounded-lg p-2 text-[#C86D44] dark:text-amber-300 font-semibold focus:outline-none"
-              >
-                {messes.map(m => (
-                  <option key={m.id} value={m.id}>{m.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Navigation Links */}
-            <nav className="p-2 space-y-1 overflow-y-auto max-h-[calc(100vh-220px)]">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => {
-                      setActiveTab(item.id);
-                      setSidebarOpen(false);
-                    }}
-                    className={`
-                      w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer
-                      ${isActive 
-                        ? 'bg-[#C86D44]/15 text-[#C86D44] dark:text-amber-300 border border-[#C86D44]/30 shadow-sm' 
-                        : 'text-slate-600 dark:text-slate-400 hover:text-[#2C221E] dark:hover:text-slate-200 hover:bg-[#EBE4D8]/50 dark:hover:bg-[#24201D]'}
-                    `}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className={`w-4 h-4 ${isActive ? 'text-[#C86D44] dark:text-amber-400' : 'text-slate-400'}`} />
-                      <span>{item.label}</span>
-                    </div>
-                    {item.badge && (
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* User Info & Controls */}
-          <div className="p-3 border-t border-[#EBE4D8] dark:border-[#2C2724] bg-[#FDFBF7]/40 dark:bg-[#12100F]/40 space-y-2">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 flex items-center justify-center text-[#C86D44] dark:text-amber-300 text-xs font-bold font-serif">
-                {user.name.charAt(0)}
-              </div>
-              <div className="overflow-hidden">
-                <div className="text-xs font-semibold text-[#2C221E] dark:text-slate-200 truncate">{user.name}</div>
-                <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{user.block}</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => appStore.loginAs('student')}
-                className="flex-1 py-1.5 rounded-lg bg-[#EBE4D8] dark:bg-[#24201D] hover:bg-[#DCD1C0] dark:hover:bg-[#2E2824] text-[10px] font-semibold text-[#2C221E] dark:text-slate-300 transition-colors text-center"
-              >
-                Student View
-              </button>
-              <button
-                onClick={onLogout}
-                className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 transition-colors"
-                title="Logout"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
+            <div>
+              <div className="font-cursive font-bold text-xl text-[#2C221E] dark:text-amber-100">Annapurna</div>
+              <div className="text-[10px] font-mono text-slate-600 dark:text-slate-400">Authority Ops Portal</div>
             </div>
           </div>
-        </aside>
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Top Header */}
-          <header className="h-14 bg-[#F5EFE6] dark:bg-[#1A1715] border-b border-[#EBE4D8] dark:border-[#2C2724] px-4 sm:px-6 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
-              <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-500 p-1">
-                <Menu className="w-5 h-5" />
-              </button>
-              <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-xs font-mono font-bold text-[#2C221E] dark:text-slate-300">
-                  MESS OPS ENGINE
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 text-xs font-mono">
-              <AudioPlayer />
-              <ThemeToggle />
-              <div className="hidden sm:flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                <Clock className="w-3.5 h-3.5 text-[#C86D44] dark:text-amber-400" />
-                <span>{currentTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-                <span className="text-[#C86D44] dark:text-amber-300 font-bold">{currentTime.toLocaleTimeString()}</span>
-              </div>
-              <div className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-                <span>ONLINE</span>
-              </div>
-            </div>
-          </header>
-
-          {/* Sub-page Container */}
-          <main className="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto">
-            {children}
-          </main>
+          {/* Nav Items */}
+          <nav className="space-y-1">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveTab(item.id)}
+                  className={`
+                    w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all cursor-pointer
+                    ${isActive 
+                      ? 'bg-[#C86D44] text-white shadow-lg' 
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/10 dark:hover:bg-white/5'}
+                  `}
+                >
+                  <Icon className="w-4 h-4 shrink-0" />
+                  <span className="truncate">{item.label}</span>
+                </button>
+              );
+            })}
+          </nav>
         </div>
+
+        {/* User Info & Switch */}
+        <div className="p-3 rounded-2xl bg-white/10 dark:bg-black/30 border border-white/10 space-y-3 backdrop-blur-md">
+          <div className="flex items-center justify-between text-xs">
+            <div className="font-bold truncate text-[#2C221E] dark:text-white">{user.name}</div>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 font-bold uppercase">
+              Admin
+            </span>
+          </div>
+
+          <button
+            onClick={() => appStore.loginAs('student')}
+            className="w-full py-2 rounded-xl bg-white/10 dark:bg-black/40 hover:bg-white/20 text-[#2C221E] dark:text-slate-200 text-xs font-semibold border border-white/20 transition-colors"
+          >
+            Switch to Student App
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        {/* Top Header */}
+        <header className="sticky top-0 z-30 bg-white/10 dark:bg-black/30 backdrop-blur-md border-b border-white/20 dark:border-white/10 px-6 py-3.5 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <h2 className="font-cursive font-bold text-xl text-[#2C221E] dark:text-white">
+              Campus Food Operations
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Notification Bell */}
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifDrawer(!showNotifDrawer)}
+                className="p-2 rounded-full bg-white/10 dark:bg-black/30 border border-white/20 text-slate-700 dark:text-slate-200 hover:text-[#C86D44] transition-colors relative cursor-pointer"
+                title="Authority Real-time Notifications"
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-mono font-bold flex items-center justify-center animate-bounce">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notification Drawer Popover */}
+              {showNotifDrawer && (
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-3xl bg-[#1A1715]/95 text-white border border-amber-500/30 shadow-2xl p-5 space-y-4 backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div className="font-cursive font-bold text-lg text-amber-100">Authority Notifications</div>
+                    <button onClick={() => setShowNotifDrawer(false)} className="text-slate-400 hover:text-white">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2 max-h-80 overflow-y-auto">
+                    {notifications.map(n => (
+                      <div key={n.id} className="p-3 rounded-2xl bg-white/5 border border-white/10 text-xs space-y-1">
+                        <div className="flex items-center justify-between text-[#C86D44] dark:text-amber-400 font-mono font-bold text-[10px]">
+                          <span>{n.title}</span>
+                          <span>{n.timestamp}</span>
+                        </div>
+                        <p className="text-slate-200 font-medium leading-relaxed">{n.message}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <AudioPlayer />
+            <VoiceAssistWidget label="Ops Voice" textToRead="Annapurna Authority Operations Portal. Central Dining Operations." />
+            <ThemeToggle />
+            <button
+              onClick={onLogout}
+              className="p-2 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </header>
+
+        <main className="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6 overflow-y-auto">
+          {children}
+        </main>
       </div>
     </div>
   );

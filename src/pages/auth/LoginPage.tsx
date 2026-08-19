@@ -122,6 +122,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">INSTANT DEMO LOGINS:</div>
           <div className="grid grid-cols-2 gap-2">
             <button
+              type="button"
               onClick={() => handleQuickLogin('aarav@student.edu')}
               className="p-2.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-bold text-left transition-colors cursor-pointer"
             >
@@ -129,6 +130,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               <div className="text-[9px] font-mono opacity-80">aarav@student.edu</div>
             </button>
             <button
+              type="button"
               onClick={() => handleQuickLogin('admin@authority.edu')}
               className="p-2.5 rounded-xl bg-[#C86D44]/20 hover:bg-[#C86D44]/30 border border-[#C86D44]/40 text-amber-300 text-xs font-bold text-left transition-colors cursor-pointer"
             >
@@ -142,6 +144,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         <div className="text-center text-xs text-slate-400 pt-2">
           Need a student dining account?{' '}
           <button
+            type="button"
             onClick={onNavigateRegister}
             className="text-[#C86D44] dark:text-amber-300 font-bold hover:underline cursor-pointer"
           >
