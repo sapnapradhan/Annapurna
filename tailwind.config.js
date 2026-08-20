@@ -20,6 +20,17 @@ export default {
           800: '#482112',
           900: '#2c221e',
         },
+        bubblegum: {
+          pink: '#FF4D8D',
+          rose: '#FF75A0',
+          darkPink: '#FF1E6B',
+          blue: '#00D2FF',
+          purple: '#B5179E',
+          yellow: '#FFD000',
+          mint: '#00F5D4',
+          orange: '#FF9770',
+          bg: '#0F0B1E',
+        },
         editorial: {
           cream: '#FDFBF7',
           sand: '#F5EFE6',
@@ -32,6 +43,8 @@ export default {
         }
       },
       fontFamily: {
+        bubblegum: ['Fredoka', 'Titan One', 'Sniglet', 'sans-serif'],
+        titan: ['Titan One', 'Fredoka', 'sans-serif'],
         cursive: ['Dancing Script', 'Caveat', 'cursive'],
         caveat: ['Caveat', 'Dancing Script', 'cursive'],
         crayon: ['Fredericka the Great', 'Cabin Sketch', 'Cinzel', 'serif'],

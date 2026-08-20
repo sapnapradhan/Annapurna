@@ -6,6 +6,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
 import { CinematicIntro } from './components/common/CinematicIntro';
+import { BubblegumPhysicsCanvas } from './components/bubblegum/BubblegumPhysicsCanvas';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -35,9 +36,9 @@ type AppStep = 'intro' | 'main';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
-  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
+  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'bubblegum'>('landing');
 
-  // Website opens directly into the main homepage; story plays on demand
+  // Website opens directly into main homepage; story plays on demand
   const [step, setStep] = useState<AppStep>('main');
 
   const [authorityTab, setAuthorityTab] = useState('today');
@@ -90,12 +91,17 @@ export const App: React.FC = () => {
     return <CinematicIntro onComplete={handleIntroComplete} />;
   }
 
-  // 2. Dedicated Food Rescue Hub Route
+  // 2. Interactive Gravity Bubblegum Typography Website Mode
+  if (mainView === 'bubblegum') {
+    return <BubblegumPhysicsCanvas onBackToHome={() => setMainView('landing')} />;
+  }
+
+  // 3. Dedicated Food Rescue Hub Route
   if (mainView === 'rescue') {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // 3. Auth Views (Only if role is landing)
+  // 4. Auth Views (Only if role is landing)
   if (role === 'landing' && mainView === 'register') {
     return (
       <RegisterPage
@@ -114,7 +120,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 4. Main Landing Page
+  // 5. Main Landing Page
   if (role === 'landing') {
     return (
       <LandingPage
@@ -122,12 +128,13 @@ export const App: React.FC = () => {
         onNavigateRegister={() => setMainView('register')}
         onNavigateLogin={() => setMainView('login')}
         onNavigateRescue={() => setMainView('rescue')}
+        onNavigateBubblegum={() => setMainView('bubblegum')}
         onReplayIntro={handleReplayIntro}
       />
     );
   }
 
-  // 5. Authority Dashboard
+  // 6. Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -149,7 +156,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 6. Student Mobile App
+  // 7. Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}
