@@ -36,9 +36,10 @@ type AppStep = 'intro' | 'main';
 
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
-  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'bubblegum'>('landing');
+  
+  // Website opens IMMEDIATELY into the Gravity Bubblegum Typography Physics Experience on link open!
+  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'bubblegum'>('bubblegum');
 
-  // Website opens directly into main homepage; story plays on demand
   const [step, setStep] = useState<AppStep>('main');
 
   const [authorityTab, setAuthorityTab] = useState('today');
@@ -91,7 +92,7 @@ export const App: React.FC = () => {
     return <CinematicIntro onComplete={handleIntroComplete} />;
   }
 
-  // 2. Interactive Gravity Bubblegum Typography Website Mode
+  // 2. Initial Gravity Bubblegum Typography Physics Website Experience (Opens First!)
   if (mainView === 'bubblegum') {
     return <BubblegumPhysicsCanvas onBackToHome={() => setMainView('landing')} />;
   }

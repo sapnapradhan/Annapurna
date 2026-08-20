@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
 import { 
-  Sparkles, RefreshCw, ArrowDown, Play, RotateCcw, Zap, Sliders, Flame, Compass, Volume2, VolumeX, Plus, ChevronUp, ChevronDown
+  Sparkles, RefreshCw, Zap, RotateCcw, Plus, ArrowRight, Sun
 } from 'lucide-react';
 
 export interface ColorScheme {
@@ -10,57 +10,64 @@ export interface ColorScheme {
   textColor: string;
   shadowColor: string;
   glowColor: string;
+  starColor: string;
 }
 
 export const BUBBLEGUM_PALETTES: ColorScheme[] = [
   {
-    name: 'Strawberry Pink',
-    gradient: ['#FF75A0', '#FF4D8D', '#D80056'],
-    textColor: '#FFF0F5',
-    shadowColor: 'rgba(216, 0, 86, 0.4)',
-    glowColor: 'rgba(255, 117, 160, 0.6)'
+    name: 'Shining Strawberry',
+    gradient: ['#FF9EBB', '#FF3385', '#C7004C'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(255, 51, 133, 0.8)',
+    glowColor: '#FF66A3',
+    starColor: '#FFE6F0'
   },
   {
-    name: 'Cotton Candy Blue',
-    gradient: ['#70E0FF', '#00C2FF', '#0070B8'],
-    textColor: '#F0FBFF',
-    shadowColor: 'rgba(0, 112, 184, 0.4)',
-    glowColor: 'rgba(112, 224, 255, 0.6)'
+    name: 'Neon Cyan Glow',
+    gradient: ['#A6F6FF', '#00D2FF', '#0070B8'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(0, 210, 255, 0.8)',
+    glowColor: '#80E5FF',
+    starColor: '#E6FAFF'
   },
   {
-    name: 'Grape Jelly',
-    gradient: ['#E056FD', '#B5179E', '#5B0060'],
-    textColor: '#FAF0FC',
-    shadowColor: 'rgba(91, 0, 96, 0.4)',
-    glowColor: 'rgba(224, 86, 253, 0.6)'
+    name: 'Electric Grape',
+    gradient: ['#F39EFF', '#B5179E', '#5B0060'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(181, 23, 158, 0.8)',
+    glowColor: '#E566FF',
+    starColor: '#FDF0FF'
   },
   {
-    name: 'Lemon Drop',
-    gradient: ['#FFE600', '#FFAB00', '#D86B00'],
-    textColor: '#FFFDF0',
-    shadowColor: 'rgba(216, 107, 0, 0.4)',
-    glowColor: 'rgba(255, 230, 0, 0.6)'
+    name: 'Shining Lemon Gold',
+    gradient: ['#FFF59D', '#FFD600', '#FF8F00'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(255, 214, 0, 0.85)',
+    glowColor: '#FFE566',
+    starColor: '#FFFFE0'
   },
   {
-    name: 'Mint Fresh',
-    gradient: ['#54F7D3', '#00D2A0', '#007A5E'],
-    textColor: '#F0FFF9',
-    shadowColor: 'rgba(0, 122, 94, 0.4)',
-    glowColor: 'rgba(84, 247, 211, 0.6)'
+    name: 'Laser Mint Glow',
+    gradient: ['#A0FFE6', '#00F5D4', '#008770'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(0, 245, 212, 0.8)',
+    glowColor: '#66FFE8',
+    starColor: '#E6FFF9'
   },
   {
-    name: 'Juicy Mango',
-    gradient: ['#FF9770', '#FF70A6', '#C72C61'],
-    textColor: '#FFF5F0',
-    shadowColor: 'rgba(199, 44, 97, 0.4)',
-    glowColor: 'rgba(255, 151, 112, 0.6)'
+    name: 'Radiant Peach',
+    gradient: ['#FFC299', '#FF70A6', '#D62260'],
+    textColor: '#FFFFFF',
+    shadowColor: 'rgba(255, 112, 166, 0.8)',
+    glowColor: '#FFA3C2',
+    starColor: '#FFF0F5'
   }
 ];
 
 export const INITIAL_WORDS = [
   'ANNAPURNA', 'NOURISH', 'RESCUE', 'SHARE', 'BUBBLEGUM', 
-  'YUMMY', 'DELICIOUS', 'COMMUNITY', 'SQUISHY', 'BOUNCE', 
-  'IMPACT', 'FRESH', 'FOOD', 'SMILE', 'POP'
+  'SHINING', 'GLOWING', 'YUMMY', 'DELICIOUS', 'COMMUNITY', 
+  'SQUISHY', 'BOUNCE', 'IMPACT', 'FRESH', 'FOOD'
 ];
 
 interface WordObject {
@@ -93,11 +100,9 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
 
   const [inputWord, setInputWord] = useState('');
   const [gravityMode, setGravityMode] = useState<'earth' | 'zero' | 'reverse' | 'heavy'>('earth');
-  const [activePaletteIdx, setActivePaletteIdx] = useState(0);
   const [wordCount, setWordCount] = useState(0);
 
   const [introStage, setIntroStage] = useState<'floating' | 'falling' | 'interactive'>('floating');
-  const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Initialize Physics Engine & Render Loop
   useEffect(() => {
@@ -186,27 +191,27 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
 
         // Clear Canvas with Soft Dark Candy Gradient
         const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-        bgGrad.addColorStop(0, '#0E0B1F');
-        bgGrad.addColorStop(0.5, '#150F2D');
-        bgGrad.addColorStop(1, '#0A0716');
+        bgGrad.addColorStop(0, '#090615');
+        bgGrad.addColorStop(0.5, '#120C28');
+        bgGrad.addColorStop(1, '#06040F');
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, w, h);
 
-        // Draw Ambient Floating Jelly Particles
+        // Draw Ambient Floating Sparkling Star Particles
         const now = Date.now() * 0.001;
-        for (let p = 0; p < 15; p++) {
-          const px = (Math.sin(now + p * 1.5) * 0.4 + 0.5) * w;
-          const py = (Math.cos(now * 0.8 + p * 2.1) * 0.4 + 0.5) * h;
-          const pSize = (Math.sin(now + p) + 2) * 3;
-          ctx.fillStyle = p % 2 === 0 ? 'rgba(255, 117, 160, 0.15)' : 'rgba(0, 210, 255, 0.15)';
+        for (let p = 0; p < 24; p++) {
+          const px = (Math.sin(now + p * 1.5) * 0.45 + 0.5) * w;
+          const py = (Math.cos(now * 0.8 + p * 2.1) * 0.45 + 0.5) * h;
+          const pSize = (Math.sin(now * 2 + p) + 2.5) * 2;
+          ctx.fillStyle = p % 2 === 0 ? 'rgba(255, 230, 102, 0.4)' : 'rgba(255, 102, 178, 0.4)';
           ctx.beginPath();
           ctx.arc(px, py, pSize, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Render Words
+        // Render Words with Shining Font Effects
         wordsRef.current.forEach((wObj) => {
-          renderBubblegumWord(ctx, wObj);
+          renderShiningBubblegumWord(ctx, wObj, now);
         });
       }
 
@@ -225,7 +230,7 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     };
   }, []);
 
-  // Spawn Bubblegum Word Physics Object Function
+  // Spawn Bubblegum Word Physics Object
   const spawnWordObject = (
     text: string, 
     x: number, 
@@ -237,12 +242,10 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     const isMobile = window.innerWidth < 640;
     const fontScale = isMobile ? 0.75 : 1.0;
     
-    // Dynamic Font Sizing according to word length
     let fontSize = Math.max(34, Math.min(54, 300 / (text.length * 0.65))) * fontScale;
     const paddingX = fontSize * 0.7;
     const paddingY = fontSize * 0.4;
 
-    // Measure text width using temporary canvas context
     const tempCanvas = document.createElement('canvas');
     const tempCtx = tempCanvas.getContext('2d');
     if (tempCtx) {
@@ -255,16 +258,14 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
 
     const palette = paletteOverride || BUBBLEGUM_PALETTES[Math.floor(Math.random() * BUBBLEGUM_PALETTES.length)];
 
-    // Matter.js Chamfered Rect Body for Puffy Soft Collisions
     const body = Matter.Bodies.rectangle(x, y, width, height, {
-      restitution: 0.75, // Bouncy bubblegum!
-      friction: 0.05,    // Slippery soft surface
-      frictionAir: 0.012,// Soft air float
-      density: 0.002,    // Light squishy mass
-      chamfer: { radius: height / 2.2 } // Rounded puffy corners!
+      restitution: 0.78, // Extra bouncy!
+      friction: 0.04,
+      frictionAir: 0.012,
+      density: 0.002,
+      chamfer: { radius: height / 2.2 }
     });
 
-    // Give slight initial random spin & impulse
     Matter.Body.setAngle(body, (Math.random() - 0.5) * 0.3);
     Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.05);
 
@@ -287,21 +288,18 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     setWordCount(wordsRef.current.length);
   };
 
-  // Render Inflated 3D Glossy Bubblegum Word
-  const renderBubblegumWord = (ctx: CanvasRenderingContext2D, wObj: WordObject) => {
+  // Render Inflated 3D Glossy Bubblegum Word with SHINING & GLOWING FONTS
+  const renderShiningBubblegumWord = (ctx: CanvasRenderingContext2D, wObj: WordObject, now: number) => {
     const { body, text, width, height, fontSize, palette } = wObj;
     const { x, y } = body.position;
     const angle = body.angle;
 
-    // Calculate Squash-and-Stretch Deformation from physics velocity
     const vx = body.velocity.x;
     const vy = body.velocity.y;
-    const speed = Math.sqrt(vx * vx + vy * vy);
 
     wObj.targetSquashX = 1.0 + Math.abs(vx) * 0.012 - Math.abs(vy) * 0.008;
     wObj.targetSquashY = 1.0 + Math.abs(vy) * 0.012 - Math.abs(vx) * 0.008;
 
-    // Spring Damper Interpolation for soft elastic wobble
     wObj.squashX += (wObj.targetSquashX - wObj.squashX) * 0.15;
     wObj.squashY += (wObj.targetSquashY - wObj.squashY) * 0.15;
 
@@ -314,18 +312,18 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     const halfH = height / 2;
     const radius = halfH;
 
-    // 1. Soft Multi-layered Drop Shadow Underneath
+    // 1. Radiant Outer Glow Layer
     ctx.save();
     ctx.shadowColor = palette.shadowColor;
-    ctx.shadowBlur = 24;
-    ctx.shadowOffsetY = 16;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 12;
+    ctx.fillStyle = palette.gradient[1];
     ctx.beginPath();
     ctx.roundRect(-halfW, -halfH, width, height, radius);
     ctx.fill();
     ctx.restore();
 
-    // 2. Main 3D Puffy Inflated Capsule Base
+    // 2. Main 3D Puffy Inflated Base
     const bodyGrad = ctx.createLinearGradient(-halfW, -halfH, halfW, halfH);
     bodyGrad.addColorStop(0, palette.gradient[0]);
     bodyGrad.addColorStop(0.5, palette.gradient[1]);
@@ -336,55 +334,71 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     ctx.roundRect(-halfW, -halfH, width, height, radius);
     ctx.fill();
 
-    // 3. Inner Ambient Glow Border
-    ctx.lineWidth = 4;
+    // 3. Neon Glow Stroke Border
+    ctx.lineWidth = 3.5;
     ctx.strokeStyle = palette.glowColor;
     ctx.stroke();
 
-    // 4. Glossy Specular Reflection Arc (Top Edge Vinyl Specular Highlight)
+    // 4. Glossy Specular Sheen Reflection Arc (Vinyl Specular Highlight)
     ctx.save();
     const specGrad = ctx.createLinearGradient(0, -halfH, 0, 0);
-    specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.85)');
+    specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
     specGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
 
     ctx.fillStyle = specGrad;
     ctx.beginPath();
-    ctx.roundRect(-halfW + 6, -halfH + 4, width - 12, halfH * 0.7, radius * 0.7);
+    ctx.roundRect(-halfW + 6, -halfH + 4, width - 12, halfH * 0.75, radius * 0.7);
     ctx.fill();
     ctx.restore();
 
-    // 5. Secondary Curved Specular Bubble Pill Highlight
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    // 5. Secondary Glossy Pill Specular Highlight
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.beginPath();
     ctx.ellipse(-halfW + radius * 0.8, -halfH + radius * 0.6, radius * 0.35, radius * 0.18, -Math.PI / 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // 6. Chunky Puffy Bubblegum Typography
+    // 6. SHINING & GLOWING FONTS (Multi-pass Glowing Text)
     ctx.font = `900 ${fontSize}px Fredoka, "Titan One", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Text Shadow / 3D Bevel Offset
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    // Pass A: Outer Text Neon Glow
+    ctx.save();
+    ctx.shadowColor = palette.glowColor;
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+
+    // Pass B: Text Bevel Shadow
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.fillText(text, 0, 3);
 
-    // Text Stroke Border
+    // Pass C: Bold Text Stroke
     ctx.lineWidth = Math.max(3, fontSize * 0.08);
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
     ctx.strokeText(text, 0, 0);
 
-    // Main Inflated White/Light Text Fill
-    ctx.fillStyle = palette.textColor;
+    // Pass D: Animated Dynamic Light Sheen Sweep across Text!
+    const sheenOffset = (Math.sin(now * 3 + x * 0.01) * 0.5 + 0.5) * width - halfW;
+    const textSheenGrad = ctx.createLinearGradient(sheenOffset - 30, 0, sheenOffset + 30, 0);
+    textSheenGrad.addColorStop(0, palette.textColor);
+    textSheenGrad.addColorStop(0.5, '#FFFFFF');
+    textSheenGrad.addColorStop(1, palette.textColor);
+
+    ctx.fillStyle = textSheenGrad;
     ctx.fillText(text, 0, 0);
 
-    // Text Specular Shine Overprint
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-    ctx.fillText(text, -1, -1);
+    // Pass E: Sparkling Star Glints (✨) on Letter Tops
+    const starOpacity = Math.sin(now * 4 + y * 0.02) * 0.4 + 0.6;
+    ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`;
+    ctx.font = `${fontSize * 0.3}px sans-serif`;
+    ctx.fillText('✨', -halfW + 14, -halfH + 12);
 
     ctx.restore();
   };
 
-  // Touch / Pointer Hover Sideways Poking Impulse & Dragging Physics
+  // Touch / Pointer Hover Sideways Poking Impulse
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current || !engineRef.current) return;
 
@@ -392,7 +406,7 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
 
-    const radius = 130; // Interaction influence radius
+    const radius = 130;
 
     wordsRef.current.forEach((wObj) => {
       const { body } = wObj;
@@ -401,17 +415,13 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
       const dist = Math.sqrt(dx * dx + dy * dy);
 
       if (dist < radius && dist > 2) {
-        // Calculate Impulse magnitude pushing SIDEWAYS to Left or Right!
         const influence = (1 - dist / radius);
         const directionX = Math.sign(dx) || (Math.random() > 0.5 ? 1 : -1);
 
-        // Strong physical impulse pushing sideways
         const forceX = directionX * influence * 0.09;
-        const forceY = -influence * 0.02; // Slight upward lift
+        const forceY = -influence * 0.02;
 
         Matter.Body.applyImpulse(body, body.position, { x: forceX, y: forceY });
-        
-        // Spin wobble!
         Matter.Body.setAngularVelocity(body, body.angularVelocity + directionX * influence * 0.12);
       }
     });
@@ -452,8 +462,7 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
     const spawnX = w * 0.3 + Math.random() * (w * 0.4);
     const spawnY = 60;
 
-    const chosenPalette = BUBBLEGUM_PALETTES[activePaletteIdx % BUBBLEGUM_PALETTES.length];
-    spawnWordObject(inputWord.trim(), spawnX, spawnY, chosenPalette);
+    spawnWordObject(inputWord.trim(), spawnX, spawnY);
     setInputWord('');
   };
 
@@ -505,7 +514,7 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
   return (
     <div 
       ref={containerRef}
-      className="relative w-screen h-screen overflow-hidden bg-[#0E0B1F] select-none font-bubblegum text-white"
+      className="relative w-screen h-screen overflow-hidden bg-[#090615] select-none font-bubblegum text-white"
     >
       {/* 2D Physics Canvas Layer */}
       <canvas
@@ -520,36 +529,36 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 text-center space-y-3 pointer-events-none animate-in fade-in duration-700">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-500/20 border border-pink-500/40 text-pink-300 text-xs font-mono font-bold uppercase tracking-widest backdrop-blur-xl">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{introStage === 'floating' ? 'FLOATING WORDS READY...' : 'GRAVITY ACTIVATED!'}</span>
+            <span>{introStage === 'floating' ? 'FLOATING SHINING WORDS...' : 'GRAVITY ACTIVATED!'}</span>
           </div>
-          <h1 className="font-bubblegum text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-400 drop-shadow-2xl uppercase">
-            {introStage === 'floating' ? 'SOFT BUBBLEGUM WORDS' : 'WATCH THEM FALL & SQUISH!'}
+          <h1 className="font-bubblegum text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-amber-200 to-cyan-300 drop-shadow-2xl uppercase">
+            {introStage === 'floating' ? 'SHINING BUBBLEGUM WORDS' : 'WATCH THEM FALL & GLOW!'}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-300 font-medium max-w-md mx-auto">
-            Poke, drag, throw, and push the puffy inflated words sideways across the floor.
+          <p className="text-xs sm:text-sm text-slate-200 font-medium max-w-md mx-auto">
+            Poke, push sideways, drag, and interact with glossy shining bubblegum words.
           </p>
         </div>
       )}
 
-      {/* Top Header Controls Overlay */}
+      {/* Top Header Controls Overlay with ENTER ANNAPURNA PLATFORM CTA */}
       <header className="absolute top-4 left-1/2 -translate-x-1/2 z-30 max-w-6xl w-[94%] transition-all">
-        <div className="bg-[#150F2D]/80 border border-purple-500/30 backdrop-blur-xl shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
+        <div className="bg-[#150F2D]/85 border border-purple-500/40 backdrop-blur-xl shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
           {/* Logo Brand */}
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500 via-purple-500 to-cyan-400 text-white flex items-center justify-center font-bubblegum font-black text-lg shadow-lg border border-white/40">
-              B
+              A
             </div>
             <div>
-              <div className="font-bubblegum font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-300 to-cyan-300 tracking-wider">
-                ANNAPURNA • BUBBLEGUM
+              <div className="font-bubblegum font-black text-lg sm:text-xl text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-amber-200 to-cyan-300 tracking-wider">
+                ANNAPURNA • SHINING BUBBLEGUM
               </div>
               <div className="text-[9px] font-mono text-purple-300 tracking-widest uppercase hidden sm:block">
-                GRAVITY TYPOGRAPHY PHYSICS • {wordCount} WORDS ACTIVE
+                GRAVITY TYPOGRAPHY PHYSICS • {wordCount} SHINING WORDS ACTIVE
               </div>
             </div>
           </div>
 
-          {/* Action CTAs */}
+          {/* Action CTAs: ENTER ANNAPURNA PLATFORM */}
           <div className="flex items-center gap-2">
             <button
               onClick={handleScatterAll}
@@ -563,9 +572,10 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
             {onBackToHome && (
               <button
                 onClick={onBackToHome}
-                className="px-4 py-1.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer"
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 via-purple-600 to-pink-500 hover:from-pink-600 hover:to-purple-700 text-white font-black text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center gap-1.5 border border-pink-300/40 animate-pulse"
               >
-                Exit to App
+                <span>ENTER ANNAPURNA PLATFORM</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -582,7 +592,7 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
               type="text"
               value={inputWord}
               onChange={(e) => setInputWord(e.target.value)}
-              placeholder="Type word to spawn (e.g. SQUISHY)..."
+              placeholder="Type word to spawn (e.g. SHINING)..."
               maxLength={14}
               className="flex-1 bg-black/40 border border-purple-500/40 rounded-2xl py-2.5 px-4 text-xs sm:text-sm font-bubblegum text-white placeholder-purple-300/60 focus:outline-none focus:border-pink-400 transition-colors"
             />
@@ -595,9 +605,8 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
             </button>
           </form>
 
-          {/* Quick Gravity & Palette Controls */}
+          {/* Quick Gravity & Controls */}
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-purple-500/20 pt-2 text-xs font-mono">
-            {/* Gravity Mode Selector */}
             <div className="flex items-center gap-1">
               <span className="text-[10px] text-purple-300 uppercase mr-1 hidden sm:inline">Gravity:</span>
               {[
@@ -620,7 +629,6 @@ export const BubblegumPhysicsCanvas: React.FC<BubblegumPhysicsCanvasProps> = ({ 
               ))}
             </div>
 
-            {/* Clear Button */}
             <button
               onClick={handleClearAll}
               className="text-[10px] text-purple-400 hover:text-pink-300 uppercase font-mono tracking-wider flex items-center gap-1 cursor-pointer ml-auto"
