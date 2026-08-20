@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   UtensilsCrossed, Shield, Sparkles, QrCode, TrendingUp, BarChart3, 
-  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity, UserPlus, LogIn, Truck, MapPin, Play
+  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity, UserPlus, LogIn, Truck, MapPin, Play, Heart, Smile
 } from 'lucide-react';
 import { appStore } from '../services/store';
 import { UserRole } from '../types';
@@ -21,6 +21,33 @@ interface LandingPageProps {
   onReplayIntro: () => void;
 }
 
+const CHILDREN_STORIES = [
+  {
+    id: 'story-1',
+    slogan: 'NO CHILD SHOULD SLEEP HUNGRY',
+    subtext: 'Bhubaneswar Campus Dining feeds 400+ hostel students daily, automatically calculating surplus food to rescue children in need.',
+    tag: '⚠️ HUNGER ERADICATION MISSION',
+    bgGradient: 'from-amber-900/60 via-rose-950/40 to-black/60',
+    iconColor: 'text-amber-400'
+  },
+  {
+    id: 'story-2',
+    slogan: 'FROM SURPLUS TO SMILING FACES',
+    subtext: 'Every unserved meal tray is verified, temperature-checked, and dispatched to local Robin Hood Army & Feeding India hubs.',
+    tag: '🚚 REAL-TIME FOOD RESCUE DISPATCH',
+    bgGradient: 'from-emerald-950/60 via-amber-950/40 to-black/60',
+    iconColor: 'text-emerald-400'
+  },
+  {
+    id: 'story-3',
+    slogan: 'NOURISHING DREAMS, ONE MEAL AT A TIME',
+    subtext: 'Transforming food waste into joy, smiles, and hope across Odisha.',
+    tag: '💖 COMMUNITY IMPACT',
+    bgGradient: 'from-purple-950/60 via-[#C86D44]/30 to-black/60',
+    iconColor: 'text-pink-400'
+  }
+];
+
 export const LandingPage: React.FC<LandingPageProps> = ({ 
   onNavigateRegister,
   onNavigateLogin,
@@ -28,6 +55,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onReplayIntro
 }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [activeStoryIdx, setActiveStoryIdx] = useState(0);
+
   const [showMusicPopup, setShowMusicPopup] = useState<boolean>(() => {
     return localStorage.getItem('annapurna_music_consent') === null;
   });
@@ -38,6 +67,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Auto-play Children Food Story Reel every 4 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveStoryIdx((prev) => (prev + 1) % CHILDREN_STORIES.length);
+    }, 4000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleMusicChoice = (enableMusic: boolean) => {
@@ -54,13 +91,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     }
   };
 
+  const currentStory = CHILDREN_STORIES[activeStoryIdx];
+
   return (
-    <div className="relative min-h-screen bg-homepage-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300">
+    <div className="relative min-h-screen bg-homepage-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300 overflow-x-hidden">
       {/* Ambient Dynamic Background Particles */}
       <DynamicParticles />
 
-      {/* Light Backdrop Scrim */}
-      <div className="fixed inset-0 bg-transparent pointer-events-none z-0" />
+      {/* Floating & Shaking Moving Thali Plates Background Animation */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Floating Shaking Plate 1 (Top Left) */}
+        <div className="absolute top-[15%] left-[5%] opacity-25 dark:opacity-40 animate-pulse">
+          <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-amber-600/40 via-orange-500/30 to-yellow-400/20 border-4 border-amber-400/40 shadow-2xl flex items-center justify-center p-3 transform hover:scale-105 transition-transform duration-700">
+            <div className="w-full h-full rounded-full border-2 border-dashed border-amber-300/40 flex items-center justify-center font-cursive text-amber-200 text-xs text-center font-bold">
+              🍛 FRESH THALI
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Shaking Plate 2 (Bottom Right) */}
+        <div className="absolute bottom-[20%] right-[6%] opacity-25 dark:opacity-40 animate-bounce duration-[3000ms]">
+          <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-[#C86D44]/40 via-amber-500/30 to-rose-500/20 border-4 border-[#C86D44]/40 shadow-2xl flex items-center justify-center p-3">
+            <div className="w-full h-full rounded-full border-2 border-dashed border-amber-300/40 flex items-center justify-center font-cursive text-amber-100 text-xs text-center font-bold">
+              🍲 NOURISHING MEAL
+            </div>
+          </div>
+        </div>
+
+        {/* Floating Shaking Plate 3 (Center Floating) */}
+        <div className="absolute top-[55%] left-[8%] opacity-20 dark:opacity-30">
+          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-emerald-600/30 to-amber-500/20 border-4 border-emerald-400/40 shadow-2xl flex items-center justify-center p-2">
+            <div className="w-full h-full rounded-full border border-emerald-300/30 flex items-center justify-center font-cursive text-emerald-200 text-[10px] text-center">
+              🍱 FOOD RESCUE
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Page Music Choice Consent Popup */}
       {showMusicPopup && (
@@ -88,6 +154,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Nav Links */}
             <nav className="hidden lg:flex items-center gap-6 text-[11px] font-mono font-bold tracking-widest text-slate-800 dark:text-slate-200 uppercase">
+              <a href="#children-stories" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors text-[#C86D44] dark:text-amber-300">CHILDREN STORIES</a>
               <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">FEATURES</a>
               <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">WEATHER</a>
               <button
@@ -132,7 +199,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </header>
 
-        {/* Full-Screen Editorial Hero Section (Translucent Glass Container) */}
+        {/* Full-Screen Editorial Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
           <div className="max-w-4xl mx-auto text-center space-y-7 p-10 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
             
@@ -178,8 +245,54 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Scroll Indicator */}
             <div className="pt-6 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
-              <span>EXPLORE PLATFORM & TELEMETRY</span>
+              <span>SEE CHILDREN FOOD STORIES & TELEMETRY</span>
               <ChevronDown className="w-4 h-4 mt-1 text-[#C86D44]" />
+            </div>
+          </div>
+        </section>
+
+        {/* DYNAMIC CHILDREN FOOD STORY REEL / SLIDESHOW SECTION */}
+        <section id="children-stories" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/20 dark:border-white/10">
+          <div className="text-center max-w-xl mx-auto mb-10 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
+              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
+              <span>HUNGRY TO SMILING FACES IMPACT REEL</span>
+            </div>
+            <h2 className="font-cursive text-3xl sm:text-4xl font-bold text-[#2C221E] dark:text-white tracking-wide">
+              No Child Should Sleep Hungry
+            </h2>
+          </div>
+
+          {/* Animated Story Reel Card */}
+          <div className={`p-8 sm:p-12 rounded-3xl bg-gradient-to-br ${currentStory.bgGradient} border border-amber-500/30 shadow-2xl backdrop-blur-2xl transition-all duration-700 space-y-6 text-center text-white relative overflow-hidden`}>
+            
+            {/* Tag Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md">
+              <Smile className={`w-4 h-4 ${currentStory.iconColor}`} />
+              <span>{currentStory.tag}</span>
+            </div>
+
+            {/* Slogan */}
+            <h3 className="font-cursive font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-xl">
+              "{currentStory.slogan}"
+            </h3>
+
+            {/* Subtext */}
+            <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-200 font-medium leading-relaxed drop-shadow">
+              {currentStory.subtext}
+            </p>
+
+            {/* Slide Indicators */}
+            <div className="flex items-center justify-center gap-2 pt-4">
+              {CHILDREN_STORIES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveStoryIdx(idx)}
+                  className={`h-2 rounded-full transition-all cursor-pointer ${
+                    activeStoryIdx === idx ? 'w-8 bg-[#C86D44] dark:bg-amber-400' : 'w-2 bg-white/30 hover:bg-white/50'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </section>

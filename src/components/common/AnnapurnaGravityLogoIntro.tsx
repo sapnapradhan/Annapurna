@@ -42,7 +42,6 @@ const LOGO_PALETTES: ColorScheme[] = [
   }
 ];
 
-// Sequential One-by-One Drop Items: Letters of A-N-N-A-P-U-R-N-A + Slogan Words
 const LOGO_ITEMS = [
   { text: 'A', isLetter: true },
   { text: 'N', isLetter: true },
@@ -87,9 +86,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
   const lettersRef = useRef<LetterObject[]>([]);
   const boundariesRef = useRef<Matter.Body[]>([]);
 
-  const [spawnedCount, setSpawnedCount] = useState(0);
-
-  // Initialize Physics Engine & Render Loop
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
 
@@ -101,7 +97,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     canvas.width = width;
     canvas.height = height;
 
-    // Matter.js Engine with Active Gravity
     const engine = Matter.Engine.create({
       gravity: { x: 0, y: 1.1 }
     });
@@ -111,7 +106,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     runnerRef.current = runner;
     Matter.Runner.run(runner, engine);
 
-    // Viewport Boundary Walls
     const wallOptions = { isStatic: true, restitution: 0.85, friction: 0.1 };
     const thickness = 120;
 
@@ -123,7 +117,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     boundariesRef.current = [ground, leftWall, rightWall, ceiling];
     Matter.Composite.add(engine.world, boundariesRef.current);
 
-    // Handle Window Resize
     const handleResize = () => {
       if (!containerRef.current || !canvasRef.current) return;
       const w = containerRef.current.clientWidth;
@@ -139,7 +132,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
 
     window.addEventListener('resize', handleResize);
 
-    // SEQUENTIAL ONE-BY-ONE DROP TIMER: Drop items one after another every 280ms!
     let dropIndex = 0;
     const dropInterval = setInterval(() => {
       if (dropIndex < LOGO_ITEMS.length) {
@@ -161,13 +153,11 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
         spawnSquishyItem(item.text, item.isLetter, spawnX, spawnY, LOGO_PALETTES[dropIndex % LOGO_PALETTES.length]);
         
         dropIndex++;
-        setSpawnedCount(dropIndex);
       } else {
         clearInterval(dropInterval);
       }
     }, 280);
 
-    // 60 FPS Render Loop
     let animationFrameId: number;
 
     const renderLoop = () => {
@@ -213,7 +203,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     };
   }, []);
 
-  // Spawn Squishy Letter / Word Body
   const spawnSquishyItem = (
     text: string, 
     isLetter: boolean,
@@ -269,7 +258,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     Matter.Composite.add(engineRef.current.world, body);
   };
 
-  // Render 3D Glossy Inflated Squishy Letter
   const renderSquishyLetter = (ctx: CanvasRenderingContext2D, itemObj: LetterObject, now: number) => {
     const { body, text, width, height, fontSize, palette, isLetter } = itemObj;
     const { x, y } = body.position;
@@ -293,7 +281,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     const halfH = height / 2;
     const radius = halfH;
 
-    // 1. Radiant Glow Layer
     ctx.save();
     ctx.shadowColor = palette.shadowColor;
     ctx.shadowBlur = isLetter ? 32 : 24;
@@ -304,7 +291,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.fill();
     ctx.restore();
 
-    // 2. Main 3D Puffy Base
     const bodyGrad = ctx.createLinearGradient(-halfW, -halfH, halfW, halfH);
     bodyGrad.addColorStop(0, palette.gradient[0]);
     bodyGrad.addColorStop(0.5, palette.gradient[1]);
@@ -315,12 +301,10 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.roundRect(-halfW, -halfH, width, height, radius);
     ctx.fill();
 
-    // 3. Neon Glow Stroke Border
     ctx.lineWidth = 4;
     ctx.strokeStyle = palette.glowColor;
     ctx.stroke();
 
-    // 4. Glossy Specular Arc
     ctx.save();
     const specGrad = ctx.createLinearGradient(0, -halfH, 0, 0);
     specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
@@ -332,18 +316,15 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.fill();
     ctx.restore();
 
-    // 5. Letter Specular Highlight Dot
     ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.beginPath();
     ctx.ellipse(-halfW + radius * 0.75, -halfH + radius * 0.55, radius * 0.35, radius * 0.18, -Math.PI / 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // 6. Chunky Glowing Typography
     ctx.font = `900 ${fontSize}px Fredoka, "Titan One", sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Outer Text Glow
     ctx.save();
     ctx.shadowColor = palette.glowColor;
     ctx.shadowBlur = 18;
@@ -351,16 +332,13 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.fillText(text, 0, 0);
     ctx.restore();
 
-    // Bevel Shadow
     ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
     ctx.fillText(text, 0, 3);
 
-    // Bold Text Stroke
     ctx.lineWidth = Math.max(3, fontSize * 0.08);
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
     ctx.strokeText(text, 0, 0);
 
-    // Dynamic Light Sheen Sweep
     const sheenOffset = (Math.sin(now * 3 + x * 0.01) * 0.5 + 0.5) * width - halfW;
     const textSheenGrad = ctx.createLinearGradient(sheenOffset - 30, 0, sheenOffset + 30, 0);
     textSheenGrad.addColorStop(0, palette.textColor);
@@ -370,7 +348,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.fillStyle = textSheenGrad;
     ctx.fillText(text, 0, 0);
 
-    // Sparkling Star Glints (✨)
     if (isLetter) {
       const starOpacity = Math.sin(now * 4 + y * 0.02) * 0.4 + 0.6;
       ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`;
@@ -381,7 +358,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     ctx.restore();
   };
 
-  // Touch / Pointer Hover Sideways Poking Impulse
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current || !engineRef.current) return;
 
@@ -410,7 +386,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     });
   };
 
-  // Click Canvas Blast Impulse
   const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current || !engineRef.current) return;
 
@@ -448,20 +423,6 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
         onClick={handleCanvasClick}
         className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing touch-none"
       />
-
-      {/* Top Brand Tagline */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 text-center space-y-2 pointer-events-none">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold uppercase tracking-widest backdrop-blur-xl">
-          <Sparkles className="w-3.5 h-3.5 animate-spin" />
-          <span>SQUISHY GRAVITY LOGO INTRO</span>
-        </div>
-        <h1 className="font-cursive text-3xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-[#C86D44] to-amber-100 drop-shadow-2xl">
-          ANNAPURNA • GRAVITY LOGO
-        </h1>
-        <p className="text-xs text-slate-300 font-mono">
-          Watch A-N-N-A-P-U-R-N-A fall one by one! Touch or drag to squish and poke letters.
-        </p>
-      </div>
 
       {/* Floating Transition Button to Enter Main Platform */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
