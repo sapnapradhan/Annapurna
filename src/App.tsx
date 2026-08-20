@@ -6,7 +6,7 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
 import { CinematicIntro } from './components/common/CinematicIntro';
-import { BubblegumPhysicsCanvas } from './components/bubblegum/BubblegumPhysicsCanvas';
+import { AnnapurnaGravityLogoIntro } from './components/common/AnnapurnaGravityLogoIntro';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -37,8 +37,8 @@ type AppStep = 'intro' | 'main';
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   
-  // Website opens IMMEDIATELY into the Gravity Bubblegum Typography Physics Experience on link open!
-  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'bubblegum'>('bubblegum');
+  // Website opens IMMEDIATELY into the Annapurna Squishy Gravity Logo Intro on link open!
+  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'gravity-intro'>('gravity-intro');
 
   const [step, setStep] = useState<AppStep>('main');
 
@@ -92,9 +92,9 @@ export const App: React.FC = () => {
     return <CinematicIntro onComplete={handleIntroComplete} />;
   }
 
-  // 2. Initial Gravity Bubblegum Typography Physics Website Experience (Opens First!)
-  if (mainView === 'bubblegum') {
-    return <BubblegumPhysicsCanvas onBackToHome={() => setMainView('landing')} />;
+  // 2. Annapurna Squishy Gravity Logo Intro (Opens First on Link Open!)
+  if (mainView === 'gravity-intro') {
+    return <AnnapurnaGravityLogoIntro onEnterPlatform={() => setMainView('landing')} />;
   }
 
   // 3. Dedicated Food Rescue Hub Route
@@ -129,7 +129,6 @@ export const App: React.FC = () => {
         onNavigateRegister={() => setMainView('register')}
         onNavigateLogin={() => setMainView('login')}
         onNavigateRescue={() => setMainView('rescue')}
-        onNavigateBubblegum={() => setMainView('bubblegum')}
         onReplayIntro={handleReplayIntro}
       />
     );

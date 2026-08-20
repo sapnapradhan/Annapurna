@@ -18,7 +18,6 @@ interface LandingPageProps {
   onNavigateRegister: () => void;
   onNavigateLogin: () => void;
   onNavigateRescue: () => void;
-  onNavigateBubblegum?: () => void;
   onReplayIntro: () => void;
 }
 
@@ -26,7 +25,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onNavigateRegister,
   onNavigateLogin,
   onNavigateRescue,
-  onNavigateBubblegum,
   onReplayIntro
 }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -99,16 +97,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Truck className="w-3 h-3" />
                 <span>FOOD RESCUE</span>
               </button>
-              
-              {onNavigateBubblegum && (
-                <button
-                  onClick={onNavigateBubblegum}
-                  className="px-3 py-1 rounded-full bg-pink-500/20 text-pink-500 dark:text-pink-300 border border-pink-500/40 hover:bg-pink-500/30 transition-all flex items-center gap-1 cursor-pointer"
-                >
-                  <Sparkles className="w-3 h-3 text-pink-400" />
-                  <span>🍬 BUBBLEGUM PHYSICS</span>
-                </button>
-              )}
             </nav>
 
             {/* Controls & CTAs */}
@@ -149,21 +137,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="max-w-4xl mx-auto text-center space-y-7 p-10 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
             
             {/* Eyebrow Label */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
+            <div className="flex items-center justify-center">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest backdrop-blur-md">
                 <MapPin className="w-3 h-3" />
                 <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
               </div>
-
-              {onNavigateBubblegum && (
-                <button
-                  onClick={onNavigateBubblegum}
-                  className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-pink-500/20 border border-pink-500/40 text-pink-500 dark:text-pink-300 hover:bg-pink-500/30 text-[10px] font-mono font-bold uppercase tracking-widest backdrop-blur-md transition-all cursor-pointer animate-pulse"
-                >
-                  <Sparkles className="w-3 h-3 text-pink-400" />
-                  <span>PLAY GRAVITY BUBBLEGUM TYPOGRAPHY</span>
-                </button>
-              )}
             </div>
 
             {/* Cursive Display Headline */}
@@ -181,17 +159,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-              {onNavigateBubblegum && (
-                <button
-                  onClick={onNavigateBubblegum}
-                  className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 hover:from-pink-600 hover:to-purple-700 text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 border border-pink-300/40"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-200 animate-spin" />
-                  <span>LAUNCH BUBBLEGUM PHYSICS</span>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
-              )}
-
               <button
                 onClick={onNavigateRescue}
                 className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
