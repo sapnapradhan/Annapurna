@@ -6,7 +6,6 @@ import { RegisterPage } from './pages/auth/RegisterPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { FoodRescuePage } from './pages/FoodRescuePage';
 import { CinematicIntro } from './components/common/CinematicIntro';
-import { AnnapurnaGravityLogoIntro } from './components/common/AnnapurnaGravityLogoIntro';
 
 // Authority Pages
 import { AuthorityLayout } from './components/authority/AuthorityLayout';
@@ -37,8 +36,8 @@ type AppStep = 'intro' | 'main';
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole | 'landing'>(appStore.getRole());
   
-  // Website opens IMMEDIATELY into the Annapurna Squishy Gravity Logo Intro on link open!
-  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue' | 'gravity-intro'>('gravity-intro');
+  // Website opens DIRECTLY into the Annapurna Editorial Landing Homepage!
+  const [mainView, setMainView] = useState<'landing' | 'register' | 'login' | 'rescue'>('landing');
 
   const [step, setStep] = useState<AppStep>('main');
 
@@ -92,17 +91,12 @@ export const App: React.FC = () => {
     return <CinematicIntro onComplete={handleIntroComplete} />;
   }
 
-  // 2. Annapurna Squishy Gravity Logo Intro (Opens First on Link Open!)
-  if (mainView === 'gravity-intro') {
-    return <AnnapurnaGravityLogoIntro onEnterPlatform={() => setMainView('landing')} />;
-  }
-
-  // 3. Dedicated Food Rescue Hub Route
+  // 2. Dedicated Food Rescue Hub Route
   if (mainView === 'rescue') {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
-  // 4. Auth Views (Only if role is landing)
+  // 3. Auth Views (Only if role is landing)
   if (role === 'landing' && mainView === 'register') {
     return (
       <RegisterPage
@@ -121,7 +115,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 5. Main Landing Page
+  // 4. Main Editorial Landing Page
   if (role === 'landing') {
     return (
       <LandingPage
@@ -134,7 +128,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 6. Authority Dashboard
+  // 5. Authority Dashboard
   if (role === 'authority') {
     return (
       <AuthorityLayout
@@ -156,7 +150,7 @@ export const App: React.FC = () => {
     );
   }
 
-  // 7. Student Mobile App
+  // 6. Student Mobile App
   return (
     <StudentLayout
       activeTab={studentTab}
