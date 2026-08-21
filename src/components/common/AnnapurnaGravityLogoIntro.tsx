@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Matter from 'matter-js';
-import { ArrowRight, Sparkles, Utensils } from 'lucide-react';
+import { ArrowRight, Sparkles, Utensils, Heart } from 'lucide-react';
 
 export interface ColorScheme {
   gradient: [string, string, string];
@@ -98,274 +98,214 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
     canvas.height = height;
 
     const engine = Matter.Engine.create({
-      gravity: { x: 0, y: 1.1 }
+      gravity: { x: 0, y: 1.25, scale: 0.001 }
     });
     engineRef.current = engine;
+
+    const wallThickness = 200;
+    const ground = Matter.Bodies.rectangle(
+      width / 2,
+      height + wallThickness / 2 - 10,
+      width * 2,
+      wallThickness,
+      { isStatic: true, restitution: 0.75, friction: 0.05 }
+    );
+
+    const leftWall = Matter.Bodies.rectangle(
+      -wallThickness / 2 + 10,
+      height / 2,
+      wallThickness,
+      height * 2,
+      { isStatic: true, restitution: 0.7, friction: 0.05 }
+    );
+
+    const rightWall = Matter.Bodies.rectangle(
+      width + wallThickness / 2 - 10,
+      height / 2,
+      wallThickness,
+      height * 2,
+      { isStatic: true, restitution: 0.7, friction: 0.05 }
+    );
+
+    boundariesRef.current = [ground, leftWall, rightWall];
+    Matter.Composite.add(engine.world, boundariesRef.current);
+
+    const ctx = canvas.getContext('2d');
+
+    const spawnLetter = (index: number) => {
+      const itemConfig = LOGO_ITEMS[index % LOGO_ITEMS.length];
+      const isLetter = itemConfig.isLetter;
+
+      const baseFontSize = isLetter
+        ? Math.min(width * 0.12, 110)
+        : Math.min(width * 0.045, 36);
+
+      const letterWidth = isLetter ? baseFontSize * 0.85 : baseFontSize * (itemConfig.text.length * 0.65);
+      const letterHeight = baseFontSize * 1.1;
+
+      const spawnX = (width / (LOGO_ITEMS.length + 1)) * (index + 1) + (Math.random() - 0.5) * 40;
+      const spawnY = -120 - index * 60;
+
+      const body = Matter.Bodies.rectangle(spawnX, spawnY, letterWidth, letterHeight, {
+        restitution: 0.72,
+        friction: 0.02,
+        frictionAir: 0.015,
+        density: 0.002,
+        angle: (Math.random() - 0.5) * 0.5
+      });
+
+      Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.15);
+      Matter.Composite.add(engine.world, body);
+
+      const palette = LOGO_PALETTES[index % LOGO_PALETTES.length];
+
+      const letterObj: LetterObject = {
+        id: `letter-${index}-${Date.now()}`,
+        text: itemConfig.text,
+        body,
+        width: letterWidth,
+        height: letterHeight,
+        fontSize: baseFontSize,
+        palette,
+        isLetter,
+        squashX: 1,
+        squashY: 1,
+        targetSquashX: 1,
+        targetSquashY: 1
+      };
+
+      lettersRef.current.push(letterObj);
+    };
+
+    LOGO_ITEMS.forEach((_, idx) => {
+      setTimeout(() => {
+        spawnLetter(idx);
+      }, idx * 260);
+    });
+
+    Matter.Events.on(engine, 'collisionStart', (event) => {
+      event.pairs.forEach((pair) => {
+        const { bodyA, bodyB } = pair;
+        lettersRef.current.forEach((item) => {
+          if (item.body === bodyA || item.body === bodyB) {
+            const speed = Math.sqrt(
+              item.body.velocity.x * item.body.velocity.x +
+              item.body.velocity.y * item.body.velocity.y
+            );
+            if (speed > 1.5) {
+              item.targetSquashX = 1 + Math.min(speed * 0.04, 0.35);
+              item.targetSquashY = 1 - Math.min(speed * 0.04, 0.35);
+              setTimeout(() => {
+                item.targetSquashX = 1;
+                item.targetSquashY = 1;
+              }, 120);
+            }
+          }
+        });
+      });
+    });
 
     const runner = Matter.Runner.create();
     runnerRef.current = runner;
     Matter.Runner.run(runner, engine);
 
-    const wallOptions = { isStatic: true, restitution: 0.85, friction: 0.1 };
-    const thickness = 120;
-
-    const ground = Matter.Bodies.rectangle(width / 2, height + thickness / 2 - 15, width * 2, thickness, wallOptions);
-    const leftWall = Matter.Bodies.rectangle(-thickness / 2, height / 2, thickness, height * 2, wallOptions);
-    const rightWall = Matter.Bodies.rectangle(width + thickness / 2, height / 2, thickness, height * 2, wallOptions);
-    const ceiling = Matter.Bodies.rectangle(width / 2, -thickness / 2 - 300, width * 2, thickness, wallOptions);
-
-    boundariesRef.current = [ground, leftWall, rightWall, ceiling];
-    Matter.Composite.add(engine.world, boundariesRef.current);
-
-    const handleResize = () => {
-      if (!containerRef.current || !canvasRef.current) return;
-      const w = containerRef.current.clientWidth;
-      const h = containerRef.current.clientHeight;
-      canvas.width = w;
-      canvas.height = h;
-
-      Matter.Body.setPosition(ground, { x: w / 2, y: h + thickness / 2 - 15 });
-      Matter.Body.setPosition(leftWall, { x: -thickness / 2, y: h / 2 });
-      Matter.Body.setPosition(rightWall, { x: w + thickness / 2, y: h / 2 });
-      Matter.Body.setPosition(ceiling, { x: w / 2, y: -thickness / 2 - 300 });
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    let dropIndex = 0;
-    const dropInterval = setInterval(() => {
-      if (dropIndex < LOGO_ITEMS.length) {
-        const item = LOGO_ITEMS[dropIndex];
-        const isMobile = width < 640;
-        
-        let spawnX = width * 0.5;
-        if (item.isLetter) {
-          const letterIdx = dropIndex;
-          const totalLetters = 9;
-          const startX = width * (isMobile ? 0.12 : 0.22);
-          const gap = (width * (isMobile ? 0.76 : 0.56)) / (totalLetters - 1);
-          spawnX = startX + letterIdx * gap + (Math.random() * 20 - 10);
-        } else {
-          spawnX = width * 0.3 + (Math.random() * width * 0.4);
-        }
-
-        const spawnY = -60 - (dropIndex * 20);
-        spawnSquishyItem(item.text, item.isLetter, spawnX, spawnY, LOGO_PALETTES[dropIndex % LOGO_PALETTES.length]);
-        
-        dropIndex++;
-      } else {
-        clearInterval(dropInterval);
-      }
-    }, 280);
-
     let animationFrameId: number;
-
     const renderLoop = () => {
-      const ctx = canvas.getContext('2d');
-      if (ctx && engineRef.current) {
-        const w = canvas.width;
-        const h = canvas.height;
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
 
-        const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-        bgGrad.addColorStop(0, '#090807');
-        bgGrad.addColorStop(0.5, '#14100D');
-        bgGrad.addColorStop(1, '#090807');
-        ctx.fillStyle = bgGrad;
-        ctx.fillRect(0, 0, w, h);
+      lettersRef.current.forEach((item) => {
+        item.squashX += (item.targetSquashX - item.squashX) * 0.2;
+        item.squashY += (item.targetSquashY - item.squashY) * 0.2;
 
-        const now = Date.now() * 0.001;
-        for (let p = 0; p < 12; p++) {
-          const px = (Math.sin(now + p * 1.5) * 0.4 + 0.5) * w;
-          const py = (Math.cos(now * 0.8 + p * 2.1) * 0.4 + 0.5) * h;
-          const pSize = (Math.sin(now * 2 + p) + 2) * 3;
-          ctx.fillStyle = p % 2 === 0 ? 'rgba(200, 109, 68, 0.2)' : 'rgba(212, 140, 70, 0.2)';
-          ctx.beginPath();
-          ctx.arc(px, py, pSize, 0, Math.PI * 2);
-          ctx.fill();
+        const pos = item.body.position;
+        const angle = item.body.angle;
+
+        ctx.save();
+        ctx.translate(pos.x, pos.y);
+        ctx.rotate(angle);
+        ctx.scale(item.squashX, item.squashY);
+
+        ctx.shadowColor = item.palette.shadowColor;
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 12;
+
+        const radius = Math.min(item.width, item.height) * 0.35;
+        ctx.beginPath();
+        if ((ctx as any).roundRect) {
+          (ctx as any).roundRect(
+            -item.width / 2,
+            -item.height / 2,
+            item.width,
+            item.height,
+            radius
+          );
+        } else {
+          ctx.rect(-item.width / 2, -item.height / 2, item.width, item.height);
         }
 
-        lettersRef.current.forEach((itemObj) => {
-          renderSquishyLetter(ctx, itemObj, now);
-        });
-      }
+        const grad = ctx.createLinearGradient(0, -item.height / 2, 0, item.height / 2);
+        grad.addColorStop(0, item.palette.gradient[0]);
+        grad.addColorStop(0.5, item.palette.gradient[1]);
+        grad.addColorStop(1, item.palette.gradient[2]);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.lineWidth = 3.5;
+        ctx.strokeStyle = item.palette.glowColor;
+        ctx.stroke();
+
+        ctx.shadowColor = 'transparent';
+
+        ctx.font = `900 ${item.fontSize}px 'Titan One', 'Fredoka', cursive, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = '#2A0E06';
+        ctx.strokeText(item.text, 0, 2);
+
+        ctx.fillStyle = item.palette.textColor;
+        ctx.fillText(item.text, 0, 0);
+
+        ctx.restore();
+      });
 
       animationFrameId = requestAnimationFrame(renderLoop);
     };
 
     renderLoop();
 
+    const handleResize = () => {
+      if (!containerRef.current || !canvasRef.current) return;
+      width = containerRef.current.clientWidth || window.innerWidth;
+      height = containerRef.current.clientHeight || window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+
+      if (boundariesRef.current[0]) {
+        Matter.Body.setPosition(boundariesRef.current[0], { x: width / 2, y: height + wallThickness / 2 - 10 });
+      }
+      if (boundariesRef.current[2]) {
+        Matter.Body.setPosition(boundariesRef.current[2], { x: width + wallThickness / 2 - 10, y: height / 2 });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
       window.removeEventListener('resize', handleResize);
-      clearInterval(dropInterval);
       cancelAnimationFrame(animationFrameId);
       if (runnerRef.current) Matter.Runner.stop(runnerRef.current);
       if (engineRef.current) Matter.World.clear(engineRef.current.world, false);
     };
   }, []);
 
-  const spawnSquishyItem = (
-    text: string, 
-    isLetter: boolean,
-    x: number, 
-    y: number, 
-    palette: ColorScheme
-  ) => {
-    if (!engineRef.current || !canvasRef.current) return;
-
-    const isMobile = window.innerWidth < 640;
-    
-    let fontSize = isLetter ? (isMobile ? 48 : 72) : (isMobile ? 32 : 44);
-    const paddingX = isLetter ? fontSize * 0.4 : fontSize * 0.6;
-    const paddingY = fontSize * 0.35;
-
-    const tempCanvas = document.createElement('canvas');
-    const tempCtx = tempCanvas.getContext('2d');
-    if (tempCtx) {
-      tempCtx.font = `900 ${fontSize}px Fredoka, "Titan One", sans-serif`;
-    }
-    const textWidth = tempCtx ? tempCtx.measureText(text).width : text.length * fontSize * 0.7;
-
-    const width = Math.max(fontSize * 1.1, textWidth + paddingX * 2);
-    const height = fontSize + paddingY * 2;
-
-    const body = Matter.Bodies.rectangle(x, y, width, height, {
-      restitution: 0.82,
-      friction: 0.05,
-      frictionAir: 0.012,
-      density: 0.0025,
-      chamfer: { radius: height / 2.2 }
-    });
-
-    Matter.Body.setAngle(body, (Math.random() - 0.5) * 0.35);
-    Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.1);
-
-    const itemObj: LetterObject = {
-      id: `letter-${Date.now()}-${Math.random()}`,
-      text,
-      body,
-      width,
-      height,
-      fontSize,
-      palette,
-      isLetter,
-      squashX: 1.0,
-      squashY: 1.0,
-      targetSquashX: 1.0,
-      targetSquashY: 1.0
-    };
-
-    lettersRef.current.push(itemObj);
-    Matter.Composite.add(engineRef.current.world, body);
-  };
-
-  const renderSquishyLetter = (ctx: CanvasRenderingContext2D, itemObj: LetterObject, now: number) => {
-    const { body, text, width, height, fontSize, palette, isLetter } = itemObj;
-    const { x, y } = body.position;
-    const angle = body.angle;
-
-    const vx = body.velocity.x;
-    const vy = body.velocity.y;
-
-    itemObj.targetSquashX = 1.0 + Math.abs(vx) * 0.014 - Math.abs(vy) * 0.01;
-    itemObj.targetSquashY = 1.0 + Math.abs(vy) * 0.014 - Math.abs(vx) * 0.01;
-
-    itemObj.squashX += (itemObj.targetSquashX - itemObj.squashX) * 0.18;
-    itemObj.squashY += (itemObj.targetSquashY - itemObj.squashY) * 0.18;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle);
-    ctx.scale(itemObj.squashX, itemObj.squashY);
-
-    const halfW = width / 2;
-    const halfH = height / 2;
-    const radius = halfH;
-
-    ctx.save();
-    ctx.shadowColor = palette.shadowColor;
-    ctx.shadowBlur = isLetter ? 32 : 24;
-    ctx.shadowOffsetY = 14;
-    ctx.fillStyle = palette.gradient[1];
-    ctx.beginPath();
-    ctx.roundRect(-halfW, -halfH, width, height, radius);
-    ctx.fill();
-    ctx.restore();
-
-    const bodyGrad = ctx.createLinearGradient(-halfW, -halfH, halfW, halfH);
-    bodyGrad.addColorStop(0, palette.gradient[0]);
-    bodyGrad.addColorStop(0.5, palette.gradient[1]);
-    bodyGrad.addColorStop(1, palette.gradient[2]);
-
-    ctx.fillStyle = bodyGrad;
-    ctx.beginPath();
-    ctx.roundRect(-halfW, -halfH, width, height, radius);
-    ctx.fill();
-
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = palette.glowColor;
-    ctx.stroke();
-
-    ctx.save();
-    const specGrad = ctx.createLinearGradient(0, -halfH, 0, 0);
-    specGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-    specGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-    ctx.fillStyle = specGrad;
-    ctx.beginPath();
-    ctx.roundRect(-halfW + 6, -halfH + 4, width - 12, halfH * 0.75, radius * 0.7);
-    ctx.fill();
-    ctx.restore();
-
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-    ctx.beginPath();
-    ctx.ellipse(-halfW + radius * 0.75, -halfH + radius * 0.55, radius * 0.35, radius * 0.18, -Math.PI / 4, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.font = `900 ${fontSize}px Fredoka, "Titan One", sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    ctx.save();
-    ctx.shadowColor = palette.glowColor;
-    ctx.shadowBlur = 18;
-    ctx.fillStyle = '#FFFFFF';
-    ctx.fillText(text, 0, 0);
-    ctx.restore();
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
-    ctx.fillText(text, 0, 3);
-
-    ctx.lineWidth = Math.max(3, fontSize * 0.08);
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
-    ctx.strokeText(text, 0, 0);
-
-    const sheenOffset = (Math.sin(now * 3 + x * 0.01) * 0.5 + 0.5) * width - halfW;
-    const textSheenGrad = ctx.createLinearGradient(sheenOffset - 30, 0, sheenOffset + 30, 0);
-    textSheenGrad.addColorStop(0, palette.textColor);
-    textSheenGrad.addColorStop(0.5, '#FFFFFF');
-    textSheenGrad.addColorStop(1, palette.textColor);
-
-    ctx.fillStyle = textSheenGrad;
-    ctx.fillText(text, 0, 0);
-
-    if (isLetter) {
-      const starOpacity = Math.sin(now * 4 + y * 0.02) * 0.4 + 0.6;
-      ctx.fillStyle = `rgba(255, 255, 255, ${starOpacity})`;
-      ctx.font = `${fontSize * 0.35}px sans-serif`;
-      ctx.fillText('✨', -halfW + 16, -halfH + 14);
-    }
-
-    ctx.restore();
-  };
-
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current || !engineRef.current) return;
-
     const rect = canvasRef.current.getBoundingClientRect();
     const px = e.clientX - rect.left;
     const py = e.clientY - rect.top;
-
-    const radius = 140;
 
     lettersRef.current.forEach((itemObj) => {
       const { body } = itemObj;
@@ -373,9 +313,9 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
       const dy = body.position.y - py;
       const dist = Math.sqrt(dx * dx + dy * dy);
 
-      if (dist < radius && dist > 2) {
-        const influence = (1 - dist / radius);
-        const directionX = Math.sign(dx) || (Math.random() > 0.5 ? 1 : -1);
+      if (dist < 180 && dist > 0) {
+        const influence = (1 - dist / 180);
+        const directionX = dx / dist;
 
         const forceX = directionX * influence * 0.1;
         const forceY = -influence * 0.025;
@@ -414,7 +354,7 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
   return (
     <div 
       ref={containerRef}
-      className="relative w-screen h-screen overflow-hidden bg-[#090807] select-none font-bubblegum text-white"
+      className="relative w-screen h-screen overflow-hidden bg-[#090807] select-none font-sans text-white"
     >
       {/* 2D Physics Canvas Layer */}
       <canvas
@@ -424,11 +364,30 @@ export const AnnapurnaGravityLogoIntro: React.FC<AnnapurnaGravityLogoIntroProps>
         className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing touch-none"
       />
 
+      {/* Official Website Logo Photo Header Badge */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none animate-in fade-in zoom-in-95 duration-500">
+        <div className="p-4 rounded-3xl bg-white/10 border border-white/20 shadow-2xl backdrop-blur-xl flex items-center gap-4">
+          <img 
+            src="/logo.png" 
+            alt="ANNAPURNA Official Logo" 
+            className="h-16 sm:h-20 w-auto object-contain drop-shadow-2xl animate-pulse" 
+          />
+          <div className="text-left">
+            <div className="font-cursive font-bold text-2xl sm:text-3xl text-amber-100 tracking-wider">
+              ANNAPURNA
+            </div>
+            <div className="text-[10px] sm:text-xs font-mono font-bold text-amber-300 uppercase tracking-widest">
+              Designed to Nourish • Built to Share
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Floating Transition Button to Enter Main Platform */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30">
         <button
           onClick={onEnterPlatform}
-          className="group px-8 py-4 rounded-full bg-gradient-to-r from-[#C86D44] via-amber-500 to-[#C86D44] hover:from-[#B35C33] hover:to-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center justify-center gap-3 border border-amber-300/40 backdrop-blur-xl animate-pulse"
+          className="group px-8 py-4 rounded-full bg-gradient-to-r from-[#C86D44] via-amber-500 to-[#C86D44] hover:from-[#B35C33] hover:to-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center justify-center gap-3 border border-amber-300/40 backdrop-blur-xl animate-bounce"
         >
           <Utensils className="w-4 h-4 text-amber-200" />
           <span>ENTER ANNAPURNA PLATFORM</span>
