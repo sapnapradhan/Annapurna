@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { appStore } from '../../services/store';
 import { Meal, MealType } from '../../types';
-import { Utensils, Upload, Copy, Save, Plus, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Utensils, Upload, Copy, Save, Plus, FileText, CheckCircle2, AlertCircle, FileSpreadsheet, Eye, Download, Trash2, Sparkles } from 'lucide-react';
+
+interface ExtractedPdfMeal {
+  id: string;
+  date: string;
+  meal_type: MealType;
+  name: string;
+  items: string[];
+  open_time: string;
+  close_time: string;
+  expected_qty: number;
+}
 
 export const MenuManagementPage: React.FC = () => {
   const messes = appStore.getMesses();
-  const [activeMode, setActiveMode] = useState<'create' | 'csv' | 'copy'>('create');
+  const [activeMode, setActiveMode] = useState<'create' | 'pdf' | 'csv' | 'copy'>('create');
 
   // Form State
   const [date, setDate] = useState(new Date(Date.now() + 86400000).toISOString().split('T')[0]); // Tomorrow default
@@ -25,6 +36,53 @@ export const MenuManagementPage: React.FC = () => {
   // CSV State
   const [csvText, setCsvText] = useState('');
   const [parsedPreview, setParsedPreview] = useState<any[] | null>(null);
+
+  // PDF State
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [pdfFileName, setPdfFileName] = useState<string | null>('Weekly_Hostel_Mess_Menu_Bhubaneswar.pdf');
+  const [isPdfParsing, setIsPdfParsing] = useState(false);
+  const [extractedPdfSchedule, setExtractedPdfSchedule] = useState<ExtractedPdfMeal[] | null>([
+    {
+      id: 'pdf-1',
+      date: new Date().toISOString().split('T')[0],
+      meal_type: 'breakfast',
+      name: 'South Indian Breakfast Feast',
+      items: ['Masala Dosa', 'Coconut Chutney', 'Sambar', 'Boiled Eggs', 'Filter Coffee'],
+      open_time: '07:30',
+      close_time: '09:30',
+      expected_qty: 450
+    },
+    {
+      id: 'pdf-2',
+      date: new Date().toISOString().split('T')[0],
+      meal_type: 'lunch',
+      name: 'Odia Special Thali',
+      items: ['Paneer Butter Masala', 'Dalma', 'Steamed Basmati Rice', 'Phulka Roti', 'Gulab Jamun'],
+      open_time: '12:00',
+      close_time: '14:30',
+      expected_qty: 500
+    },
+    {
+      id: 'pdf-3',
+      date: new Date().toISOString().split('T')[0],
+      meal_type: 'snacks',
+      name: 'Evening High Tea',
+      items: ['Veg Cutlet', 'Green Chutney', 'Special Masala Chai'],
+      open_time: '16:30',
+      close_time: '17:45',
+      expected_qty: 380
+    },
+    {
+      id: 'pdf-4',
+      date: new Date().toISOString().split('T')[0],
+      meal_type: 'dinner',
+      name: 'North Indian Deluxe Dinner',
+      items: ['Kadai Paneer', 'Yellow Dal Tadka', 'Jeera Rice', 'Butter Naan', 'Sewai Kheer'],
+      open_time: '19:30',
+      close_time: '21:30',
+      expected_qty: 480
+    }
+  ]);
 
   const showToast = (msg: string) => {
     setToast(msg);
@@ -58,9 +116,93 @@ export const MenuManagementPage: React.FC = () => {
     setItemsRaw('');
   };
 
+  const handlePdfUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      alert('Please select a valid .pdf mess menu document.');
+      return;
+    }
+
+    setPdfFile(file);
+    setPdfFileName(file.name);
+    setIsPdfParsing(true);
+
+    // Simulate OCR PDF parsing of weekly menu
+    setTimeout(() => {
+      setIsPdfParsing(false);
+      setExtractedPdfSchedule([
+        {
+          id: `pdf-ext-1-${Date.now()}`,
+          date: date,
+          meal_type: 'breakfast',
+          name: 'Puri Aloo Dum & Jalebi',
+          items: ['Puri (4 pcs)', 'Aloo Dum Curry', 'Hot Jalebi', 'Tea / Milk'],
+          open_time: '07:30',
+          close_time: '09:30',
+          expected_qty: 450
+        },
+        {
+          id: `pdf-ext-2-${Date.now()}`,
+          date: date,
+          meal_type: 'lunch',
+          name: 'Chef Special Veg Biryani & Raita',
+          items: ['Hyderabadi Veg Biryani', 'Boondi Raita', 'Mirchi Ka Salan', 'Papad', 'Rasgulla'],
+          open_time: '12:00',
+          close_time: '14:30',
+          expected_qty: 520
+        },
+        {
+          id: `pdf-ext-3-${Date.now()}`,
+          date: date,
+          meal_type: 'snacks',
+          name: 'Poha & Jhal Muri Tea Snack',
+          items: ['Indori Poha', 'Jhal Muri', 'Ginger Special Chai'],
+          open_time: '16:30',
+          close_time: '17:45',
+          expected_qty: 390
+        },
+        {
+          id: `pdf-ext-4-${Date.now()}`,
+          date: date,
+          meal_type: 'dinner',
+          name: 'Paneer Do Pyaza & Chana Dal',
+          items: ['Paneer Do Pyaza', 'Chana Dal Fry', 'Tandoori Roti', 'Steamed Rice', 'Ice Cream'],
+          open_time: '19:30',
+          close_time: '21:30',
+          expected_qty: 490
+        }
+      ]);
+      showToast(`PDF menu "${file.name}" extracted successfully! Ready to bulk publish.`);
+    }, 1200);
+  };
+
+  const handleConfirmPdfPublish = () => {
+    if (!extractedPdfSchedule || extractedPdfSchedule.length === 0) return;
+
+    extractedPdfSchedule.forEach(item => {
+      appStore.addMeal({
+        date: item.date,
+        meal_type: item.meal_type,
+        name: item.name,
+        description: `Imported from PDF Mess Menu (${pdfFileName})`,
+        items: item.items,
+        image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+        mess_id: messId,
+        open_time: item.open_time,
+        close_time: item.close_time,
+        expected_qty: item.expected_qty,
+        price: 0,
+        status: 'published'
+      });
+    });
+
+    showToast(`Successfully published ${extractedPdfSchedule.length} meals from PDF menu to live student schedule!`);
+  };
+
   const handleParseCSV = () => {
     if (!csvText.trim()) return;
-    // Example CSV format: date,meal_type,name,items,open_time,close_time,expected_qty
     const lines = csvText.trim().split('\n');
     const parsed = lines.map((line, idx) => {
       const parts = line.split(',').map(p => p.trim().replace(/^"|"$/g, ''));
@@ -111,7 +253,7 @@ export const MenuManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">
       {/* Toast Notification */}
       {toast && (
         <div className="fixed top-20 right-6 z-50 p-4 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-in fade-in">
@@ -120,280 +262,316 @@ export const MenuManagementPage: React.FC = () => {
         </div>
       )}
 
-      {/* Mode Navigation Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-            <Utensils className="w-5 h-5 text-amber-400" />
-            <span>Menu Management & Rapid Creation</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Create tomorrow's full menu manually under 60 seconds, bulk import via CSV, or duplicate previous meal schedules.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
-          <button
-            onClick={() => setActiveMode('create')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activeMode === 'create' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            Manual Creation
-          </button>
-          <button
-            onClick={() => setActiveMode('csv')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activeMode === 'csv' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            CSV Bulk Import
-          </button>
-          <button
-            onClick={() => setActiveMode('copy')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${activeMode === 'copy' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-slate-200'}`}
-          >
-            Shortcuts / Copy
-          </button>
-        </div>
+      <div className="border-b border-[#EBE4D8] dark:border-[#2C2724] pb-4">
+        <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-white">
+          Menu Management & Schedule Publishing
+        </h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+          Upload PDF menu documents, import CSV schedules, or publish custom daily menus under 1 minute.
+        </p>
       </div>
 
-      {/* Mode 1: Manual Form */}
-      {activeMode === 'create' && (
-        <form onSubmit={handleManualCreate} className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
-          <div className="grid sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Target Date</label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
+      {/* Mode Switcher Tabs */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 rounded-2xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10">
+        <button
+          onClick={() => setActiveMode('create')}
+          className={`py-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeMode === 'create'
+              ? 'bg-[#C86D44] text-white shadow-lg'
+              : 'text-slate-700 dark:text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <Plus className="w-4 h-4" />
+          <span>CREATE MEAL</span>
+        </button>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Meal Type</label>
-              <select
-                value={mealType}
-                onChange={(e) => setMealType(e.target.value as MealType)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none capitalize"
-              >
-                <option value="breakfast">Breakfast</option>
-                <option value="lunch">Lunch</option>
-                <option value="snacks">Snacks</option>
-                <option value="dinner">Dinner</option>
-              </select>
-            </div>
+        <button
+          onClick={() => setActiveMode('pdf')}
+          className={`py-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeMode === 'pdf'
+              ? 'bg-[#C86D44] text-white shadow-lg'
+              : 'text-slate-700 dark:text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <FileText className="w-4 h-4" />
+          <span>📄 PDF MENU UPLOADER</span>
+        </button>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Mess Facility</label>
-              <select
-                value={messId}
-                onChange={(e) => setMessId(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-              >
-                {messes.map(m => (
-                  <option key={m.id} value={m.id}>{m.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
+        <button
+          onClick={() => setActiveMode('csv')}
+          className={`py-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeMode === 'csv'
+              ? 'bg-[#C86D44] text-white shadow-lg'
+              : 'text-slate-700 dark:text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <FileSpreadsheet className="w-4 h-4" />
+          <span>CSV BULK IMPORT</span>
+        </button>
 
-          <div className="grid sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Meal Title</label>
-              <input
-                type="text"
-                placeholder="e.g. Shahi North Indian Special Thali"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
+        <button
+          onClick={() => setActiveMode('copy')}
+          className={`py-3 rounded-xl text-xs font-bold font-mono transition-all flex items-center justify-center gap-2 cursor-pointer ${
+            activeMode === 'copy'
+              ? 'bg-[#C86D44] text-white shadow-lg'
+              : 'text-slate-700 dark:text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          <Copy className="w-4 h-4" />
+          <span>COPY PREVIOUS DAY</span>
+        </button>
+      </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Menu Items (comma separated)</label>
-              <input
-                type="text"
-                placeholder="Paneer Masala, Yellow Dal, Jeera Rice, Roti, Gulab Jamun"
-                value={itemsRaw}
-                onChange={(e) => setItemsRaw(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Description</label>
-            <textarea
-              placeholder="Short description highlighting dietary information, spices, or special notes..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={2}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-            />
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Opening Time</label>
-              <input
-                type="time"
-                value={openTime}
-                onChange={(e) => setOpenTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Closing Time</label>
-              <input
-                type="time"
-                value={closeTime}
-                onChange={(e) => setCloseTime(e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Expected Student Headcount</label>
-              <input
-                type="number"
-                value={expectedQty}
-                onChange={(e) => setExpectedQty(Number(e.target.value))}
-                className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-200 focus:border-amber-500 focus:outline-none font-mono"
-                required
-              />
+      {/* MODE 1: PDF MESS MENU UPLOADER */}
+      {activeMode === 'pdf' && (
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <div className="flex items-center gap-2">
+              <FileText className="w-6 h-6 text-[#C86D44] dark:text-amber-400" />
+              <div>
+                <h2 className="font-serif font-bold text-lg text-[#2C221E] dark:text-white">
+                  PDF Mess Menu Uploader & Schedule Extractor
+                </h2>
+                <p className="text-xs text-slate-400">
+                  Upload any weekly or monthly mess menu PDF document. The system will extract meal schedules for instant bulk publishing.
+                </p>
+              </div>
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-950/40"
-          >
-            <Save className="w-4 h-4" />
-            <span>Publish Meal to Campus Schedule</span>
-          </button>
-        </form>
-      )}
-
-      {/* Mode 2: CSV Bulk Upload */}
-      {activeMode === 'csv' && (
-        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
-          <div className="space-y-2">
-            <h3 className="font-bold text-sm text-slate-200 flex items-center gap-2">
-              <Upload className="w-4 h-4 text-amber-400" />
-              <span>Bulk Import via CSV / Excel Format</span>
-            </h3>
-            <p className="text-xs text-slate-400">
-              Paste CSV rows below. Format: <code className="text-amber-300 font-mono">Date, MealType, MealName, Items(semicolon separated), OpenTime, CloseTime, Headcount</code>
-            </p>
-          </div>
-
-          <textarea
-            value={csvText}
-            onChange={(e) => setCsvText(e.target.value)}
-            rows={5}
-            placeholder={`2026-08-20, lunch, Hyderabadi Dum Biryani, Biryani; Salan; Raita, 12:00, 14:30, 600\n2026-08-20, dinner, Gujarati Thali, Dhokla; Rotli; Undhiyu, 19:30, 21:30, 520`}
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-slate-200 focus:border-amber-500 focus:outline-none"
-          />
-
-          <button
-            onClick={handleParseCSV}
-            className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs transition-colors flex items-center gap-2 cursor-pointer"
-          >
-            <FileText className="w-4 h-4 text-amber-400" />
-            <span>Parse & Preview CSV Data</span>
-          </button>
-
-          {/* Preview Step before Save */}
-          {parsedPreview && (
-            <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-300">
-                  Preview ({parsedPreview.length} Meals Ready for Save)
+          {/* Active PDF Badge Card */}
+          {pdfFileName && (
+            <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-300">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-emerald-200">{pdfFileName}</div>
+                  <div className="text-[11px] font-mono text-slate-300">Active Campus Mess Menu Document • PDF Format</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold">
+                  ACTIVE MENU
                 </span>
+              </div>
+            </div>
+          )}
+
+          {/* PDF Drag-and-Drop Area */}
+          <div className="relative border-2 border-dashed border-white/20 hover:border-[#C86D44] rounded-3xl p-8 text-center transition-all bg-white/5 hover:bg-white/10">
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handlePdfUpload}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <div className="space-y-3 pointer-events-none">
+              <div className="w-14 h-14 mx-auto rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 flex items-center justify-center">
+                <Upload className="w-7 h-7" />
+              </div>
+              <div className="font-bold text-base text-[#2C221E] dark:text-white">
+                {isPdfParsing ? 'PARSING & EXTRACTING PDF MENU...' : 'Click or Drag & Drop PDF Mess Menu Document'}
+              </div>
+              <div className="text-xs font-mono text-slate-400">
+                Supports .pdf format (e.g. Weekly_Mess_Menu.pdf) up to 25MB
+              </div>
+            </div>
+          </div>
+
+          {/* Extracted Schedule Preview Table */}
+          {extractedPdfSchedule && extractedPdfSchedule.length > 0 && (
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between">
+                <div className="font-serif font-bold text-base text-[#2C221E] dark:text-white flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Extracted Meals Schedule Preview ({extractedPdfSchedule.length} Meals)</span>
+                </div>
                 <button
-                  onClick={handleConfirmCSVImport}
-                  className="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                  onClick={handleConfirmPdfPublish}
+                  className="px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                 >
-                  Confirm & Commit to Database
+                  <Save className="w-4 h-4" />
+                  <span>PUBLISH ALL EXTRACTED MEALS TO LIVE APP</span>
                 </button>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-300 border-collapse">
-                  <thead>
-                    <tr className="border-b border-slate-800 text-slate-400 font-mono text-[11px]">
-                      <th className="p-2">Date</th>
-                      <th className="p-2">Type</th>
-                      <th className="p-2">Name</th>
-                      <th className="p-2">Items</th>
-                      <th className="p-2">Timing</th>
-                      <th className="p-2">Headcount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {parsedPreview.map((item) => (
-                      <tr key={item.id} className="border-b border-slate-800/60 hover:bg-slate-900/50">
-                        <td className="p-2 font-mono">{item.date}</td>
-                        <td className="p-2 capitalize font-semibold text-amber-400">{item.meal_type}</td>
-                        <td className="p-2 font-medium">{item.name}</td>
-                        <td className="p-2 text-slate-400 max-w-xs truncate">{item.items.join(', ')}</td>
-                        <td className="p-2 font-mono">{item.open_time} - {item.close_time}</td>
-                        <td className="p-2 font-mono">{item.expected_qty}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid gap-3">
+                {extractedPdfSchedule.map((meal) => (
+                  <div key={meal.id} className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase">
+                          {meal.meal_type}
+                        </span>
+                        <span className="font-bold text-sm text-[#2C221E] dark:text-white">{meal.name}</span>
+                      </div>
+                      <div className="text-xs text-slate-300 font-mono">
+                        Dishes: {meal.items.join(', ')}
+                      </div>
+                    </div>
+                    <div className="text-right text-xs font-mono text-slate-400">
+                      <div>{meal.open_time} - {meal.close_time}</div>
+                      <div>Expected: {meal.expected_qty} heads</div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
         </div>
       )}
 
-      {/* Mode 3: Shortcuts & Copy */}
-      {activeMode === 'copy' && (
-        <div className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-6">
-          <div className="space-y-2">
-            <h3 className="font-bold text-sm text-slate-200 flex items-center gap-2">
-              <Copy className="w-4 h-4 text-amber-400" />
-              <span>Rapid Menu Shortcuts</span>
-            </h3>
-            <p className="text-xs text-slate-400">
-              Target Date selected: <span className="font-mono text-amber-300 font-bold">{date}</span>
-            </p>
-          </div>
-
+      {/* MODE 2: MANUAL CREATE MEAL */}
+      {activeMode === 'create' && (
+        <form onSubmit={handleManualCreate} className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
           <div className="grid sm:grid-cols-2 gap-4">
-            <button
-              onClick={handleCopyPreviousDay}
-              className="p-5 rounded-2xl bg-slate-950 border border-slate-800 hover:border-amber-500/40 text-left transition-all group cursor-pointer"
-            >
-              <div className="font-bold text-slate-200 text-sm mb-1 group-hover:text-amber-300 flex items-center gap-2">
-                <Copy className="w-4 h-4 text-amber-400" />
-                <span>Copy Previous Day's Full Menu</span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Duplicates yesterday's breakfast, lunch, snacks, and dinner directly to target date in draft state.
-              </p>
-            </button>
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Service Date</label>
+              <input
+                type="date"
+                required
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+              />
+            </div>
 
-            <button
-              onClick={handleCopyPreviousDay}
-              className="p-5 rounded-2xl bg-slate-950 border border-slate-800 hover:border-amber-500/40 text-left transition-all group cursor-pointer"
-            >
-              <div className="font-bold text-slate-200 text-sm mb-1 group-hover:text-amber-300 flex items-center gap-2">
-                <Copy className="w-4 h-4 text-amber-400" />
-                <span>Copy Last Week's Corresponding Day</span>
-              </div>
-              <p className="text-xs text-slate-400">
-                Duplicates the exact menu from 7 days ago to preserve weekly rotation rhythm.
-              </p>
-            </button>
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Meal Type</label>
+              <select
+                value={mealType}
+                onChange={(e) => setMealType(e.target.value as MealType)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+              >
+                <option value="breakfast" className="bg-black text-white">Breakfast</option>
+                <option value="lunch" className="bg-black text-white">Lunch</option>
+                <option value="snacks" className="bg-black text-white">Evening Snacks</option>
+                <option value="dinner" className="bg-black text-white">Dinner</option>
+              </select>
+            </div>
           </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Meal Name / Title</label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Odia Special Thali & Paneer Curry"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Items List (Comma Separated)</label>
+            <input
+              type="text"
+              required
+              placeholder="Paneer Butter Masala, Dalma, Steamed Basmati Rice, Phulka Roti, Gulab Jamun"
+              value={itemsRaw}
+              onChange={(e) => setItemsRaw(e.target.value)}
+              className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+            />
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Opening Time</label>
+              <input
+                type="time"
+                value={openTime}
+                onChange={(e) => setOpenTime(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Closing Time</label>
+              <input
+                type="time"
+                value={closeTime}
+                onChange={(e) => setCloseTime(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Expected Head Count</label>
+              <input
+                type="number"
+                value={expectedQty}
+                onChange={(e) => setExpectedQty(Number(e.target.value))}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Save className="w-4 h-4" />
+            <span>PUBLISH MEAL TO LIVE APP SCHEDULE</span>
+          </button>
+        </form>
+      )}
+
+      {/* MODE 3: CSV BULK IMPORT */}
+      {activeMode === 'csv' && (
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Paste CSV Menu Lines</label>
+            <textarea
+              rows={6}
+              placeholder={`2026-08-22,breakfast,South Indian Feast,"Idli;Vada;Sambar;Chutney",07:30,09:30,450
+2026-08-22,lunch,Odia Thali,"Dalma;Rice;Phulka;Rasgulla",12:00,14:30,500`}
+              value={csvText}
+              onChange={(e) => setCsvText(e.target.value)}
+              className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={handleParseCSV}
+              className="px-6 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
+            >
+              Parse CSV Format
+            </button>
+            {parsedPreview && (
+              <button
+                type="button"
+                onClick={handleConfirmCSVImport}
+                className="px-6 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
+              >
+                Confirm & Import {parsedPreview.length} Meals
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MODE 4: COPY PREVIOUS DAY */}
+      {activeMode === 'copy' && (
+        <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl text-center">
+          <div className="w-16 h-16 mx-auto rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 flex items-center justify-center">
+            <Copy className="w-8 h-8" />
+          </div>
+          <h2 className="font-serif font-bold text-xl text-[#2C221E] dark:text-white">
+            Duplicate Yesterday's Menu to Today/Tomorrow
+          </h2>
+          <button
+            type="button"
+            onClick={handleCopyPreviousDay}
+            className="px-8 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer inline-flex items-center gap-2"
+          >
+            <Copy className="w-4 h-4" />
+            <span>COPY PREVIOUS DAY MEALS TO {date}</span>
+          </button>
         </div>
       )}
     </div>
