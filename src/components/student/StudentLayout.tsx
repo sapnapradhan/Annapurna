@@ -41,9 +41,11 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
         {/* Mobile Header */}
         <header className="sticky top-0 z-40 bg-white/10 dark:bg-black/40 backdrop-blur-xl border-b border-white/20 dark:border-white/10 px-4 py-3 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-base shadow-sm">
-              {user.name.charAt(0)}
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="ANNAPURNA Logo" 
+              className="h-8 w-auto object-contain shrink-0" 
+            />
             <div>
               <div className="font-cursive font-bold text-sm text-[#2C221E] dark:text-slate-100 leading-tight">Annapurna Student</div>
               <div className="text-[10px] text-slate-600 dark:text-slate-300 font-mono">{user.hostel} • {user.block}</div>

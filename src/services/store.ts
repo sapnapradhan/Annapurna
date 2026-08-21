@@ -239,57 +239,64 @@ class AppStore {
     return newUser;
   }
 
-  public loginUser(email: string): UserProfile {
-    const cleanEmail = email.trim().toLowerCase();
-    
-    // Check if user exists
-    const user = this.registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
-    if (user) {
-      this.currentUser = user;
-      this.currentRole = user.role;
-      this.saveState();
-      this.notify();
-      return user;
+  public updateAdminPassword(currentPasswordInput: string, newPasswordInput: string): boolean {
+    if (this.currentRole !== 'authority') {
+      throw new Error('Unauthorized: Only Authority Admins can change admin credentials.');
     }
 
-    // Check authority credentials
-    if (cleanEmail.includes('authority') || cleanEmail.includes('admin') || cleanEmail.includes('rajesh')) {
-      const authUser: UserProfile = {
-        id: 'user-auth-1',
-        name: 'Dr. Rajesh Mohanty',
-        email: cleanEmail,
-        role: 'authority',
-        hostel: 'Central Dining Operations',
-        block: 'Admin Block, Chief Warden'
-      };
-      this.currentUser = authUser;
-      this.currentRole = 'authority';
-      this.saveState();
-      this.notify();
-      return authUser;
-    }
+    const adminUser = this.registeredUsers.find(u => u.role === 'authority');
+    if (!adminUser) throw new Error('Admin profile not found.');
 
-    // Auto-create new student profile for public capacity (up to 400+ students)
-    const formattedName = cleanEmail.split('@')[0].replace('.', ' ').replace('_', ' ');
-    const capitalName = formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
-
-    const newStd: UserProfile = {
-      id: `user-std-${Date.now()}`,
-      name: capitalName,
-      email: cleanEmail,
-      role: 'student',
-      hostel: 'Hostel 1 - Mahanadi Hall',
-      block: 'Block A'
-    };
-
-    this.registeredUsers.push(newStd);
+    adminUser.password = newPasswordInput;
+    this.currentUser = { ...adminUser };
     this.saveRegisteredUsers();
-
-    this.currentUser = newStd;
-    this.currentRole = 'student';
     this.saveState();
     this.notify();
-    return newStd;
+    return true;
+  }
+
+  public loginUser(email: string, roleConstraint?: UserRole): UserProfile {
+    const cleanEmail = email.trim().toLowerCase();
+    
+    // Check if user exists in registeredUsers
+    let user = this.registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
+
+    if (roleConstraint && user && user.role !== roleConstraint) {
+      throw new Error(`Account exists but belongs to ${user.role.toUpperCase()} portal. Please use the ${user.role.toUpperCase()} login tab.`);
+    }
+
+    if (!user) {
+      if (roleConstraint === 'authority' || cleanEmail.includes('admin') || cleanEmail.includes('authority')) {
+        user = {
+          id: `user-auth-${Date.now()}`,
+          name: 'Chief Warden Admin',
+          email: cleanEmail,
+          role: 'authority',
+          password: 'password123',
+          hostel: 'Bhubaneswar Central Campus'
+        };
+      } else {
+        const formattedName = cleanEmail.split('@')[0].replace('.', ' ').replace('_', ' ');
+        const capitalName = formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
+        user = {
+          id: `user-std-${Date.now()}`,
+          name: capitalName,
+          email: cleanEmail,
+          role: 'student',
+          password: 'password123',
+          hostel: 'Mahanadi Hostel',
+          block: 'Block A, Room 102'
+        };
+      }
+      this.registeredUsers.push(user);
+      this.saveRegisteredUsers();
+    }
+
+    this.currentUser = user;
+    this.currentRole = user.role;
+    this.saveState();
+    this.notify();
+    return user;
   }
 
   public setPreparedQuantity(mealId: string, qty: number) {

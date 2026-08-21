@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Utensils, Clock, QrCode, Users, MessageSquareQuote, 
-  Trash2, Truck, TrendingUp, Settings, LogOut, Bell, X, CheckCircle2 
+  Trash2, Truck, TrendingUp, Settings, LogOut, Bell, X
 } from 'lucide-react';
 import { appStore } from '../../services/store';
 import { ThemeToggle } from '../common/ThemeToggle';
@@ -52,9 +52,11 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
         <div className="space-y-6">
           {/* Logo Header */}
           <div className="flex items-center gap-3 px-2 pt-2">
-            <div className="w-9 h-9 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-xl shadow-md border border-amber-300/30">
-              A
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="ANNAPURNA Logo" 
+              className="h-10 w-auto object-contain shrink-0" 
+            />
             <div>
               <div className="font-cursive font-bold text-xl text-[#2C221E] dark:text-amber-100">Annapurna</div>
               <div className="text-[10px] font-mono text-slate-600 dark:text-slate-400">Authority Ops Portal</div>

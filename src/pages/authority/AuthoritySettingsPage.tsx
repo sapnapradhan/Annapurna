@@ -1,155 +1,183 @@
 import React, { useState } from 'react';
 import { appStore } from '../../services/store';
-import { Shield, Lock, CheckCircle2, AlertCircle, KeyRound, Save } from 'lucide-react';
+import { 
+  ShieldCheck, Lock, Key, CheckCircle2, AlertCircle, Save, UserCheck, Shield 
+} from 'lucide-react';
 
 export const AuthoritySettingsPage: React.FC = () => {
-  const user = appStore.getCurrentUser();
+  const currentUser = appStore.getCurrentUser();
+  
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-
-  const [errorMessage, setErrorMessage] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Live password validation
-  const hasMinLength = newPassword.length >= 8;
-  const hasUppercase = /[A-Z]/.test(newPassword);
-  const hasLowercase = /[a-z]/.test(newPassword);
-  const hasNumber = /[0-9]/.test(newPassword);
-  const passwordsMatch = newPassword.length > 0 && newPassword === confirmNewPassword;
-  const isValid = hasMinLength && hasUppercase && hasLowercase && hasNumber && passwordsMatch;
+  const [messName, setMessName] = useState('Central Dining Hall — Kalinga Campus');
+  const [contactEmail, setContactEmail] = useState(currentUser.email || 'admin@authority.edu');
 
-  const handleChangePassword = async (e: React.FormEvent) => {
+  const handleUpdatePassword = (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage('');
     setSuccessMessage('');
+    setErrorMessage('');
 
-    if (!isValid) {
-      setErrorMessage('New password does not satisfy security requirements.');
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('New password and confirm password do not match.');
       return;
     }
 
-    setIsSubmitting(true);
+    if (newPassword.length < 6) {
+      setErrorMessage('Password must be at least 6 characters long.');
+      return;
+    }
 
     try {
-      const res = await appStore.changeAuthorityPassword(newPassword);
-      if (res.success) {
-        setSuccessMessage(res.message || 'Authority password updated successfully!');
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmNewPassword('');
-      } else {
-        setErrorMessage(res.message || 'Failed to update password.');
-      }
+      appStore.updateAdminPassword(currentPassword, newPassword);
+      setSuccessMessage('Authority Admin password successfully updated!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
     } catch (err: any) {
-      setErrorMessage(err.message || 'Password change failed.');
-    } finally {
-      setIsSubmitting(false);
+      setErrorMessage(err?.message || 'Failed to update admin password.');
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
-        <div>
-          <h1 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-amber-400" />
-            <span>Authority Security & Account Settings</span>
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
-            Manage administrative security credentials and update account access keys safely via Supabase Auth.
-          </p>
+    <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">
+      <div className="border-b border-[#EBE4D8] dark:border-[#2C2724] pb-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <ShieldCheck className="w-3.5 h-3.5" />
+          <span>AUTHORITY ADMIN SECURITY & SYSTEM SETTINGS</span>
         </div>
+        <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-white mt-1">
+          Authority Settings & Credential Security
+        </h1>
+        <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
+          Only authenticated Authority Admins can modify system credentials & password.
+        </p>
       </div>
 
-      <div className="grid lg:grid-cols-12 gap-6">
-        {/* Change Password Form */}
-        <form onSubmit={handleChangePassword} className="lg:col-span-7 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-          <h3 className="font-bold text-sm text-slate-200 flex items-center gap-2 border-b border-slate-800 pb-3">
-            <KeyRound className="w-4 h-4 text-amber-400" />
-            <span>Change Authority Password</span>
-          </h3>
-
-          {errorMessage && (
-            <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
-              <span>{errorMessage}</span>
-            </div>
-          )}
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Section 1: Authority Admin Password & Credential Security */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+            <Lock className="w-5 h-5 text-[#C86D44] dark:text-amber-400" />
+            <h2 className="font-serif font-bold text-lg text-[#2C221E] dark:text-white">
+              Change Authority Admin Password
+            </h2>
+          </div>
 
           {successMessage && (
-            <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 font-mono">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{successMessage}</span>
             </div>
           )}
 
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Current Password</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100 focus:border-amber-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">New Password</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100 focus:border-amber-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Confirm New Password</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100 focus:border-amber-500 focus:outline-none"
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting || !isValid}
-            className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-40 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-950/30"
-          >
-            <Save className="w-4 h-4" />
-            <span>{isSubmitting ? 'Updating...' : 'Update Password via Supabase Auth'}</span>
-          </button>
-        </form>
-
-        {/* Security Policy Panel */}
-        <div className="lg:col-span-5 p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-3 text-xs">
-          <h3 className="font-bold text-sm text-slate-200 border-b border-slate-800 pb-3">
-            Security & Role Policy
-          </h3>
-
-          <div className="space-y-2 text-slate-400">
-            <div>
-              <span className="text-slate-200 font-semibold block">Authenticated Admin:</span>
-              <span>{user.name} ({user.block})</span>
+          {errorMessage && (
+            <div className="p-3.5 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 font-mono">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMessage}</span>
             </div>
-            <div>
-              <span className="text-slate-200 font-semibold block">Role Protection:</span>
-              <span className="text-amber-300 font-mono font-semibold">ROLE_AUTHORITY (Secured via RLS)</span>
+          )}
+
+          <form onSubmit={handleUpdatePassword} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                Active Admin Email
+              </label>
+              <input
+                type="text"
+                disabled
+                value={currentUser.email}
+                className="w-full bg-white/5 dark:bg-black/50 border border-white/10 rounded-xl p-3 text-xs font-mono text-slate-400 cursor-not-allowed"
+              />
             </div>
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-300 space-y-1 mt-2">
-              <div className="font-semibold text-amber-300">Security Guarantee:</div>
-              <div>Passwords are updated directly using Supabase Auth cryptographic API endpoints and are never saved in LocalStorage, database tables, or repository files.</div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                Current Password
+              </label>
+              <input
+                type="password"
+                required
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Enter current password"
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-[#C86D44]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                New Admin Password
+              </label>
+              <input
+                type="password"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-[#C86D44]"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••••••"
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none focus:border-[#C86D44]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Key className="w-4 h-4" />
+              <span>UPDATE ADMIN PASSWORD</span>
+            </button>
+          </form>
+        </div>
+
+        {/* Section 2: Mess Facility Profile */}
+        <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4">
+          <div className="flex items-center gap-2 border-b border-white/10 pb-3">
+            <UserCheck className="w-5 h-5 text-[#C86D44] dark:text-amber-400" />
+            <h2 className="font-serif font-bold text-lg text-[#2C221E] dark:text-white">
+              Campus Dining Facility Profile
+            </h2>
+          </div>
+
+          <div className="space-y-4 text-xs">
+            <div className="space-y-1.5">
+              <label className="font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Facility Name</label>
+              <input
+                type="text"
+                value={messName}
+                onChange={(e) => setMessName(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 font-semibold text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Operations Contact Email</label>
+              <input
+                type="email"
+                value={contactEmail}
+                onChange={(e) => setContactEmail(e.target.value)}
+                className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 font-semibold text-white focus:outline-none"
+              />
+            </div>
+
+            <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px]">
+              🔒 SECURITY NOTICE: All credential & password changes take effect immediately and persist across sessions.
             </div>
           </div>
         </div>

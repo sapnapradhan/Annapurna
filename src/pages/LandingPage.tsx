@@ -98,35 +98,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* Ambient Dynamic Background Particles */}
       <DynamicParticles />
 
-      {/* Floating & Shaking Moving Thali Plates Background Animation */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Floating Shaking Plate 1 (Top Left) */}
-        <div className="absolute top-[15%] left-[5%] opacity-25 dark:opacity-40 animate-pulse">
-          <div className="w-32 h-32 sm:w-44 sm:h-44 rounded-full bg-gradient-to-tr from-amber-600/40 via-orange-500/30 to-yellow-400/20 border-4 border-amber-400/40 shadow-2xl flex items-center justify-center p-3 transform hover:scale-105 transition-transform duration-700">
-            <div className="w-full h-full rounded-full border-2 border-dashed border-amber-300/40 flex items-center justify-center font-cursive text-amber-200 text-xs text-center font-bold">
-              🍛 FRESH THALI
-            </div>
-          </div>
-        </div>
-
-        {/* Floating Shaking Plate 2 (Bottom Right) */}
-        <div className="absolute bottom-[20%] right-[6%] opacity-25 dark:opacity-40 animate-bounce duration-[3000ms]">
-          <div className="w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-gradient-to-tr from-[#C86D44]/40 via-amber-500/30 to-rose-500/20 border-4 border-[#C86D44]/40 shadow-2xl flex items-center justify-center p-3">
-            <div className="w-full h-full rounded-full border-2 border-dashed border-amber-300/40 flex items-center justify-center font-cursive text-amber-100 text-xs text-center font-bold">
-              🍲 NOURISHING MEAL
-            </div>
-          </div>
-        </div>
-
-        {/* Floating Shaking Plate 3 (Center Floating) */}
-        <div className="absolute top-[55%] left-[8%] opacity-20 dark:opacity-30">
-          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-emerald-600/30 to-amber-500/20 border-4 border-emerald-400/40 shadow-2xl flex items-center justify-center p-2">
-            <div className="w-full h-full rounded-full border border-emerald-300/30 flex items-center justify-center font-cursive text-emerald-200 text-[10px] text-center">
-              🍱 FOOD RESCUE
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Light Backdrop Scrim */}
+      <div className="fixed inset-0 bg-transparent pointer-events-none z-0" />
 
       {/* Main Page Music Choice Consent Popup */}
       {showMusicPopup && (
@@ -137,14 +110,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Pill Navigation Bar (Translucent Glass Styling) */}
+        {/* Floating Pill Navigation Bar */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
           <div className="bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
             {/* Logo Emblem */}
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-lg shadow-md border border-amber-300/30">
-                A
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="ANNAPURNA Logo" 
+                className="h-8 w-auto object-contain shrink-0" 
+              />
               <div>
                 <span className="font-cursive font-bold text-xl tracking-wider text-[#2C221E] dark:text-amber-100">
                   Annapurna
@@ -199,7 +174,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </header>
 
-        {/* Full-Screen Editorial Hero Section */}
+        {/* Full-Screen Editorial Hero Section (Translucent Glass Container) */}
         <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
           <div className="max-w-4xl mx-auto text-center space-y-7 p-10 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
             
@@ -382,7 +357,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <footer className="py-10 border-t border-white/20 dark:border-white/10 text-center text-xs text-slate-700 dark:text-slate-300 bg-white/5 dark:bg-black/40 backdrop-blur-md">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 font-cursive text-base font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
-              <UtensilsCrossed className="w-4 h-4 text-[#C86D44] dark:text-amber-400" />
+              <img 
+                src="/logo.png" 
+                alt="ANNAPURNA Logo" 
+                className="h-6 w-auto object-contain shrink-0" 
+              />
               <span>Annapurna • Bhubaneswar, Odisha</span>
             </div>
             <div>© {new Date().getFullYear()} ANNAPURNA Food Operations. All rights reserved.</div>
