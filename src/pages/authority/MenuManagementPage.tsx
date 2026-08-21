@@ -181,24 +181,25 @@ export const MenuManagementPage: React.FC = () => {
   const handleConfirmPdfPublish = () => {
     if (!extractedPdfSchedule || extractedPdfSchedule.length === 0) return;
 
-    extractedPdfSchedule.forEach(item => {
-      appStore.addMeal({
-        date: item.date,
-        meal_type: item.meal_type,
-        name: item.name,
-        description: `Imported from PDF Mess Menu (${pdfFileName})`,
-        items: item.items,
-        image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
-        mess_id: messId,
-        open_time: item.open_time,
-        close_time: item.close_time,
-        expected_qty: item.expected_qty,
-        price: 0,
-        status: 'published'
-      });
-    });
+    const targetDate = extractedPdfSchedule[0]?.date || date;
+    const newMealsData = extractedPdfSchedule.map(item => ({
+      date: item.date,
+      meal_type: item.meal_type,
+      name: item.name,
+      description: `Uploaded & Extracted from PDF Mess Menu (${pdfFileName})`,
+      items: item.items,
+      image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+      mess_id: messId,
+      open_time: item.open_time,
+      close_time: item.close_time,
+      expected_qty: item.expected_qty,
+      price: 0,
+      status: 'published' as const
+    }));
 
-    showToast(`Successfully published ${extractedPdfSchedule.length} meals from PDF menu to live student schedule!`);
+    appStore.replaceMealsForDate(targetDate, newMealsData);
+
+    showToast(`Successfully replaced default menu with ${extractedPdfSchedule.length} PDF meals for ${targetDate}! Available across student & authority views.`);
   };
 
   const handleParseCSV = () => {

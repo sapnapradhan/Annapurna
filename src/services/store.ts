@@ -88,7 +88,15 @@ class AppStore {
       }
 
       this.messes = [...MOCK_MESSES];
-      this.meals = [...MOCK_MEALS];
+
+      const savedMeals = localStorage.getItem('annapurna_custom_meals');
+      if (savedMeals) {
+        this.meals = JSON.parse(savedMeals);
+      } else {
+        this.meals = [...MOCK_MEALS];
+        this.saveMeals();
+      }
+
       this.reviews = [...(MOCK_REVIEWS as unknown as Review[])];
       this.forecasts = [...(MOCK_FORECASTS as unknown as ForecastItem[])];
       
@@ -364,6 +372,40 @@ class AppStore {
     this.notify();
 
     return newCheckin;
+  }
+
+  private saveMeals() {
+    try {
+      localStorage.setItem('annapurna_custom_meals', JSON.stringify(this.meals));
+    } catch (e) {
+      console.warn('saveMeals error:', e);
+    }
+  }
+
+  public replaceMealsForDate(targetDate: string, newMeals: Omit<Meal, 'id'>[]): Meal[] {
+    // Remove pre-existing default meals for targetDate
+    this.meals = this.meals.filter(m => m.date !== targetDate);
+
+    const createdMeals: Meal[] = newMeals.map((m, idx) => ({
+      ...m,
+      id: `meal-pdf-${Date.now()}-${idx}`
+    }));
+
+    this.meals.unshift(...createdMeals);
+    this.saveMeals();
+    this.notify();
+    return createdMeals;
+  }
+
+  public addMeal(mealData: Omit<Meal, 'id'>): Meal {
+    const newMeal: Meal = {
+      ...mealData,
+      id: `meal-${Date.now()}`
+    };
+    this.meals.unshift(newMeal);
+    this.saveMeals();
+    this.notify();
+    return newMeal;
   }
 
   // Automatic Surplus Calculation Engine

@@ -87,21 +87,17 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
           </nav>
         </div>
 
-        {/* User Info & Switch */}
-        <div className="p-3 rounded-2xl bg-white/10 dark:bg-black/30 border border-white/10 space-y-3 backdrop-blur-md">
+        {/* Authenticated Admin Profile Card */}
+        <div className="p-3 rounded-2xl bg-white/10 dark:bg-black/30 border border-white/10 space-y-2 backdrop-blur-md">
           <div className="flex items-center justify-between text-xs">
             <div className="font-bold truncate text-[#2C221E] dark:text-white">{user.name}</div>
             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 font-bold uppercase">
               Admin
             </span>
           </div>
-
-          <button
-            onClick={() => appStore.loginAs('student')}
-            className="w-full py-2 rounded-xl bg-white/10 dark:bg-black/40 hover:bg-white/20 text-[#2C221E] dark:text-slate-200 text-xs font-semibold border border-white/20 transition-colors"
-          >
-            Switch to Student App
-          </button>
+          <div className="text-[10px] font-mono text-slate-400">
+            Authenticated Ops Admin Session
+          </div>
         </div>
       </aside>
 

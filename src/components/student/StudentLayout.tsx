@@ -57,12 +57,6 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
             <VoiceAssistWidget label="Listen" textToRead={`Welcome back ${user.name}. Your next meal pass is ready. hostel ${user.hostel}.`} />
             <ThemeToggle />
             <button
-              onClick={() => appStore.loginAs('authority')}
-              className="px-2.5 py-1 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white text-[10px] font-bold shadow-md transition-colors backdrop-blur-md cursor-pointer"
-            >
-              Authority View
-            </button>
-            <button
               onClick={onLogout}
               className="p-1.5 rounded-full bg-rose-500/20 text-rose-600 dark:text-rose-400 hover:bg-rose-500/30 transition-colors cursor-pointer"
               title="Logout"
