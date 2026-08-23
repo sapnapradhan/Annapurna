@@ -263,37 +263,37 @@ class AppStore {
     return true;
   }
 
-  public loginUser(email: string, roleConstraint?: UserRole): UserProfile {
-    const cleanEmail = email.trim().toLowerCase();
+  public loginUser(email?: string, roleConstraint?: UserRole): UserProfile {
+    const rawInput = (email || '').trim();
+    const targetRole: UserRole = roleConstraint || (rawInput.toLowerCase().includes('admin') || rawInput.toLowerCase().includes('authority') ? 'authority' : 'student');
+    const cleanEmail = rawInput ? rawInput.toLowerCase() : (targetRole === 'authority' ? 'admin@authority.edu' : 'aarav@student.edu');
     
     // Check if user exists in registeredUsers
-    let user = this.registeredUsers.find(u => u.email.toLowerCase() === cleanEmail);
+    let user = this.registeredUsers.find(u => u && u.email && u.email.toLowerCase() === cleanEmail);
 
-    if (roleConstraint && user && user.role !== roleConstraint) {
-      throw new Error(`Account exists but belongs to ${user.role.toUpperCase()} portal. Please use the ${user.role.toUpperCase()} login tab.`);
-    }
-
-    if (!user) {
-      if (roleConstraint === 'authority' || cleanEmail.includes('admin') || cleanEmail.includes('authority')) {
+    if (user) {
+      user.role = targetRole;
+    } else {
+      if (targetRole === 'authority') {
         user = {
           id: `user-auth-${Date.now()}`,
           name: 'Chief Warden Admin',
-          email: cleanEmail,
+          email: cleanEmail.includes('@') ? cleanEmail : `${cleanEmail}@authority.edu`,
           role: 'authority',
           password: 'password123',
-          hostel: 'Bhubaneswar Central Campus'
+          hostel: 'LH1 to LH5 Directorate'
         };
       } else {
         const formattedName = cleanEmail.split('@')[0].replace('.', ' ').replace('_', ' ');
         const capitalName = formattedName.charAt(0).toUpperCase() + formattedName.slice(1);
         user = {
           id: `user-std-${Date.now()}`,
-          name: capitalName,
-          email: cleanEmail,
+          name: capitalName || 'Student',
+          email: cleanEmail.includes('@') ? cleanEmail : `${cleanEmail}@student.edu`,
           role: 'student',
           password: 'password123',
-          hostel: 'Mahanadi Hostel',
-          block: 'Block A, Room 102'
+          hostel: 'LH1',
+          block: 'Rm 102'
         };
       }
       this.registeredUsers.push(user);
@@ -301,7 +301,7 @@ class AppStore {
     }
 
     this.currentUser = user;
-    this.currentRole = user.role;
+    this.currentRole = targetRole;
     this.saveState();
     this.notify();
     return user;

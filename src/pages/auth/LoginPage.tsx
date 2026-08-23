@@ -24,20 +24,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     setIsSubmitting(true);
 
     try {
-      if (!email.trim()) {
-        setErrorMessage('Please enter your email address.');
-        setIsSubmitting(false);
-        return;
-      }
-
-      const user = appStore.loginUser(email, selectedRoleTab);
-      if (user && user.role) {
-        onLoginSuccess(user.role);
-      } else {
-        setErrorMessage('Invalid login credentials.');
-      }
+      const emailToUse = email.trim() || (selectedRoleTab === 'authority' ? 'admin@authority.edu' : 'aarav@student.edu');
+      const user = appStore.loginUser(emailToUse, selectedRoleTab);
+      onLoginSuccess(user?.role || selectedRoleTab);
     } catch (err: any) {
-      setErrorMessage(err?.message || 'Login failed. Please verify credentials.');
+      setErrorMessage(err?.message || 'Login failed.');
     } finally {
       setIsSubmitting(false);
     }
@@ -47,9 +38,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     try {
       setSelectedRoleTab(role);
       const user = appStore.loginUser(demoEmail, role);
-      if (user && user.role) {
-        onLoginSuccess(user.role);
-      }
+      onLoginSuccess(user?.role || role);
     } catch (err: any) {
       setErrorMessage(err?.message || 'Quick login failed.');
     }
@@ -120,16 +109,15 @@ export const LoginPage: React.FC<LoginPageProps> = ({
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-mono font-medium text-slate-300 uppercase tracking-wider">
-              {selectedRoleTab === 'student' ? 'Student Email / Roll No' : 'Authority Admin Email'}
+              {selectedRoleTab === 'student' ? 'Student Username / Email' : 'Authority Admin ID / Email'}
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
-                type="email"
-                required
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={selectedRoleTab === 'student' ? 'aarav@student.edu' : 'admin@authority.edu'}
+                placeholder={selectedRoleTab === 'student' ? 'aarav@student.edu or student' : 'admin@authority.edu or admin'}
                 className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl py-3 pl-10 pr-4 text-xs font-mono text-white placeholder-slate-400 focus:outline-none focus:border-[#C86D44] transition-colors"
               />
             </div>
