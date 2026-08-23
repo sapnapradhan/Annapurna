@@ -15,7 +15,7 @@ export const StudentHomePage: React.FC<StudentHomePageProps> = ({ onNavigate }) 
   const todayDinner = meals.find(m => m.id === 'meal-today-dinner') || meals[0];
 
   const [selectedHostel, setSelectedHostel] = useState<string>(
-    user.hostel || 'Hostel 1 - Mahanadi Hall'
+    user.hostel || 'LH1'
   );
 
   const [liveAttendance, setLiveAttendance] = useState(
@@ -29,13 +29,7 @@ export const StudentHomePage: React.FC<StudentHomePageProps> = ({ onNavigate }) 
     return appStore.subscribe(update);
   }, [todayDinner?.id]);
 
-  const hostels = [
-    'Hostel 1 - Mahanadi Hall',
-    'Hostel 2 - Daya Hall',
-    'Hostel 3 - Kathajodi Hall',
-    'Kalinga Boys Hostel',
-    'Rani Sukadei Girls Hostel'
-  ];
+  const hostels = ['LH1', 'LH2', 'LH3', 'LH4', 'LH5'];
 
   return (
     <div className="space-y-6 text-[#2C221E] dark:text-slate-100 font-sans">

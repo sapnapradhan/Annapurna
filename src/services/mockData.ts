@@ -4,15 +4,17 @@ export const TODAY_STR = new Date().toISOString().split('T')[0];
 export const TOMORROW_STR = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
 export const MOCK_MESSES: Mess[] = [
-  { id: 'mess-1', name: 'Main Dining Hall (North Campus)', location: 'North Block - Sector 3', capacity: 650 },
-  { id: 'mess-2', name: 'Nilgiri Mess (South Block)', location: 'South Hostel Complex', capacity: 450 },
-  { id: 'mess-3', name: 'Vindhya Central Dining', location: 'Central Academic Square', capacity: 800 },
+  { id: 'mess-1', name: 'ITER LH1 & LH4 Mess Complex', location: 'LH1 & LH4 Complex', capacity: 700 },
+  { id: 'mess-2', name: 'ITER LH2, LH3 & LH5 Mess Complex', location: 'LH2, LH3 & LH5 Quad', capacity: 950 },
 ];
 
 export const MOCK_PROFILES: Profile[] = [
-  { id: 'student-1', role: 'student', name: 'Aarav Sharma', student_id: '2024CS1042', hostel: 'Nilgiri Hall', block: 'B-Block, Rm 204', dietary_pref: 'Vegetarian' },
-  { id: 'student-2', role: 'student', name: 'Priya Ananth', student_id: '2023EE1089', hostel: 'Kaveri Hostel', block: 'A-Block, Rm 112', dietary_pref: 'Jain' },
-  { id: 'authority-1', role: 'authority', name: 'Dr. Rameshwar V. Verma', hostel: 'Administration', block: 'Food Ops Directorate' }
+  { id: 'student-1', role: 'student', name: 'Ananya Sahu', student_id: '24ITERLH1042', hostel: 'LH1', block: 'Rm 204', dietary_pref: 'Vegetarian' },
+  { id: 'student-2', role: 'student', name: 'Priya Dash', student_id: '23ITERLH2089', hostel: 'LH2', block: 'Rm 112', dietary_pref: 'Non-Vegetarian' },
+  { id: 'student-3', role: 'student', name: 'Shruti Mohanty', student_id: '24ITERLH3015', hostel: 'LH3', block: 'Rm 305', dietary_pref: 'Vegetarian' },
+  { id: 'student-4', role: 'student', name: 'Deepika Nayak', student_id: '23ITERLH4091', hostel: 'LH4', block: 'Rm 108', dietary_pref: 'Non-Vegetarian' },
+  { id: 'student-5', role: 'student', name: 'Sneha Pattnaik', student_id: '24ITERLH5066', hostel: 'LH5', block: 'Rm 402', dietary_pref: 'Vegetarian' },
+  { id: 'authority-1', role: 'authority', name: 'Warden Office', hostel: 'LH1 to LH5', block: 'Directorate' }
 ];
 
 export const MOCK_MEALS: Meal[] = [
@@ -20,14 +22,14 @@ export const MOCK_MEALS: Meal[] = [
     id: 'meal-1',
     date: TODAY_STR,
     meal_type: 'breakfast',
-    name: 'South Indian Morning Feast',
-    description: 'Crisp Ghee Dosa, Steamed Idlis with Coconut Chutney, Sambhar, and Filter Coffee.',
-    items: ['Ghee Masala Dosa', 'Steamed Rice Idli (2 pcs)', 'Coconut Chutney', 'Spicy Tomato Chutney', 'Traditional Sambhar', 'South Indian Filter Coffee'],
+    name: 'Idli, Sambar & Coconut Chutney',
+    description: 'ITER LH Winter Menu (Week-1 Monday Breakfast): Fresh Idli with authentic Sambar and Coconut Chutney.',
+    items: ['Idli (4 Pcs)', 'Sambar', 'Coconut Chutney', 'Coffee / Tea'],
     image_url: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
     mess_id: 'mess-1',
     open_time: '07:30',
     close_time: '09:30',
-    expected_qty: 480,
+    expected_qty: 650,
     price: 0,
     status: 'closed',
   },
@@ -35,14 +37,14 @@ export const MOCK_MEALS: Meal[] = [
     id: 'meal-2',
     date: TODAY_STR,
     meal_type: 'lunch',
-    name: 'Shahi North Indian Thali',
-    description: 'Paneer Butter Masala, Yellow Dal Tadka, Fragrant Jeera Rice, Tandoori Roti, and Gulab Jamun.',
-    items: ['Paneer Butter Masala', 'Yellow Dal Tadka', 'Jeera Basmati Rice', 'Butter Roti (3 pcs)', 'Cucumber Mint Raita', 'Gulab Jamun (1 pc)'],
+    name: 'Rice, Dal & Veg Besara Thali',
+    description: 'ITER LH Winter Menu (Week-1 Monday Lunch): Common Rice, Roti, Dal, Veg Besara, Jeera Aloo, Dahi Boondi.',
+    items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Veg Besara', 'Side Items: Jeera Aloo', 'Dahi Boondi'],
     image_url: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
     mess_id: 'mess-1',
     open_time: '12:00',
     close_time: '14:30',
-    expected_qty: 550,
+    expected_qty: 850,
     price: 0,
     status: 'open',
   },
@@ -50,14 +52,14 @@ export const MOCK_MEALS: Meal[] = [
     id: 'meal-3',
     date: TODAY_STR,
     meal_type: 'snacks',
-    name: 'Evening High Tea & Samosa',
-    description: 'Fresh Potato Samosas with Green Chutney and Masala Chai.',
-    items: ['Crispy Punjabi Samosa (2 pcs)', 'Mint Chutney', 'Sweet Tamarind Chutney', 'Hot Masala Chai'],
+    name: 'Samosa & Imli Chutney High Tea',
+    description: 'ITER LH Winter Menu (Week-1 Monday Snacks): Big Crispy Samosas with Tangy Imli Chutney and Coffee.',
+    items: ['Samosa (Big 2 Pcs)', 'Imli Chutney', 'Hot Coffee / Tea'],
     image_url: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
     mess_id: 'mess-1',
-    open_time: '17:00',
-    close_time: '18:15',
-    expected_qty: 400,
+    open_time: '16:30',
+    close_time: '17:45',
+    expected_qty: 700,
     price: 0,
     status: 'published',
   },
@@ -65,140 +67,91 @@ export const MOCK_MEALS: Meal[] = [
     id: 'meal-4',
     date: TODAY_STR,
     meal_type: 'dinner',
-    name: 'Maharashtrian Special Dinner',
-    description: 'Puri Bhaji, Mixed Veg Kolhapuri, Steam Rice, Solkadhi & Fruit Custard.',
-    items: ['Aloo Poori (4 pcs)', 'Veg Kolhapuri Curry', 'Steam Basmati Rice', 'Moong Dal Fry', 'Chilled Fruit Custard'],
+    name: 'Rice, Dal, Chole Aloo & Rasgulla',
+    description: 'ITER LH Winter Menu (Week-1 Monday Dinner): Common Rice, Roti, Dal, Chole Aloo, Jhudanga Bhaja & Rasgulla.',
+    items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Chole Aloo', 'Side Items: Aloo Cluster Beans / Jhudanga Bhaja', 'Dessert: Rasgulla (1 Pc)'],
     image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
     mess_id: 'mess-1',
     open_time: '19:30',
     close_time: '21:30',
-    expected_qty: 520,
+    expected_qty: 800,
     price: 0,
     status: 'published',
   },
   {
     id: 'meal-5',
     date: TOMORROW_STR,
+    meal_type: 'breakfast',
+    name: 'Poha with Mungfali & Ghuguni',
+    description: 'ITER LH Winter Menu (Tuesday Breakfast): Poha with Mungfali, Hot Ghuguni & Tea.',
+    items: ['Poha (With Mungfali)', 'Ghuguni', 'Hot Tea'],
+    image_url: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
+    mess_id: 'mess-1',
+    open_time: '07:30',
+    close_time: '09:30',
+    expected_qty: 680,
+    price: 0,
+    status: 'published',
+  },
+  {
+    id: 'meal-6',
+    date: TOMORROW_STR,
     meal_type: 'lunch',
-    name: 'Hyderabadi Veg Dum Biryani',
-    description: 'Layered Basmati Rice Dum Biryani with Mirchi Ka Salan and Boondi Raita.',
-    items: ['Hyderabadi Veg Biryani', 'Mirchi Ka Salan', 'Boondi Raita', 'Green Salad', 'Matka Phirni'],
-    image_url: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=800&q=80',
+    name: 'Mushroom Besara & Fish Bessara Thali',
+    description: 'ITER LH Winter Menu (Tuesday Lunch): Common Rice, Roti, Dal, Mushroom Besara with Ambula / Fish Bessara.',
+    items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Mushroom Besara with Ambula', 'Non-Veg Curry: Fish Bessara', 'Side Items: Aloo Beans Bhaja'],
+    image_url: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
     mess_id: 'mess-1',
     open_time: '12:00',
     close_time: '14:30',
-    expected_qty: 600,
+    expected_qty: 880,
+    price: 0,
+    status: 'published',
+  },
+  {
+    id: 'meal-7',
+    date: TOMORROW_STR,
+    meal_type: 'snacks',
+    name: 'Italian Pasta & Tea',
+    description: 'ITER LH Winter Menu (Tuesday Snacks): Delicious Pasta with Hot Tea.',
+    items: ['Hot Italian Pasta', 'Hot Tea'],
+    image_url: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80',
+    mess_id: 'mess-1',
+    open_time: '16:30',
+    close_time: '17:45',
+    expected_qty: 720,
+    price: 0,
+    status: 'published',
+  },
+  {
+    id: 'meal-8',
+    date: TOMORROW_STR,
+    meal_type: 'dinner',
+    name: 'Paneer Bhurji & Egg Bhurji Feast',
+    description: 'ITER LH Winter Menu (Tuesday Dinner): Common Rice, Roti, Dal, Paneer Bhurji / Egg Bhurji, Crispy Alu Bhindi.',
+    items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Paneer Bhurji', 'Non-Veg Curry: Egg Bhurji', 'Side Items: Crispy Alu Bhindi', 'Fresh Salad'],
+    image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
+    mess_id: 'mess-1',
+    open_time: '19:30',
+    close_time: '21:30',
+    expected_qty: 820,
     price: 0,
     status: 'published',
   }
 ];
 
 export const MOCK_CHECKINS: Checkin[] = [
-  { id: 'chk-1', student_id: 'student-1', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:14:22Z`, student_name: 'Aarav Sharma', hostel: 'Nilgiri Hall' },
-  { id: 'chk-2', student_id: 'student-2', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:30:10Z`, student_name: 'Priya Ananth', hostel: 'Kaveri Hostel' },
-  { id: 'chk-3', student_id: 'student-3', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:45:00Z`, student_name: 'Vikramaditya Roy', hostel: 'Vindhya Hall' },
+  { id: 'chk-1', student_id: 'student-1', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:14:22Z`, student_name: 'Ananya Sahu', hostel: 'LH-1 (Ladies Hostel 1)' },
+  { id: 'chk-2', student_id: 'student-2', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:30:10Z`, student_name: 'Priya Dash', hostel: 'LH-2 (Ladies Hostel 2)' },
+  { id: 'chk-3', student_id: 'student-3', meal_id: 'meal-1', checked_in_at: `${TODAY_STR}T08:45:00Z`, student_name: 'Shruti Mohanty', hostel: 'LH-3 (Ladies Hostel 3)' },
 ];
 
 export const MOCK_REVIEWS: Review[] = [
-  {
-    id: 'rev-1',
-    student_id: 'student-1',
-    meal_id: 'meal-1',
-    stars: 5,
-    quantity_feedback: 'just_right',
-    taste_rating: 5,
-    quality_rating: 5,
-    temperature_rating: 4,
-    variety_rating: 5,
-    comment: 'The ghee dosa was crispy and fresh! Sambhar temperature was perfect.',
-    created_at: `${TODAY_STR}T09:00:00Z`,
-    student_name: 'Aarav Sharma',
-    meal_name: 'South Indian Morning Feast'
-  },
-  {
-    id: 'rev-2',
-    student_id: 'student-2',
-    meal_id: 'meal-1',
-    stars: 4,
-    quantity_feedback: 'just_right',
-    taste_rating: 4,
-    quality_rating: 4,
-    temperature_rating: 5,
-    variety_rating: 4,
-    comment: 'Great idlis. Coconut chutney could use a touch more curry leaves.',
-    created_at: `${TODAY_STR}T09:15:00Z`,
-    student_name: 'Priya Ananth',
-    meal_name: 'South Indian Morning Feast'
-  }
+  { id: 'rev-1', student_id: 'student-1', student_name: 'Ananya Sahu', meal_id: 'meal-1', rating: 5, comment: 'Authentic Idli & Sambar! Loved the coconut chutney.', created_at: `${TODAY_STR}T09:10:00Z` },
+  { id: 'rev-2', student_id: 'student-2', student_name: 'Priya Dash', meal_id: 'meal-1', rating: 4, comment: 'Good quantity and served hot at LH-2 mess.', created_at: `${TODAY_STR}T09:20:00Z` }
 ];
 
-export const MOCK_CONSUMPTION: Consumption[] = [
-  {
-    id: 'cons-1',
-    meal_id: 'meal-1',
-    prepared: 480,
-    served: 432,
-    remaining: 48,
-    wasted: 12,
-    redistributed: 36,
-    created_at: `${TODAY_STR}T10:00:00Z`
-  }
-];
-
-export const MOCK_SURPLUS: Surplus[] = [
-  {
-    id: 'surp-1',
-    meal_id: 'meal-1',
-    food: 'Idlis & Sambhar (Untouched Bulk Trays)',
-    quantity: 36,
-    prep_time: `${TODAY_STR}T07:00:00Z`,
-    temperature: 'Hot (>65C)',
-    storage_condition: 'Stainless Steel Insulated Container',
-    packaging: 'Sealed Food-Grade Containers',
-    pickup_deadline: `${TODAY_STR}T11:30:00Z`,
-    location: 'Main Mess Dispatch Dock Gate 2',
-    safety_verified: true,
-    matched_recipient: 'Robin Hood Army - City Shelter 4',
-    pickup_confirmed: true,
-    created_at: `${TODAY_STR}T10:15:00Z`
-  }
-];
-
-export const MOCK_FORECASTS: Forecast[] = [
-  {
-    meal_id: 'meal-2',
-    date: TODAY_STR,
-    meal_type: 'lunch',
-    meal_name: 'Shahi North Indian Thali',
-    mess_id: 'mess-1',
-    expected_qty: 550,
-    historical_attendance: 512,
-    participation_rate: 93.1,
-    predicted_demand: 508,
-    recommended_prep_qty: 520
-  },
-  {
-    meal_id: 'meal-3',
-    date: TODAY_STR,
-    meal_type: 'snacks',
-    meal_name: 'Evening High Tea & Samosa',
-    mess_id: 'mess-1',
-    expected_qty: 400,
-    historical_attendance: 340,
-    participation_rate: 85.0,
-    predicted_demand: 348,
-    recommended_prep_qty: 360
-  },
-  {
-    meal_id: 'meal-4',
-    date: TODAY_STR,
-    meal_type: 'dinner',
-    meal_name: 'Maharashtrian Special Dinner',
-    mess_id: 'mess-1',
-    expected_qty: 520,
-    historical_attendance: 468,
-    participation_rate: 90.0,
-    predicted_demand: 472,
-    recommended_prep_qty: 485
-  }
+export const MOCK_FORECASTS: ForecastItem[] = [
+  { date: TODAY_STR, meal_type: 'lunch', expected_headcount: 850, predicted_waste_kg: 12, recommended_prep_qty: 838 },
+  { date: TOMORROW_STR, meal_type: 'lunch', expected_headcount: 880, predicted_waste_kg: 14, recommended_prep_qty: 866 }
 ];

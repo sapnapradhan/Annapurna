@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { appStore } from '../../services/store';
 import { Meal, MealType } from '../../types';
-import { Utensils, Upload, Copy, Save, Plus, FileText, CheckCircle2, AlertCircle, FileSpreadsheet, Eye, Download, Trash2, Sparkles } from 'lucide-react';
+import { Utensils, Upload, Copy, Save, Plus, FileText, CheckCircle2, AlertCircle, FileSpreadsheet, Sparkles } from 'lucide-react';
 
 interface ExtractedPdfMeal {
   id: string;
@@ -28,7 +28,7 @@ export const MenuManagementPage: React.FC = () => {
   const [messId, setMessId] = useState(messes[0]?.id || '');
   const [openTime, setOpenTime] = useState('12:00');
   const [closeTime, setCloseTime] = useState('14:30');
-  const [expectedQty, setExpectedQty] = useState(500);
+  const [expectedQty, setExpectedQty] = useState(850);
 
   // Success message state
   const [toast, setToast] = useState<string | null>(null);
@@ -37,50 +37,50 @@ export const MenuManagementPage: React.FC = () => {
   const [csvText, setCsvText] = useState('');
   const [parsedPreview, setParsedPreview] = useState<any[] | null>(null);
 
-  // PDF State
+  // PDF State (ITER Ladies Hostels Winter Menu)
   const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [pdfFileName, setPdfFileName] = useState<string | null>('Weekly_Hostel_Mess_Menu_Bhubaneswar.pdf');
+  const [pdfFileName, setPdfFileName] = useState<string | null>('Proposed_ITER_Ladies_Hostels_Winter_Menu_Week_1_to_4.pdf');
   const [isPdfParsing, setIsPdfParsing] = useState(false);
   const [extractedPdfSchedule, setExtractedPdfSchedule] = useState<ExtractedPdfMeal[] | null>([
     {
-      id: 'pdf-1',
+      id: 'pdf-iter-1',
       date: new Date().toISOString().split('T')[0],
       meal_type: 'breakfast',
-      name: 'South Indian Breakfast Feast',
-      items: ['Masala Dosa', 'Coconut Chutney', 'Sambar', 'Boiled Eggs', 'Filter Coffee'],
+      name: 'Idli(4PC), Sambar & Coconut Chutney',
+      items: ['Idli (4Pcs)', 'Sambar', 'Coconut Chutney', 'Coffee / Tea'],
       open_time: '07:30',
       close_time: '09:30',
-      expected_qty: 450
+      expected_qty: 650
     },
     {
-      id: 'pdf-2',
+      id: 'pdf-iter-2',
       date: new Date().toISOString().split('T')[0],
       meal_type: 'lunch',
-      name: 'Odia Special Thali',
-      items: ['Paneer Butter Masala', 'Dalma', 'Steamed Basmati Rice', 'Phulka Roti', 'Gulab Jamun'],
+      name: 'Rice, Dal & Veg Besara Thali',
+      items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Veg Besara', 'Side Items: Jeera Aloo', 'Dahi Boondi'],
       open_time: '12:00',
       close_time: '14:30',
-      expected_qty: 500
+      expected_qty: 850
     },
     {
-      id: 'pdf-3',
+      id: 'pdf-iter-3',
       date: new Date().toISOString().split('T')[0],
       meal_type: 'snacks',
-      name: 'Evening High Tea',
-      items: ['Veg Cutlet', 'Green Chutney', 'Special Masala Chai'],
+      name: 'Samosa (Big 2Pcs) & Imli Chutney',
+      items: ['Samosa (Big 2Pcs)', 'Imli Chutney', 'Hot Coffee / Tea'],
       open_time: '16:30',
       close_time: '17:45',
-      expected_qty: 380
+      expected_qty: 700
     },
     {
-      id: 'pdf-4',
+      id: 'pdf-iter-4',
       date: new Date().toISOString().split('T')[0],
       meal_type: 'dinner',
-      name: 'North Indian Deluxe Dinner',
-      items: ['Kadai Paneer', 'Yellow Dal Tadka', 'Jeera Rice', 'Butter Naan', 'Sewai Kheer'],
+      name: 'Rice, Dal, Chole Aloo & Rasgulla',
+      items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Chole Aloo', 'Side Items: Aloo Cluster Beans / Jhudanga Bhaja', 'Dessert: Rasgulla (1Pc)'],
       open_time: '19:30',
       close_time: '21:30',
-      expected_qty: 480
+      expected_qty: 800
     }
   ]);
 
@@ -110,7 +110,7 @@ export const MenuManagementPage: React.FC = () => {
       status: 'published'
     });
 
-    showToast(`Meal "${name}" successfully published for ${date}!`);
+    showToast(`Meal "${name}" successfully published for ITER Hostels on ${date}!`);
     setName('');
     setDescription('');
     setItemsRaw('');
@@ -129,52 +129,52 @@ export const MenuManagementPage: React.FC = () => {
     setPdfFileName(file.name);
     setIsPdfParsing(true);
 
-    // Simulate OCR PDF parsing of weekly menu
+    // Simulate OCR PDF parsing of ITER Ladies Hostels Winter Menu
     setTimeout(() => {
       setIsPdfParsing(false);
       setExtractedPdfSchedule([
         {
-          id: `pdf-ext-1-${Date.now()}`,
+          id: `pdf-iter-ext-1-${Date.now()}`,
           date: date,
           meal_type: 'breakfast',
-          name: 'Puri Aloo Dum & Jalebi',
-          items: ['Puri (4 pcs)', 'Aloo Dum Curry', 'Hot Jalebi', 'Tea / Milk'],
+          name: 'Poha (With Mungfali) & Ghuguni',
+          items: ['Poha (With Mungfali)', 'Ghuguni', 'Hot Tea'],
           open_time: '07:30',
           close_time: '09:30',
-          expected_qty: 450
+          expected_qty: 680
         },
         {
-          id: `pdf-ext-2-${Date.now()}`,
+          id: `pdf-iter-ext-2-${Date.now()}`,
           date: date,
           meal_type: 'lunch',
-          name: 'Chef Special Veg Biryani & Raita',
-          items: ['Hyderabadi Veg Biryani', 'Boondi Raita', 'Mirchi Ka Salan', 'Papad', 'Rasgulla'],
+          name: 'Mushroom Besara & Fish Bessara Thali',
+          items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Mushroom Besara with Ambula', 'Non-Veg Curry: Fish Bessara', 'Side Items: Aloo Beans Bhaja'],
           open_time: '12:00',
           close_time: '14:30',
-          expected_qty: 520
+          expected_qty: 880
         },
         {
-          id: `pdf-ext-3-${Date.now()}`,
+          id: `pdf-iter-ext-3-${Date.now()}`,
           date: date,
           meal_type: 'snacks',
-          name: 'Poha & Jhal Muri Tea Snack',
-          items: ['Indori Poha', 'Jhal Muri', 'Ginger Special Chai'],
+          name: 'Italian Pasta & Tea',
+          items: ['Hot Italian Pasta', 'Hot Tea'],
           open_time: '16:30',
           close_time: '17:45',
-          expected_qty: 390
+          expected_qty: 720
         },
         {
-          id: `pdf-ext-4-${Date.now()}`,
+          id: `pdf-iter-ext-4-${Date.now()}`,
           date: date,
           meal_type: 'dinner',
-          name: 'Paneer Do Pyaza & Chana Dal',
-          items: ['Paneer Do Pyaza', 'Chana Dal Fry', 'Tandoori Roti', 'Steamed Rice', 'Ice Cream'],
+          name: 'Paneer Bhurji & Egg Bhurji Feast',
+          items: ['Common: Rice (Arua & Usuna)', 'Roti', 'Dal', 'Veg Curry: Paneer Bhurji', 'Non-Veg Curry: Egg Bhurji', 'Side Items: Crispy Alu Bhindi', 'Fresh Salad'],
           open_time: '19:30',
           close_time: '21:30',
-          expected_qty: 490
+          expected_qty: 820
         }
       ]);
-      showToast(`PDF menu "${file.name}" extracted successfully! Ready to bulk publish.`);
+      showToast(`ITER Ladies Hostels PDF menu "${file.name}" extracted successfully! Ready to bulk publish.`);
     }, 1200);
   };
 
@@ -186,7 +186,7 @@ export const MenuManagementPage: React.FC = () => {
       date: item.date,
       meal_type: item.meal_type,
       name: item.name,
-      description: `Uploaded & Extracted from PDF Mess Menu (${pdfFileName})`,
+      description: `Uploaded & Extracted from ITER Ladies Hostels Winter Menu (${pdfFileName})`,
       items: item.items,
       image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=800&q=80',
       mess_id: messId,
@@ -199,7 +199,7 @@ export const MenuManagementPage: React.FC = () => {
 
     appStore.replaceMealsForDate(targetDate, newMealsData);
 
-    showToast(`Successfully replaced default menu with ${extractedPdfSchedule.length} PDF meals for ${targetDate}! Available across student & authority views.`);
+    showToast(`Successfully replaced live menu with ${extractedPdfSchedule.length} ITER Ladies Hostels PDF meals for ${targetDate}! Available across student (LH-1 to 5) & authority views.`);
   };
 
   const handleParseCSV = () => {
@@ -211,11 +211,11 @@ export const MenuManagementPage: React.FC = () => {
         id: idx,
         date: parts[0] || date,
         meal_type: (parts[1] || 'lunch').toLowerCase() as MealType,
-        name: parts[2] || `Campus Meal ${idx + 1}`,
-        items: parts[3] ? parts[3].split(';') : ['Chef Special Curry', 'Steamed Rice', 'Roti'],
+        name: parts[2] || `ITER Hostel Meal ${idx + 1}`,
+        items: parts[3] ? parts[3].split(';') : ['Common Rice', 'Dal', 'Roti'],
         open_time: parts[4] || '12:00',
         close_time: parts[5] || '14:30',
-        expected_qty: Number(parts[6]) || 450
+        expected_qty: Number(parts[6]) || 800
       };
     });
     setParsedPreview(parsed);
@@ -228,7 +228,7 @@ export const MenuManagementPage: React.FC = () => {
         date: p.date,
         meal_type: p.meal_type,
         name: p.name,
-        description: 'Bulk imported campus menu item',
+        description: 'Bulk imported ITER hostel menu item',
         items: p.items,
         image_url: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80',
         mess_id: messId,
@@ -239,7 +239,7 @@ export const MenuManagementPage: React.FC = () => {
         status: 'published'
       });
     });
-    showToast(`Successfully imported ${parsedPreview.length} meals from CSV!`);
+    showToast(`Successfully imported ${parsedPreview.length} meals from CSV for ITER Hostels!`);
     setCsvText('');
     setParsedPreview(null);
   };
@@ -265,10 +265,10 @@ export const MenuManagementPage: React.FC = () => {
 
       <div className="border-b border-[#EBE4D8] dark:border-[#2C2724] pb-4">
         <h1 className="font-serif font-bold text-2xl sm:text-3xl text-[#2C221E] dark:text-white">
-          Menu Management & Schedule Publishing
+          ITER Ladies Hostels (LH-1 to 5) Menu Management
         </h1>
         <p className="text-xs text-slate-600 dark:text-slate-400 font-mono">
-          Upload PDF menu documents, import CSV schedules, or publish custom daily menus under 1 minute.
+          Upload PDF menu documents for ITER Ladies Hostels (LH-1, LH-2, LH-3, LH-4, LH-5), import CSV schedules, or publish custom daily menus under 1 minute.
         </p>
       </div>
 
@@ -331,10 +331,10 @@ export const MenuManagementPage: React.FC = () => {
               <FileText className="w-6 h-6 text-[#C86D44] dark:text-amber-400" />
               <div>
                 <h2 className="font-serif font-bold text-lg text-[#2C221E] dark:text-white">
-                  PDF Mess Menu Uploader & Schedule Extractor
+                  ITER Ladies Hostels PDF Menu Uploader & Extractor
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Upload any weekly or monthly mess menu PDF document. The system will extract meal schedules for instant bulk publishing.
+                  Upload the official 4-Week ITER Ladies Hostels Winter Menu PDF document (LH-1, LH-2, LH-3, LH-4, LH-5). The system will extract meal schedules for instant live replacement.
                 </p>
               </div>
             </div>
@@ -349,12 +349,12 @@ export const MenuManagementPage: React.FC = () => {
                 </div>
                 <div>
                   <div className="font-bold text-sm text-emerald-200">{pdfFileName}</div>
-                  <div className="text-[11px] font-mono text-slate-300">Active Campus Mess Menu Document • PDF Format</div>
+                  <div className="text-[11px] font-mono text-slate-300">ITER Ladies Hostels (LH-1 to LH-5) • Authentic Winter Menu PDF</div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold">
-                  ACTIVE MENU
+                  ACTIVE ITER MENU
                 </span>
               </div>
             </div>
@@ -373,10 +373,10 @@ export const MenuManagementPage: React.FC = () => {
                 <Upload className="w-7 h-7" />
               </div>
               <div className="font-bold text-base text-[#2C221E] dark:text-white">
-                {isPdfParsing ? 'PARSING & EXTRACTING PDF MENU...' : 'Click or Drag & Drop PDF Mess Menu Document'}
+                {isPdfParsing ? 'PARSING & EXTRACTING ITER LADIES HOSTEL MENU...' : 'Click or Drag & Drop Proposed ITER Ladies Hostels Winter Menu PDF'}
               </div>
               <div className="text-xs font-mono text-slate-400">
-                Supports .pdf format (e.g. Weekly_Mess_Menu.pdf) up to 25MB
+                Supports ITER Ladies Hostels PDF format (LH-1 to LH-5) up to 25MB
               </div>
             </div>
           </div>
@@ -387,14 +387,14 @@ export const MenuManagementPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="font-serif font-bold text-base text-[#2C221E] dark:text-white flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Extracted Meals Schedule Preview ({extractedPdfSchedule.length} Meals)</span>
+                  <span>Extracted ITER Hostels Schedule Preview ({extractedPdfSchedule.length} Meals)</span>
                 </div>
                 <button
                   onClick={handleConfirmPdfPublish}
                   className="px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <Save className="w-4 h-4" />
-                  <span>PUBLISH ALL EXTRACTED MEALS TO LIVE APP</span>
+                  <span>REPLACE & PUBLISH ALL ITER MEALS TO LIVE APP</span>
                 </button>
               </div>
 
@@ -459,7 +459,7 @@ export const MenuManagementPage: React.FC = () => {
             <input
               type="text"
               required
-              placeholder="e.g. Odia Special Thali & Paneer Curry"
+              placeholder="e.g. Rice, Dal & Veg Besara Thali"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
@@ -471,7 +471,7 @@ export const MenuManagementPage: React.FC = () => {
             <input
               type="text"
               required
-              placeholder="Paneer Butter Masala, Dalma, Steamed Basmati Rice, Phulka Roti, Gulab Jamun"
+              placeholder="Common: Rice (Arua & Usuna), Roti, Dal, Veg Curry: Veg Besara, Side Items: Jeera Aloo, Dahi Boondi"
               value={itemsRaw}
               onChange={(e) => setItemsRaw(e.target.value)}
               className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
@@ -515,7 +515,7 @@ export const MenuManagementPage: React.FC = () => {
             className="w-full py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Save className="w-4 h-4" />
-            <span>PUBLISH MEAL TO LIVE APP SCHEDULE</span>
+            <span>PUBLISH MEAL TO LIVE ITER APP SCHEDULE</span>
           </button>
         </form>
       )}
@@ -524,11 +524,11 @@ export const MenuManagementPage: React.FC = () => {
       {activeMode === 'csv' && (
         <div className="p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
           <div className="space-y-1.5">
-            <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Paste CSV Menu Lines</label>
+            <label className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Paste CSV Menu Lines for ITER Hostels</label>
             <textarea
               rows={6}
-              placeholder={`2026-08-22,breakfast,South Indian Feast,"Idli;Vada;Sambar;Chutney",07:30,09:30,450
-2026-08-22,lunch,Odia Thali,"Dalma;Rice;Phulka;Rasgulla",12:00,14:30,500`}
+              placeholder={`2026-08-22,breakfast,Idli(4PC) & Sambar,"Idli (4Pcs);Sambar;Coconut Chutney;Coffee",07:30,09:30,650
+2026-08-22,lunch,Rice & Veg Besara,"Rice (Arua & Usuna);Roti;Dal;Veg Besara;Jeera Aloo;Dahi Boondi",12:00,14:30,850`}
               value={csvText}
               onChange={(e) => setCsvText(e.target.value)}
               className="w-full bg-white/10 dark:bg-black/50 border border-white/20 rounded-xl p-3 text-xs font-mono text-white focus:outline-none"
@@ -563,7 +563,7 @@ export const MenuManagementPage: React.FC = () => {
             <Copy className="w-8 h-8" />
           </div>
           <h2 className="font-serif font-bold text-xl text-[#2C221E] dark:text-white">
-            Duplicate Yesterday's Menu to Today/Tomorrow
+            Duplicate Yesterday's ITER Ladies Hostels Menu to Today/Tomorrow
           </h2>
           <button
             type="button"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   UtensilsCrossed, Shield, Sparkles, QrCode, TrendingUp, BarChart3, 
-  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity, UserPlus, LogIn, Truck, MapPin, Play, Heart, Smile
+  Leaf, Users, ArrowRight, CheckCircle2, Building2, Lock, ChevronDown, Activity, UserPlus, LogIn, Truck, MapPin, Play, Heart, Smile, X, Info, Award
 } from 'lucide-react';
 import { appStore } from '../services/store';
 import { UserRole } from '../types';
@@ -24,27 +24,35 @@ interface LandingPageProps {
 const CHILDREN_STORIES = [
   {
     id: 'story-1',
+    image: '/story-child-1.jpg',
     slogan: 'NO CHILD SHOULD SLEEP HUNGRY',
-    subtext: 'Bhubaneswar Campus Dining feeds 400+ hostel students daily, automatically calculating surplus food to rescue children in need.',
+    subtext: 'ITER Ladies Hostels (LH1 to LH5) food operations calculate surplus food in real time to rescue children in need across Bhubaneswar.',
     tag: '⚠️ HUNGER ERADICATION MISSION',
-    bgGradient: 'from-amber-900/60 via-rose-950/40 to-black/60',
     iconColor: 'text-amber-400'
   },
   {
     id: 'story-2',
+    image: '/story-child-2.jpg',
     slogan: 'FROM SURPLUS TO SMILING FACES',
     subtext: 'Every unserved meal tray is verified, temperature-checked, and dispatched to local Robin Hood Army & Feeding India hubs.',
     tag: '🚚 REAL-TIME FOOD RESCUE DISPATCH',
-    bgGradient: 'from-emerald-950/60 via-amber-950/40 to-black/60',
     iconColor: 'text-emerald-400'
   },
   {
     id: 'story-3',
+    image: '/story-child-3.jpg',
     slogan: 'NOURISHING DREAMS, ONE MEAL AT A TIME',
     subtext: 'Transforming food waste into joy, smiles, and hope across Odisha.',
     tag: '💖 COMMUNITY IMPACT',
-    bgGradient: 'from-purple-950/60 via-[#C86D44]/30 to-black/60',
     iconColor: 'text-pink-400'
+  },
+  {
+    id: 'story-4',
+    image: '/story-child-4.jpg',
+    slogan: 'HOPE, HAPPINESS & HEALTH FOR ALL',
+    subtext: 'Empowering children with nutrition and care through student-led campus food sustainability.',
+    tag: '🌟 TEAM ASTRA VISION',
+    iconColor: 'text-cyan-400'
   }
 ];
 
@@ -56,6 +64,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 }) => {
   const [scrolled, setScrolled] = useState(false);
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
+  const [showTeamAstraModal, setShowTeamAstraModal] = useState(false);
 
   const [showMusicPopup, setShowMusicPopup] = useState<boolean>(() => {
     return localStorage.getItem('annapurna_music_consent') === null;
@@ -69,11 +78,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Auto-play Children Food Story Reel every 4 seconds
+  // Auto-play Children Food Story Reel every 4.5 seconds
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveStoryIdx((prev) => (prev + 1) % CHILDREN_STORIES.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
@@ -94,116 +103,179 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const currentStory = CHILDREN_STORIES[activeStoryIdx];
 
   return (
-    <div className="relative min-h-screen bg-homepage-image text-[#2C221E] dark:text-slate-100 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300 overflow-x-hidden">
-      {/* Ambient Dynamic Background Particles */}
+    <div 
+      className="relative min-h-screen text-slate-950 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300 overflow-x-hidden bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: `url('/new-hero-bg.jpg')` }}
+    >
+      {/* Ambient Dynamic Background Overlay */}
+      <div className="fixed inset-0 bg-black/45 backdrop-blur-[2px] pointer-events-none z-0" />
       <DynamicParticles />
 
-      {/* Light Backdrop Scrim */}
-      <div className="fixed inset-0 bg-transparent pointer-events-none z-0" />
-
-      {/* Main Page Music Choice Consent Popup */}
+      {/* Music Choice Modal */}
       {showMusicPopup && (
         <MusicChoiceModal onChoiceMade={handleMusicChoice} />
+      )}
+
+      {/* TEAM ASTRA ABOUT MODAL */}
+      {showTeamAstraModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+          <div className="w-full max-w-2xl p-8 rounded-3xl bg-[#1A1715]/95 text-white border border-amber-500/40 shadow-2xl space-y-6 relative overflow-hidden">
+            <button
+              onClick={() => setShowTeamAstraModal(false)}
+              className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-4 border-b border-white/10 pb-4">
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-[#C86D44] text-white flex items-center justify-center font-bold text-2xl shadow-xl border border-amber-300">
+                🚀
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold uppercase tracking-widest">
+                  TEAM ASTRA • INNOVATION PROJECT
+                </div>
+                <h2 className="font-cursive font-bold text-3xl text-amber-100 mt-1">
+                  About Team Astra
+                </h2>
+              </div>
+            </div>
+
+            <div className="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+              <p>
+                <strong className="text-amber-300 text-base">Team Astra</strong> is an engineering innovation squad dedicated to solving real-world campus challenges through intelligent software architecture.
+              </p>
+
+              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                <h3 className="font-bold text-amber-300 font-mono text-xs uppercase tracking-wider">🌟 PLATFORM MISSION</h3>
+                <p className="text-slate-300 text-xs">
+                  Annapurna bridges the gap between ITER Ladies Hostels (LH1 to LH5) dining halls and local community food rescue networks in Bhubaneswar, eliminating food waste and nourishing children in need.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center">
+                  <div className="font-bold text-lg text-amber-200 font-mono">ITER LH1 – LH5</div>
+                  <div className="text-[10px] font-mono text-slate-400">HOSTEL MESS INTEGRATION</div>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center">
+                  <div className="font-bold text-lg text-emerald-300 font-mono">ZERO WASTE</div>
+                  <div className="text-[10px] font-mono text-slate-400">SURPLUS RESCUE GOAL</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 text-center">
+              <button
+                onClick={() => setShowTeamAstraModal(false)}
+                className="px-8 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer"
+              >
+                CLOSE ABOUT TEAM ASTRA
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <div className="relative z-10">
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Pill Navigation Bar */}
+        {/* Floating Pill Header Navigation (Increased Spacing & Zoomed Circular Logo) */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
-          <div className="bg-white/10 dark:bg-black/30 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-full px-5 py-2.5 flex items-center justify-between">
-            {/* Logo Emblem */}
-            <div className="flex items-center gap-2.5">
-              <img 
-                src="/logo.png" 
-                alt="ANNAPURNA Logo" 
-                className="h-8 w-auto object-contain shrink-0" 
-              />
-              <div>
-                <span className="font-cursive font-bold text-xl tracking-wider text-[#2C221E] dark:text-amber-100">
+          <div className="bg-black/50 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-full px-6 py-3 flex items-center justify-between">
+            {/* Zoomed Circular Glass Logo Emblem */}
+            <div className="flex items-center gap-4">
+              <div className="rounded-full p-2 bg-white/20 border-2 border-amber-400/90 shadow-2xl backdrop-blur-xl scale-125 transition-transform hover:scale-135">
+                <img 
+                  src="/logo.png" 
+                  alt="ANNAPURNA Logo" 
+                  className="h-10 sm:h-12 w-auto object-contain drop-shadow-2xl" 
+                />
+              </div>
+              <div className="pl-3">
+                <span className="font-cursive font-bold text-2xl tracking-wider text-amber-100 drop-shadow">
                   Annapurna
                 </span>
+                <div className="text-[9px] font-mono text-amber-300 tracking-widest uppercase">ITER LH1 - LH5</div>
               </div>
             </div>
 
-            {/* Nav Links */}
-            <nav className="hidden lg:flex items-center gap-6 text-[11px] font-mono font-bold tracking-widest text-slate-800 dark:text-slate-200 uppercase">
-              <a href="#children-stories" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors text-[#C86D44] dark:text-amber-300">CHILDREN STORIES</a>
-              <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">FEATURES</a>
-              <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors">WEATHER</a>
+            {/* Nav Links with Increased Spacing & No Children Stories button */}
+            <nav className="hidden lg:flex items-center gap-10 sm:gap-12 text-xs font-mono font-bold tracking-widest text-white uppercase">
+              <a href="#features" className="hover:text-amber-300 transition-colors">FEATURES</a>
+              <a href="#weather" className="hover:text-amber-300 transition-colors">WEATHER</a>
+              <button
+                onClick={() => setShowTeamAstraModal(true)}
+                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 cursor-pointer text-amber-300"
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span>ABOUT TEAM ASTRA</span>
+              </button>
               <button
                 onClick={onNavigateRescue}
-                className="hover:text-[#C86D44] dark:hover:text-amber-400 transition-colors flex items-center gap-1 cursor-pointer text-[#C86D44] dark:text-amber-300"
+                className="hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer text-amber-300"
               >
-                <Truck className="w-3 h-3" />
+                <Truck className="w-3.5 h-3.5" />
                 <span>FOOD RESCUE</span>
               </button>
             </nav>
 
             {/* Controls & CTAs */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3 sm:gap-4">
               <AudioPlayer />
-              <VoiceAssistWidget label="Read Screen" textToRead="Welcome to Annapurna. Designed to nourish, built to share. Annapurna connects campus dining facilities with local community food rescue networks in Bhubaneswar, Odisha and state-wide." />
+              <VoiceAssistWidget label="Read" textToRead="Welcome to Annapurna by Team Astra. Designed to nourish, built to share for ITER Ladies Hostels LH1 to LH5." />
               <ThemeToggle />
 
               <button
                 onClick={onReplayIntro}
-                className="hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 hover:text-[#C86D44] dark:hover:text-amber-300 border border-white/20 bg-white/10 dark:bg-black/30 transition-colors backdrop-blur-md"
+                className="hidden sm:inline-block px-3.5 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-amber-200 hover:text-white border border-amber-400/40 bg-white/10 backdrop-blur-md transition-colors"
                 title="Replay Story"
               >
                 Story
               </button>
 
               <button
-                onClick={onNavigateRescue}
-                className="px-3.5 py-1.5 rounded-full text-[11px] font-bold text-[#C86D44] dark:text-amber-300 bg-[#C86D44]/20 hover:bg-[#C86D44]/30 border border-[#C86D44]/40 transition-all cursor-pointer flex items-center gap-1 backdrop-blur-md"
-              >
-                <Truck className="w-3 h-3" />
-                <span className="hidden sm:inline">Rescue</span>
-              </button>
-
-              <button
                 onClick={onNavigateLogin}
-                className="px-4 py-1.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-[11px] uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-xl transition-all cursor-pointer flex items-center gap-1.5 border border-amber-300/30"
               >
-                <LogIn className="w-3 h-3" />
+                <LogIn className="w-3.5 h-3.5" />
                 <span>Login</span>
               </button>
             </div>
           </div>
         </header>
 
-        {/* Full-Screen Editorial Hero Section (Translucent Glass Container) */}
-        <section className="relative min-h-screen flex items-center justify-center pt-28 pb-16 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-7 p-10 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl">
+        {/* FULL-SCREEN HERO SECTION */}
+        <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6">
+          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 sm:p-14 rounded-3xl bg-black/60 border border-white/20 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-700">
             
             {/* Eyebrow Label */}
             <div className="flex items-center justify-center">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#C86D44]/20 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-[10px] font-mono font-bold uppercase tracking-widest backdrop-blur-md">
-                <MapPin className="w-3 h-3" />
-                <span>CAMPUS FOOD OPERATIONS · BHUBANESWAR, ODISHA</span>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-xs font-mono font-bold uppercase tracking-widest backdrop-blur-md">
+                <MapPin className="w-3.5 h-3.5" />
+                <span>ITER LADIES HOSTELS (LH1, LH2, LH3, LH4, LH5) · BHUBANESWAR</span>
               </div>
             </div>
 
-            {/* Cursive Display Headline */}
-            <h1 className="font-cursive font-bold text-4xl sm:text-5xl md:text-6xl text-[#2C221E] dark:text-amber-100 leading-[1.15] drop-shadow-lg">
+            {/* High-Contrast Cursive Display Headline */}
+            <h1 className="font-cursive font-bold text-4xl sm:text-6xl text-amber-100 leading-[1.15] drop-shadow-2xl">
               Designed to Nourish. <br />
-              <span className="text-[#C86D44] dark:text-amber-300 font-cursive">
+              <span className="text-amber-400 font-cursive underline decoration-amber-500/50">
                 Built to Share.
               </span>
             </h1>
 
             {/* Supporting Statement */}
-            <p className="max-w-xl mx-auto text-xs sm:text-base text-slate-800 dark:text-slate-200 font-normal leading-relaxed drop-shadow">
-              Every meal has a story. Annapurna connects campus dining facilities directly with local community food rescue networks.
+            <p className="max-w-xl mx-auto text-sm sm:text-lg text-slate-100 font-semibold leading-relaxed drop-shadow">
+              Every meal has a story. Annapurna connects ITER Ladies Hostels (LH1 to LH5) dining facilities directly with local community food rescue networks.
             </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            {/* Action Buttons with Spacing */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-2">
               <button
                 onClick={onNavigateRescue}
-                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
               >
                 <span>EXPLORE FOOD RESCUE</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -211,94 +283,104 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRegister}
-                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 dark:bg-black/30 border border-white/30 text-[#2C221E] dark:text-slate-100 hover:border-[#C86D44] font-bold text-xs uppercase tracking-widest shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
+                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
               >
-                <span>REGISTER STUDENT ACCOUNT</span>
-                <ArrowRight className="w-4 h-4 text-[#C86D44] dark:text-amber-400 group-hover:translate-x-1 transition-transform" />
+                <span>REGISTER LH STUDENT ACCOUNT</span>
+                <ArrowRight className="w-4 h-4 text-amber-300 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
 
             {/* Scroll Indicator */}
-            <div className="pt-6 flex flex-col items-center text-slate-400 text-[10px] font-mono tracking-widest uppercase animate-bounce">
-              <span>SEE CHILDREN FOOD STORIES & TELEMETRY</span>
-              <ChevronDown className="w-4 h-4 mt-1 text-[#C86D44]" />
+            <div className="pt-6 flex flex-col items-center text-amber-300 text-[11px] font-mono tracking-widest uppercase animate-bounce">
+              <span>SCROLL DOWN FOR IMPACT STORIES & TELEMETRY</span>
+              <ChevronDown className="w-5 h-5 mt-1 text-amber-400" />
             </div>
           </div>
         </section>
 
-        {/* DYNAMIC CHILDREN FOOD STORY REEL / SLIDESHOW SECTION */}
-        <section id="children-stories" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/20 dark:border-white/10">
-          <div className="text-center max-w-xl mx-auto mb-10 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">
-              <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500 animate-pulse" />
+        {/* DYNAMIC CHILDREN IMPACT STORY REEL (USING REAL USER PHOTOS) */}
+        <section id="children-stories" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/10">
+          <div className="text-center max-w-xl mx-auto mb-12 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
+              <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
               <span>HUNGRY TO SMILING FACES IMPACT REEL</span>
             </div>
-            <h2 className="font-cursive text-3xl sm:text-4xl font-bold text-[#2C221E] dark:text-white tracking-wide">
+            <h2 className="font-cursive text-3xl sm:text-4xl font-bold text-amber-100 tracking-wide">
               No Child Should Sleep Hungry
             </h2>
           </div>
 
-          {/* Animated Story Reel Card */}
-          <div className={`p-8 sm:p-12 rounded-3xl bg-gradient-to-br ${currentStory.bgGradient} border border-amber-500/30 shadow-2xl backdrop-blur-2xl transition-all duration-700 space-y-6 text-center text-white relative overflow-hidden`}>
+          {/* Real Photo Slide Card */}
+          <div className="relative rounded-3xl overflow-hidden border border-amber-500/40 shadow-2xl bg-black/70 backdrop-blur-2xl transition-all duration-700 min-h-[460px] flex flex-col justify-end p-8 sm:p-12">
             
-            {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md">
-              <Smile className={`w-4 h-4 ${currentStory.iconColor}`} />
-              <span>{currentStory.tag}</span>
-            </div>
+            {/* Background Image Layer */}
+            <img
+              src={currentStory.image}
+              alt={currentStory.slogan}
+              className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
 
-            {/* Slogan */}
-            <h3 className="font-cursive font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-xl">
-              "{currentStory.slogan}"
-            </h3>
+            <div className="relative z-10 space-y-5 text-center text-white">
+              {/* Tag Badge */}
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 border border-white/30 text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md">
+                <Smile className={`w-4 h-4 ${currentStory.iconColor}`} />
+                <span>{currentStory.tag}</span>
+              </div>
 
-            {/* Subtext */}
-            <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-200 font-medium leading-relaxed drop-shadow">
-              {currentStory.subtext}
-            </p>
+              {/* Slogan */}
+              <h3 className="font-cursive font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-2xl">
+                "{currentStory.slogan}"
+              </h3>
 
-            {/* Slide Indicators */}
-            <div className="flex items-center justify-center gap-2 pt-4">
-              {CHILDREN_STORIES.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveStoryIdx(idx)}
-                  className={`h-2 rounded-full transition-all cursor-pointer ${
-                    activeStoryIdx === idx ? 'w-8 bg-[#C86D44] dark:bg-amber-400' : 'w-2 bg-white/30 hover:bg-white/50'
-                  }`}
-                />
-              ))}
+              {/* Subtext */}
+              <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-100 font-medium leading-relaxed drop-shadow-md">
+                {currentStory.subtext}
+              </p>
+
+              {/* Slide Dots */}
+              <div className="flex items-center justify-center gap-3 pt-4">
+                {CHILDREN_STORIES.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveStoryIdx(idx)}
+                    className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                      activeStoryIdx === idx ? 'w-10 bg-amber-400' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
         {/* Campus Weather Telemetry */}
-        <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/20 dark:border-white/10">
-          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl">
-            <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white tracking-wide">Campus Climate & Weather Forecast</h3>
+        <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/10">
+          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl">
+            <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
+            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
 
         {/* Feature Showcase Grid */}
-        <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/20 dark:border-white/10">
-          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 backdrop-blur-xl space-y-2">
-            <h2 className="text-xs font-mono font-bold tracking-widest text-[#C86D44] dark:text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-[#2C221E] dark:text-white tracking-wide">Designed for Ops Authority & Hostel Students</h3>
+        <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/10">
+          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
+            <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">Dual Interface Architecture</h2>
+            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Designed for Ops Authority & LH1-5 Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Authority Side Card */}
-            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/20 text-[#C86D44] dark:text-amber-300 text-xs font-mono font-bold">
+            <div className="p-8 rounded-3xl bg-black/70 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-cursive text-2xl font-bold text-[#2C221E] dark:text-white tracking-wide">Operational Density & Control</h4>
-              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
+              <h4 className="font-cursive text-2xl font-bold text-amber-100 tracking-wide">Operational Density & Control</h4>
+              <ul className="space-y-3 text-xs text-slate-200 font-medium">
                 {[
-                  'Under-1-minute menu creation & CSV bulk importer',
+                  'PDF Mess Menu Uploader & Schedule Replacement for LH1 to LH5',
                   'Per-date meal timing overrides for campus holidays',
                   'Time-bound dynamic QR session generator',
                   'Real-time check-in attendance progress & turned feed',
@@ -307,29 +389,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   'Algorithmic prep forecasting derived from attendance trends'
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-[#C86D44] dark:text-amber-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
               <button
                 onClick={onNavigateLogin}
-                className="w-full py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border border-amber-300/30"
               >
                 Log In to Authority Operations
               </button>
             </div>
 
             {/* Student Side Card */}
-            <div className="p-8 rounded-3xl bg-white/10 dark:bg-black/30 border border-white/20 dark:border-white/10 shadow-xl space-y-6 backdrop-blur-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold">
+            <div className="p-8 rounded-3xl bg-black/70 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold">
                 <Users className="w-3.5 h-3.5" />
-                <span>Student Mobile App</span>
+                <span>Student Mobile App (LH1 to LH5)</span>
               </div>
-              <h4 className="font-cursive text-2xl font-bold text-[#2C221E] dark:text-white tracking-wide">Personalized & Mobile-First</h4>
-              <ul className="space-y-3 text-xs text-slate-800 dark:text-slate-200 font-medium">
+              <h4 className="font-cursive text-2xl font-bold text-amber-100 tracking-wide">Personalized & Mobile-First</h4>
+              <ul className="space-y-3 text-xs text-slate-200 font-medium">
                 {[
-                  'Personalized greeting & next-upcoming meal card',
+                  'Personalized greeting & next-upcoming meal card for LH1 to LH5',
                   '5-tab bottom navigation optimized for single-hand use',
                   'Instant camera & simulator QR scan for turnstile check-in',
                   'Duplicate check-in prevention with session token validation',
@@ -338,33 +420,63 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   'Personal impact summary without gamified leaderboards'
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
               <button
                 onClick={onNavigateRegister}
-                className="w-full py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border border-emerald-400/30"
               >
-                Register Student Dining Account
+                Register LH Student Dining Account
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* TEAM ASTRA ABOUT US SECTION AT THE END OF SCROLL */}
+        <section id="team-astra" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/10">
+          <div className="p-10 sm:p-14 rounded-3xl bg-black/80 border border-amber-500/40 shadow-2xl backdrop-blur-2xl text-center space-y-6 text-white relative overflow-hidden">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold tracking-widest uppercase border border-amber-400/30">
+              <Award className="w-4 h-4" />
+              <span>DEVELOPER CREDITS & ABOUT US</span>
+            </div>
+
+            <h2 className="font-cursive font-bold text-4xl sm:text-5xl text-amber-100">
+              Powered by Team Astra
+            </h2>
+
+            <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-200 leading-relaxed font-medium">
+              Annapurna is designed and engineered by <strong className="text-amber-300">Team Astra</strong> to revolutionize campus dining operations across ITER Ladies Hostels (LH1, LH2, LH3, LH4, LH5).
+            </p>
+
+            <div className="pt-4 flex justify-center">
+              <button
+                onClick={() => setShowTeamAstraModal(true)}
+                className="px-9 py-4 rounded-full bg-gradient-to-r from-amber-500 via-[#C86D44] to-amber-500 hover:from-amber-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center gap-2 border border-amber-300/40"
+              >
+                <Info className="w-4 h-4" />
+                <span>READ ABOUT TEAM ASTRA & VISION</span>
               </button>
             </div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="py-10 border-t border-white/20 dark:border-white/10 text-center text-xs text-slate-700 dark:text-slate-300 bg-white/5 dark:bg-black/40 backdrop-blur-md">
+        <footer className="py-10 border-t border-white/10 text-center text-xs text-slate-300 bg-black/80 backdrop-blur-md">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2 font-cursive text-base font-bold text-[#2C221E] dark:text-slate-200 tracking-wider">
-              <img 
-                src="/logo.png" 
-                alt="ANNAPURNA Logo" 
-                className="h-6 w-auto object-contain shrink-0" 
-              />
-              <span>Annapurna • Bhubaneswar, Odisha</span>
+            <div className="flex items-center gap-3 font-cursive text-base font-bold text-amber-100 tracking-wider">
+              <div className="rounded-full p-1 bg-white/20 border border-amber-400">
+                <img 
+                  src="/logo.png" 
+                  alt="ANNAPURNA Logo" 
+                  className="h-6 w-auto object-contain shrink-0" 
+                />
+              </div>
+              <span>Annapurna • Team Astra • ITER Ladies Hostels (LH1 - LH5)</span>
             </div>
-            <div>© {new Date().getFullYear()} ANNAPURNA Food Operations. All rights reserved.</div>
+            <div>© {new Date().getFullYear()} ANNAPURNA by Team Astra. All rights reserved.</div>
           </div>
         </footer>
       </div>
