@@ -104,11 +104,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div 
-      className="relative min-h-screen text-slate-950 font-lazydog transition-colors duration-300 overflow-x-hidden bg-cover bg-center bg-fixed"
+      className="relative min-h-screen text-slate-100 font-clean selection:bg-[#C86D44] selection:text-white transition-colors duration-300 overflow-x-hidden bg-cover bg-center bg-fixed"
       style={{ backgroundImage: `url('/new-hero-bg.jpg')` }}
     >
       {/* Ambient Dynamic Background Overlay */}
-      <div className="fixed inset-0 bg-black/45 backdrop-blur-[2px] pointer-events-none z-0" />
+      <div className="fixed inset-0 bg-black/55 backdrop-blur-[2px] pointer-events-none z-0" />
       <DynamicParticles />
 
       {/* Music Choice Modal */}
@@ -118,7 +118,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* TEAM ASTRA ABOUT MODAL */}
       {showTeamAstraModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300 font-lazydog">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-300 font-clean">
           <div className="w-full max-w-2xl p-8 rounded-3xl bg-[#1A1715]/95 text-white border border-amber-500/40 shadow-2xl space-y-6 relative overflow-hidden">
             <button
               onClick={() => setShowTeamAstraModal(false)}
@@ -135,31 +135,31 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold uppercase tracking-widest">
                   TEAM ASTRA • INNOVATION PROJECT
                 </div>
-                <h2 className="font-lazydog font-bold text-3xl sm:text-4xl text-amber-100 mt-1">
+                <h2 className="font-display-title font-bold text-2xl sm:text-3xl text-amber-100 mt-1">
                   About Team Astra
                 </h2>
               </div>
             </div>
 
-            <div className="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+            <div className="space-y-4 text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
               <p>
-                <strong className="text-amber-300 text-base">Team Astra</strong> is an engineering innovation squad dedicated to solving real-world campus challenges through intelligent software architecture.
+                <strong className="text-amber-300 font-semibold">Team Astra</strong> is an engineering innovation squad dedicated to solving real-world campus challenges through intelligent software architecture.
               </p>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2">
                 <h3 className="font-bold text-amber-300 font-mono text-xs uppercase tracking-wider">🌟 PLATFORM MISSION</h3>
-                <p className="text-slate-300 text-xs">
+                <p className="text-slate-200 text-xs leading-relaxed">
                   Annapurna bridges the gap between ITER Ladies Hostels (LH1 to LH5) dining halls and local community food rescue networks in Bhubaneswar, eliminating food waste and nourishing children in need.
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center">
-                  <div className="font-bold text-lg text-amber-200 font-mono">ITER LH1 – LH5</div>
+                  <div className="font-bold text-base text-amber-200 font-mono">ITER LH1 – LH5</div>
                   <div className="text-[10px] font-mono text-slate-400">HOSTEL MESS INTEGRATION</div>
                 </div>
                 <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 text-center">
-                  <div className="font-bold text-lg text-emerald-300 font-mono">ZERO WASTE</div>
+                  <div className="font-bold text-base text-emerald-300 font-mono">ZERO WASTE</div>
                   <div className="text-[10px] font-mono text-slate-400">SURPLUS RESCUE GOAL</div>
                 </div>
               </div>
@@ -168,7 +168,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="pt-2 text-center">
               <button
                 onClick={() => setShowTeamAstraModal(false)}
-                className="px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-110 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
+                className="px-8 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
               >
                 CLOSE ABOUT TEAM ASTRA
               </button>
@@ -177,44 +177,47 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       )}
 
-      <div className="relative z-10 font-lazydog">
+      <div className="relative z-10 font-clean">
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Header Navigation (With Generous Margin Spacing & Interactive Hover Zoom Buttons) */}
+        {/* Floating Symmetrical Header Navigation Bar */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
-          <div className="bg-black/60 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-full px-6 py-3.5 flex items-center justify-between">
-            {/* Zoomed Circular Glass Logo Emblem with Right Spacing Margin */}
-            <div className="flex items-center gap-4 mr-10 sm:mr-14">
-              <div className="rounded-full p-2.5 bg-white/20 border-2 border-amber-400/90 shadow-2xl backdrop-blur-xl scale-125 transition-transform hover:scale-140">
+          <div className="bg-black/80 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-full px-6 py-3 flex items-center justify-between gap-4">
+            
+            {/* Crisp Visible Circular Logo Badge & Title */}
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="w-11 h-11 rounded-full bg-white p-1 border-2 border-amber-400 shadow-md shrink-0 flex items-center justify-center overflow-hidden">
                 <img 
                   src="/logo.png" 
                   alt="ANNAPURNA Logo" 
-                  className="h-10 sm:h-12 w-auto object-contain drop-shadow-2xl" 
+                  className="w-full h-full object-contain" 
                 />
               </div>
-              <div className="pl-3">
-                <span className="font-lazydog font-bold text-2xl sm:text-3xl tracking-wider text-amber-100 drop-shadow">
+              <div>
+                <span className="font-display-title font-bold text-lg sm:text-xl tracking-wide text-amber-100 leading-none block">
                   Annapurna
                 </span>
-                <div className="text-[9px] font-mono text-amber-300 tracking-widest uppercase">ITER LH1 - LH5</div>
+                <span className="text-[9px] font-mono text-amber-300 tracking-wider uppercase block mt-0.5">
+                  ITER LH1 - LH5
+                </span>
               </div>
             </div>
 
-            {/* Nav Links with Generous Horizontal Spacing */}
-            <nav className="hidden lg:flex items-center gap-10 sm:gap-14 text-xs font-mono font-bold tracking-widest text-white uppercase">
-              <a href="#features" className="hover:text-amber-300 hover:scale-110 transition-all duration-200">FEATURES</a>
-              <a href="#weather" className="hover:text-amber-300 hover:scale-110 transition-all duration-200">WEATHER</a>
+            {/* Nav Links with Clean Spacing */}
+            <nav className="hidden lg:flex items-center gap-8 text-xs font-mono font-bold tracking-wider text-slate-200 uppercase">
+              <a href="#features" className="hover:text-amber-300 hover:scale-105 transition-all duration-200">FEATURES</a>
+              <a href="#weather" className="hover:text-amber-300 hover:scale-105 transition-all duration-200">WEATHER</a>
               <button
                 onClick={() => setShowTeamAstraModal(true)}
-                className="hover:text-amber-300 hover:scale-110 transition-all duration-200 flex items-center gap-1.5 cursor-pointer text-amber-300"
+                className="hover:text-amber-300 hover:scale-105 transition-all duration-200 flex items-center gap-1.5 cursor-pointer text-amber-300"
               >
                 <Award className="w-3.5 h-3.5" />
                 <span>ABOUT TEAM ASTRA</span>
               </button>
               <button
                 onClick={onNavigateRescue}
-                className="hover:text-amber-300 hover:scale-110 transition-all duration-200 flex items-center gap-1 cursor-pointer text-amber-300"
+                className="hover:text-amber-300 hover:scale-105 transition-all duration-200 flex items-center gap-1 cursor-pointer text-amber-300"
               >
                 <Truck className="w-3.5 h-3.5" />
                 <span>FOOD RESCUE</span>
@@ -222,14 +225,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </nav>
 
             {/* Controls & Interactive Hover Zoom CTAs */}
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
               <AudioPlayer />
               <VoiceAssistWidget label="Read" textToRead="Welcome to Annapurna by Team Astra. Designed to nourish, built to share for ITER Ladies Hostels LH1 to LH5." />
               <ThemeToggle />
 
               <button
                 onClick={onReplayIntro}
-                className="hidden sm:inline-block px-3.5 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-amber-200 hover:text-white border border-amber-400/40 bg-white/10 backdrop-blur-md hover:scale-110 hover:-translate-y-0.5 transition-all duration-300"
+                className="hidden sm:inline-block px-3 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-amber-200 hover:text-white border border-amber-400/40 bg-white/10 backdrop-blur-md hover:scale-105 active:scale-95 transition-all duration-200"
                 title="Replay Story"
               >
                 Story
@@ -237,7 +240,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateLogin}
-                className="px-5 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-xl hover:scale-110 hover:-translate-y-1 hover:shadow-2xl active:scale-95 transition-all duration-300 cursor-pointer flex items-center gap-1.5 border border-amber-300/30"
+                className="px-5 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-1.5 border border-amber-300/30"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Login</span>
@@ -248,7 +251,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* HERO SECTION */}
         <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6">
-          <div className="max-w-4xl mx-auto text-center space-y-8 p-10 sm:p-14 rounded-3xl bg-black/60 border border-white/20 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-700">
+          <div className="max-w-4xl mx-auto text-center space-y-8 p-8 sm:p-12 rounded-3xl bg-black/75 border border-white/20 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-700">
             
             {/* Eyebrow Label */}
             <div className="flex items-center justify-center">
@@ -258,24 +261,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
-            {/* High-Contrast LAZYDOG Display Headline */}
-            <h1 className="font-lazydog font-bold text-4xl sm:text-6xl text-amber-100 leading-[1.15] drop-shadow-2xl">
+            {/* High-Contrast Crystal-Clear Headline */}
+            <h1 className="font-display-title font-bold text-3xl sm:text-5xl text-amber-100 leading-tight tracking-wide drop-shadow-2xl">
               Designed to Nourish. <br />
-              <span className="text-amber-400 font-lazydog underline decoration-amber-500/50">
+              <span className="text-amber-400 font-display-title underline decoration-amber-500/50">
                 Built to Share.
               </span>
             </h1>
 
             {/* Supporting Statement */}
-            <p className="max-w-xl mx-auto text-sm sm:text-lg text-slate-100 font-semibold leading-relaxed drop-shadow">
+            <p className="max-w-xl mx-auto text-sm sm:text-base text-slate-200 font-normal leading-relaxed drop-shadow">
               Every meal has a story. Annapurna connects ITER Ladies Hostels (LH1 to LH5) dining facilities directly with local community food rescue networks.
             </p>
 
-            {/* Action Buttons with Spacing & Hover Scale */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-2">
+            {/* Action Buttons with Hover Scale */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
               <button
                 onClick={onNavigateRescue}
-                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl hover:scale-110 hover:-translate-y-1 hover:shadow-amber-500/30 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40 active:scale-95"
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
               >
                 <span>EXPLORE FOOD RESCUE</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -283,7 +286,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRegister}
-                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-110 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md active:scale-95"
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
               >
                 <span>REGISTER LH STUDENT ACCOUNT</span>
                 <ArrowRight className="w-4 h-4 text-amber-300 group-hover:translate-x-1 transition-transform" />
@@ -291,7 +294,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Scroll Indicator */}
-            <div className="pt-6 flex flex-col items-center text-amber-300 text-[11px] font-mono tracking-widest uppercase animate-bounce">
+            <div className="pt-4 flex flex-col items-center text-amber-300 text-[11px] font-mono tracking-widest uppercase animate-bounce">
               <span>SCROLL DOWN FOR IMPACT STORIES & TELEMETRY</span>
               <ChevronDown className="w-5 h-5 mt-1 text-amber-400" />
             </div>
@@ -300,18 +303,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* DYNAMIC CHILDREN IMPACT STORY REEL */}
         <section id="children-stories" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/10">
-          <div className="text-center max-w-xl mx-auto mb-12 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
+          <div className="text-center max-w-xl mx-auto mb-12 p-6 rounded-3xl bg-black/75 border border-white/20 backdrop-blur-xl space-y-2">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
               <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
               <span>HUNGRY TO SMILING FACES IMPACT REEL</span>
             </div>
-            <h2 className="font-lazydog text-3xl sm:text-4xl font-bold text-amber-100 tracking-wide">
+            <h2 className="font-display-title text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">
               No Child Should Sleep Hungry
             </h2>
           </div>
 
           {/* Real Photo Slide Card */}
-          <div className="relative rounded-3xl overflow-hidden border border-amber-500/40 shadow-2xl bg-black/70 backdrop-blur-2xl transition-all duration-700 min-h-[460px] flex flex-col justify-end p-8 sm:p-12">
+          <div className="relative rounded-3xl overflow-hidden border border-amber-500/40 shadow-2xl bg-black/80 backdrop-blur-2xl transition-all duration-700 min-h-[440px] flex flex-col justify-end p-8 sm:p-12">
             
             {/* Background Image Layer */}
             <img
@@ -319,22 +322,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               alt={currentStory.slogan}
               className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
 
-            <div className="relative z-10 space-y-5 text-center text-white">
+            <div className="relative z-10 space-y-4 text-center text-white">
               {/* Tag Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/60 border border-white/30 text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/70 border border-white/30 text-xs font-mono font-bold tracking-wider uppercase backdrop-blur-md">
                 <Smile className={`w-4 h-4 ${currentStory.iconColor}`} />
                 <span>{currentStory.tag}</span>
               </div>
 
               {/* Slogan */}
-              <h3 className="font-lazydog font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-2xl">
+              <h3 className="font-display-title font-bold text-2xl sm:text-4xl text-amber-200 leading-tight drop-shadow-2xl">
                 "{currentStory.slogan}"
               </h3>
 
               {/* Subtext */}
-              <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-100 font-medium leading-relaxed drop-shadow-md">
+              <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-100 font-normal leading-relaxed drop-shadow-md">
                 {currentStory.subtext}
               </p>
 
@@ -356,29 +359,29 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* Campus Weather Telemetry */}
         <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/10">
-          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl">
+          <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-black/75 border border-white/20 backdrop-blur-xl">
             <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-lazydog text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Campus Climate & Weather Forecast</h3>
+            <h3 className="font-display-title text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
 
         {/* Feature Showcase Grid */}
         <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/10">
-          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
+          <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-black/75 border border-white/20 backdrop-blur-xl space-y-2">
             <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-lazydog text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Designed for Ops Authority & LH1-5 Students</h3>
+            <h3 className="font-display-title text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Designed for Ops Authority & LH1-5 Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Authority Side Card */}
-            <div className="p-8 rounded-3xl bg-black/70 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
+            <div className="p-8 rounded-3xl bg-black/80 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold">
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-lazydog text-2xl font-bold text-amber-100 tracking-wide">Operational Density & Control</h4>
-              <ul className="space-y-3 text-xs text-slate-200 font-medium">
+              <h4 className="font-display-title text-xl font-bold text-amber-100 tracking-wide">Operational Density & Control</h4>
+              <ul className="space-y-3 text-xs text-slate-200 font-normal">
                 {[
                   'PDF Mess Menu Uploader & Schedule Replacement for LH1 to LH5',
                   'Per-date meal timing overrides for campus holidays',
@@ -396,20 +399,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateLogin}
-                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider hover:scale-105 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-amber-300/30"
+                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-amber-300/30 shadow-lg"
               >
                 Log In to Authority Operations
               </button>
             </div>
 
             {/* Student Side Card */}
-            <div className="p-8 rounded-3xl bg-black/70 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
+            <div className="p-8 rounded-3xl bg-black/80 border border-white/20 shadow-2xl space-y-6 backdrop-blur-xl text-white">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-mono font-bold">
                 <Users className="w-3.5 h-3.5" />
                 <span>Student Mobile App (LH1 to LH5)</span>
               </div>
-              <h4 className="font-lazydog text-2xl font-bold text-amber-100 tracking-wide">Personalized & Mobile-First</h4>
-              <ul className="space-y-3 text-xs text-slate-200 font-medium">
+              <h4 className="font-display-title text-xl font-bold text-amber-100 tracking-wide">Personalized & Mobile-First</h4>
+              <ul className="space-y-3 text-xs text-slate-200 font-normal">
                 {[
                   'Personalized greeting & next-upcoming meal card for LH1 to LH5',
                   '5-tab bottom navigation optimized for single-hand use',
@@ -427,7 +430,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateRegister}
-                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider hover:scale-105 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-emerald-400/30"
+                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer border border-emerald-400/30 shadow-lg"
               >
                 Register LH Student Dining Account
               </button>
@@ -437,24 +440,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         {/* TEAM ASTRA ABOUT US SECTION AT THE END OF SCROLL */}
         <section id="team-astra" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/10">
-          <div className="p-10 sm:p-14 rounded-3xl bg-black/80 border border-amber-500/40 shadow-2xl backdrop-blur-2xl text-center space-y-6 text-white relative overflow-hidden">
+          <div className="p-8 sm:p-12 rounded-3xl bg-black/85 border border-amber-500/40 shadow-2xl backdrop-blur-2xl text-center space-y-6 text-white relative overflow-hidden">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono font-bold tracking-widest uppercase border border-amber-400/30">
               <Award className="w-4 h-4" />
               <span>DEVELOPER CREDITS & ABOUT US</span>
             </div>
 
-            <h2 className="font-lazydog font-bold text-4xl sm:text-5xl text-amber-100">
+            <h2 className="font-display-title font-bold text-3xl sm:text-4xl text-amber-100">
               Powered by Team Astra
             </h2>
 
-            <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-200 leading-relaxed font-medium">
-              Annapurna is designed and engineered by <strong className="text-amber-300 font-bold">Team Astra</strong> to revolutionize campus dining operations across ITER Ladies Hostels (LH1, LH2, LH3, LH4, LH5).
+            <p className="max-w-2xl mx-auto text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+              Annapurna is designed and engineered by <strong className="text-amber-300 font-semibold">Team Astra</strong> to revolutionize campus dining operations across ITER Ladies Hostels (LH1, LH2, LH3, LH4, LH5).
             </p>
 
-            <div className="pt-4 flex justify-center">
+            <div className="pt-2 flex justify-center">
               <button
                 onClick={() => setShowTeamAstraModal(true)}
-                className="px-9 py-4 rounded-full bg-gradient-to-r from-amber-500 via-[#C86D44] to-amber-500 hover:from-amber-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-widest shadow-2xl hover:scale-110 hover:-translate-y-1 hover:shadow-amber-500/40 transition-all duration-300 cursor-pointer flex items-center gap-2 border border-amber-300/40"
+                className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 via-[#C86D44] to-amber-500 hover:from-amber-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center gap-2 border border-amber-300/40"
               >
                 <Info className="w-4 h-4" />
                 <span>READ ABOUT TEAM ASTRA & VISION</span>
@@ -464,14 +467,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </section>
 
         {/* Footer */}
-        <footer className="py-10 border-t border-white/10 text-center text-xs text-slate-300 bg-black/90 backdrop-blur-md font-lazydog">
+        <footer className="py-10 border-t border-white/10 text-center text-xs text-slate-300 bg-black/90 backdrop-blur-md font-clean">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 font-lazydog text-base font-bold text-amber-100 tracking-wider">
-              <div className="rounded-full p-1 bg-white/20 border border-amber-400">
+            <div className="flex items-center gap-3 text-sm font-bold text-amber-100 tracking-wide">
+              <div className="w-7 h-7 rounded-full bg-white p-0.5 border border-amber-400 shrink-0 overflow-hidden flex items-center justify-center">
                 <img 
                   src="/logo.png" 
                   alt="ANNAPURNA Logo" 
-                  className="h-6 w-auto object-contain shrink-0" 
+                  className="w-full h-full object-contain" 
                 />
               </div>
               <span>Annapurna • Team Astra • ITER Ladies Hostels (LH1 - LH5)</span>
