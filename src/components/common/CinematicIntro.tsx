@@ -16,33 +16,27 @@ interface StoryScene {
 const SCENES: StoryScene[] = [
   {
     id: 1,
-    image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=2000&q=80',
+    image: '/story-child-1.jpg',
     slogan: 'No child should go to bed hungry.',
-    subtext: 'Every surplus meal holds the power to nourish a growing child.'
+    subtext: 'ITER Ladies Hostels (LH1 to LH5) calculate surplus food to rescue children across Bhubaneswar.'
   },
   {
     id: 2,
-    image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=2000&q=80',
+    image: '/story-child-2.jpg',
     slogan: 'Every surplus meal can feed a hungry child.',
-    subtext: 'Connecting hostel mess kitchens directly to local children shelters.'
+    subtext: 'Connecting campus dining kitchens directly with local children rescue networks.'
   },
   {
     id: 3,
-    image: 'https://images.unsplash.com/photo-1610192244261-3f33de3f55e4?auto=format&fit=crop&w=2000&q=80',
-    slogan: 'From mess surplus to community service.',
-    subtext: 'Nourishment brought from campus tables to those in need.'
+    image: '/story-child-3.jpg',
+    slogan: 'From mess surplus to community joy.',
+    subtext: 'Nourishment brought from ITER hostel tables to young lives in need.'
   },
   {
     id: 4,
-    image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=2000&q=80',
+    image: '/story-child-4.jpg',
     slogan: 'Feeding hope, one meal at a time.',
-    subtext: 'Bringing dignity, warmth, and smiles to young lives.'
-  },
-  {
-    id: 5,
-    image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=2000&q=80',
-    slogan: 'Together, we can eliminate campus food waste.',
-    subtext: 'Food should reach people, not bins.'
+    subtext: 'Team Astra mission: Bringing dignity, warmth, and smiles to young lives.'
   }
 ];
 
@@ -55,17 +49,17 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
     onComplete();
   };
 
-  // Scene progression timer (1.2s per scene)
+  // Scene progression timer (1.4s per scene)
   useEffect(() => {
     if (currentSceneIdx < SCENES.length - 1) {
       const timer = setTimeout(() => {
         setCurrentSceneIdx(prev => prev + 1);
-      }, 1300);
+      }, 1400);
       return () => clearTimeout(timer);
     } else if (currentSceneIdx === SCENES.length - 1 && !isFinalResolve) {
       const timer = setTimeout(() => {
         setIsFinalResolve(true);
-      }, 1400);
+      }, 1500);
       return () => clearTimeout(timer);
     } else if (isFinalResolve) {
       const timer = setTimeout(() => {
@@ -82,7 +76,7 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
       {/* Ambient Dynamic Floating Particles */}
       <DynamicParticles />
 
-      {/* Background Image Scene Transition with Ken Burns Slow Zoom */}
+      {/* Background Image Scene Transition with Slow Zoom */}
       {SCENES.map((sc, idx) => (
         <div
           key={sc.id}
@@ -100,72 +94,57 @@ export const CinematicIntro: React.FC<CinematicIntroProps> = ({ onComplete }) =>
         </div>
       ))}
 
-      {/* Final Logo Resolve Scene */}
-      <div
-        className={`absolute inset-0 bg-homepage-pattern flex items-center justify-center transition-opacity duration-1000 ${
-          isFinalResolve ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className="absolute inset-0 bg-[#090807]/90 backdrop-blur-md" />
-        <div className="relative z-10 text-center space-y-5 px-6 max-w-3xl animate-in zoom-in-95 duration-700">
-          <div className="w-16 h-16 rounded-full bg-[#C86D44] text-white flex items-center justify-center font-cursive font-bold text-3xl shadow-2xl mx-auto border-2 border-amber-300/40">
-            A
-          </div>
-          <div>
-            <h1 className="font-cursive font-bold text-5xl sm:text-7xl text-amber-100 uppercase tracking-wide drop-shadow-2xl">
-              ANNAPURNA
-            </h1>
-            <p className="text-xs font-mono font-bold tracking-widest text-[#C86D44] mt-2 uppercase">
-              CAMPUS FOOD OPERATIONS & HUNGER RELIEF PLATFORM
-            </p>
-          </div>
-          <div className="pt-3">
-            <h2 className="text-[#C86D44] dark:text-amber-300 font-cursive font-bold text-lg sm:text-2xl tracking-wide border-y border-[#C86D44]/40 py-2 inline-block">
-              Feed People. Reduce Waste. Create Impact.
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      {/* Scene Text Overlay with Cursive Typography & Scaled Sizing */}
-      {!isFinalResolve && (
-        <div className="relative z-20 text-center max-w-3xl px-6 space-y-4 animate-in fade-in duration-700">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#C86D44]/25 border border-[#C86D44]/40 text-[#C86D44] dark:text-amber-300 text-[11px] font-mono font-bold uppercase tracking-wider backdrop-blur-md">
-            <Heart className="w-3.5 h-3.5 fill-current text-rose-400" />
-            <span>Hunger Relief Mission • Story {currentSceneIdx + 1} of 5</span>
+      {/* Text Overlay */}
+      {!isFinalResolve ? (
+        <div className="relative z-20 max-w-2xl mx-auto text-center px-6 space-y-4 animate-in fade-in zoom-in-95 duration-700">
+          <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-xs font-bold uppercase tracking-widest border border-amber-500/30 backdrop-blur-md">
+            <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
+            <span>ITER LADIES HOSTELS (LH1 - LH5) FOOD RESCUE</span>
           </div>
 
-          {/* Cursive Font Slogan Headline */}
-          <h2 className="font-cursive font-bold text-3xl sm:text-5xl md:text-6xl text-amber-100 leading-tight drop-shadow-2xl">
+          <h1 className="font-cursive font-bold text-3xl sm:text-5xl text-amber-100 leading-tight drop-shadow-2xl">
             "{scene.slogan}"
-          </h2>
+          </h1>
 
-          <p className="text-xs sm:text-base text-slate-200 font-normal drop-shadow max-w-xl mx-auto">
+          <p className="text-xs sm:text-base text-slate-200 font-medium max-w-lg mx-auto leading-relaxed drop-shadow-md">
             {scene.subtext}
           </p>
 
-          {/* Scene Dots */}
-          <div className="flex items-center justify-center gap-2 pt-4">
+          <div className="pt-6 flex justify-center gap-2">
             {SCENES.map((_, i) => (
-              <span
+              <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all duration-500 ${
-                  i === currentSceneIdx ? 'w-8 bg-[#C86D44]' : 'w-2 bg-white/40'
+                  i === currentSceneIdx ? 'w-8 bg-amber-400' : 'w-2 bg-white/30'
                 }`}
               />
             ))}
           </div>
         </div>
-      )}
+      ) : (
+        <div className="relative z-20 max-w-xl mx-auto text-center px-6 space-y-6 animate-in fade-in zoom-in-95 duration-1000">
+          <div className="w-20 h-20 mx-auto rounded-full p-2 bg-white/20 border-2 border-amber-400 shadow-2xl backdrop-blur-xl scale-125">
+            <img src="/logo.png" alt="Annapurna" className="w-full h-full object-contain" />
+          </div>
 
-      {/* Skip Button (Bottom-Right) */}
-      <button
-        onClick={handleFinish}
-        className="absolute bottom-8 right-8 z-30 px-4 py-2 rounded-full bg-black/60 hover:bg-black/80 text-slate-300 hover:text-white border border-white/20 text-xs font-mono font-semibold tracking-wider backdrop-blur-md transition-all flex items-center gap-1.5 cursor-pointer shadow-xl"
-      >
-        <span>SKIP INTRO</span>
-        <ArrowRight className="w-3.5 h-3.5" />
-      </button>
+          <div className="space-y-2">
+            <h2 className="font-cursive font-bold text-4xl sm:text-5xl text-amber-100 tracking-wider">
+              ANNAPURNA
+            </h2>
+            <div className="text-xs font-mono font-bold text-amber-300 uppercase tracking-widest">
+              By Team Astra • ITER Ladies Hostels (LH1 - LH5)
+            </div>
+          </div>
+
+          <button
+            onClick={handleFinish}
+            className="px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C86D44] text-white font-bold text-xs uppercase tracking-widest shadow-2xl hover:scale-110 transition-all cursor-pointer inline-flex items-center gap-2 border border-amber-300/40"
+          >
+            <span>ENTER PLATFORM</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

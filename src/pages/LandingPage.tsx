@@ -104,7 +104,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
   return (
     <div 
-      className="relative min-h-screen text-slate-950 font-sans selection:bg-[#C86D44] selection:text-white transition-colors duration-300 overflow-x-hidden bg-cover bg-center bg-fixed"
+      className="relative min-h-screen text-slate-950 font-lazydog transition-colors duration-300 overflow-x-hidden bg-cover bg-center bg-fixed"
       style={{ backgroundImage: `url('/new-hero-bg.jpg')` }}
     >
       {/* Ambient Dynamic Background Overlay */}
@@ -118,11 +118,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
       {/* TEAM ASTRA ABOUT MODAL */}
       {showTeamAstraModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300 font-lazydog">
           <div className="w-full max-w-2xl p-8 rounded-3xl bg-[#1A1715]/95 text-white border border-amber-500/40 shadow-2xl space-y-6 relative overflow-hidden">
             <button
               onClick={() => setShowTeamAstraModal(false)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-5 right-5 p-2 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white transition-colors cursor-pointer hover:scale-110"
             >
               <X className="w-5 h-5" />
             </button>
@@ -135,7 +135,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-mono text-[10px] font-bold uppercase tracking-widest">
                   TEAM ASTRA • INNOVATION PROJECT
                 </div>
-                <h2 className="font-cursive font-bold text-3xl text-amber-100 mt-1">
+                <h2 className="font-lazydog font-bold text-3xl sm:text-4xl text-amber-100 mt-1">
                   About Team Astra
                 </h2>
               </div>
@@ -168,7 +168,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="pt-2 text-center">
               <button
                 onClick={() => setShowTeamAstraModal(false)}
-                className="px-8 py-3 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer"
+                className="px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-110 hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
                 CLOSE ABOUT TEAM ASTRA
               </button>
@@ -177,16 +177,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </div>
       )}
 
-      <div className="relative z-10">
+      <div className="relative z-10 font-lazydog">
         {/* Persistent Live Ops Status Widget */}
         <LiveStatusWidget />
 
-        {/* Floating Pill Header Navigation (Increased Spacing & Zoomed Circular Logo) */}
+        {/* Floating Header Navigation (With Generous Margin Spacing & Interactive Hover Zoom Buttons) */}
         <header className="fixed top-4 left-1/2 -translate-x-1/2 z-40 max-w-6xl w-[94%] transition-all duration-300">
-          <div className="bg-black/50 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-full px-6 py-3 flex items-center justify-between">
-            {/* Zoomed Circular Glass Logo Emblem */}
-            <div className="flex items-center gap-4">
-              <div className="rounded-full p-2 bg-white/20 border-2 border-amber-400/90 shadow-2xl backdrop-blur-xl scale-125 transition-transform hover:scale-135">
+          <div className="bg-black/60 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-full px-6 py-3.5 flex items-center justify-between">
+            {/* Zoomed Circular Glass Logo Emblem with Right Spacing Margin */}
+            <div className="flex items-center gap-4 mr-10 sm:mr-14">
+              <div className="rounded-full p-2.5 bg-white/20 border-2 border-amber-400/90 shadow-2xl backdrop-blur-xl scale-125 transition-transform hover:scale-140">
                 <img 
                   src="/logo.png" 
                   alt="ANNAPURNA Logo" 
@@ -194,34 +194,34 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 />
               </div>
               <div className="pl-3">
-                <span className="font-cursive font-bold text-2xl tracking-wider text-amber-100 drop-shadow">
+                <span className="font-lazydog font-bold text-2xl sm:text-3xl tracking-wider text-amber-100 drop-shadow">
                   Annapurna
                 </span>
                 <div className="text-[9px] font-mono text-amber-300 tracking-widest uppercase">ITER LH1 - LH5</div>
               </div>
             </div>
 
-            {/* Nav Links with Increased Spacing & No Children Stories button */}
-            <nav className="hidden lg:flex items-center gap-10 sm:gap-12 text-xs font-mono font-bold tracking-widest text-white uppercase">
-              <a href="#features" className="hover:text-amber-300 transition-colors">FEATURES</a>
-              <a href="#weather" className="hover:text-amber-300 transition-colors">WEATHER</a>
+            {/* Nav Links with Generous Horizontal Spacing */}
+            <nav className="hidden lg:flex items-center gap-10 sm:gap-14 text-xs font-mono font-bold tracking-widest text-white uppercase">
+              <a href="#features" className="hover:text-amber-300 hover:scale-110 transition-all duration-200">FEATURES</a>
+              <a href="#weather" className="hover:text-amber-300 hover:scale-110 transition-all duration-200">WEATHER</a>
               <button
                 onClick={() => setShowTeamAstraModal(true)}
-                className="hover:text-amber-300 transition-colors flex items-center gap-1.5 cursor-pointer text-amber-300"
+                className="hover:text-amber-300 hover:scale-110 transition-all duration-200 flex items-center gap-1.5 cursor-pointer text-amber-300"
               >
                 <Award className="w-3.5 h-3.5" />
                 <span>ABOUT TEAM ASTRA</span>
               </button>
               <button
                 onClick={onNavigateRescue}
-                className="hover:text-amber-300 transition-colors flex items-center gap-1 cursor-pointer text-amber-300"
+                className="hover:text-amber-300 hover:scale-110 transition-all duration-200 flex items-center gap-1 cursor-pointer text-amber-300"
               >
                 <Truck className="w-3.5 h-3.5" />
                 <span>FOOD RESCUE</span>
               </button>
             </nav>
 
-            {/* Controls & CTAs */}
+            {/* Controls & Interactive Hover Zoom CTAs */}
             <div className="flex items-center gap-3 sm:gap-4">
               <AudioPlayer />
               <VoiceAssistWidget label="Read" textToRead="Welcome to Annapurna by Team Astra. Designed to nourish, built to share for ITER Ladies Hostels LH1 to LH5." />
@@ -229,7 +229,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onReplayIntro}
-                className="hidden sm:inline-block px-3.5 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-amber-200 hover:text-white border border-amber-400/40 bg-white/10 backdrop-blur-md transition-colors"
+                className="hidden sm:inline-block px-3.5 py-1.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider text-amber-200 hover:text-white border border-amber-400/40 bg-white/10 backdrop-blur-md hover:scale-110 hover:-translate-y-0.5 transition-all duration-300"
                 title="Replay Story"
               >
                 Story
@@ -237,7 +237,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateLogin}
-                className="px-5 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-xl transition-all cursor-pointer flex items-center gap-1.5 border border-amber-300/30"
+                className="px-5 py-2 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider shadow-xl hover:scale-110 hover:-translate-y-1 hover:shadow-2xl active:scale-95 transition-all duration-300 cursor-pointer flex items-center gap-1.5 border border-amber-300/30"
               >
                 <LogIn className="w-3.5 h-3.5" />
                 <span>Login</span>
@@ -246,7 +246,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </header>
 
-        {/* FULL-SCREEN HERO SECTION */}
+        {/* HERO SECTION */}
         <section className="relative min-h-screen flex items-center justify-center pt-32 pb-20 px-6">
           <div className="max-w-4xl mx-auto text-center space-y-8 p-10 sm:p-14 rounded-3xl bg-black/60 border border-white/20 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-700">
             
@@ -258,10 +258,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
-            {/* High-Contrast Cursive Display Headline */}
-            <h1 className="font-cursive font-bold text-4xl sm:text-6xl text-amber-100 leading-[1.15] drop-shadow-2xl">
+            {/* High-Contrast LAZYDOG Display Headline */}
+            <h1 className="font-lazydog font-bold text-4xl sm:text-6xl text-amber-100 leading-[1.15] drop-shadow-2xl">
               Designed to Nourish. <br />
-              <span className="text-amber-400 font-cursive underline decoration-amber-500/50">
+              <span className="text-amber-400 font-lazydog underline decoration-amber-500/50">
                 Built to Share.
               </span>
             </h1>
@@ -271,11 +271,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               Every meal has a story. Annapurna connects ITER Ladies Hostels (LH1 to LH5) dining facilities directly with local community food rescue networks.
             </p>
 
-            {/* Action Buttons with Spacing */}
+            {/* Action Buttons with Spacing & Hover Scale */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-2">
               <button
                 onClick={onNavigateRescue}
-                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
+                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-2xl hover:scale-110 hover:-translate-y-1 hover:shadow-amber-500/30 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40 active:scale-95"
               >
                 <span>EXPLORE FOOD RESCUE</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -283,7 +283,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <button
                 onClick={onNavigateRegister}
-                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-widest shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md"
+                className="group w-full sm:w-auto px-9 py-4 rounded-full bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-110 hover:-translate-y-1 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2 backdrop-blur-md active:scale-95"
               >
                 <span>REGISTER LH STUDENT ACCOUNT</span>
                 <ArrowRight className="w-4 h-4 text-amber-300 group-hover:translate-x-1 transition-transform" />
@@ -298,14 +298,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           </div>
         </section>
 
-        {/* DYNAMIC CHILDREN IMPACT STORY REEL (USING REAL USER PHOTOS) */}
+        {/* DYNAMIC CHILDREN IMPACT STORY REEL */}
         <section id="children-stories" className="py-20 px-6 max-w-5xl mx-auto border-t border-white/10">
           <div className="text-center max-w-xl mx-auto mb-12 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
             <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
               <Heart className="w-4 h-4 text-rose-500 fill-rose-500 animate-pulse" />
               <span>HUNGRY TO SMILING FACES IMPACT REEL</span>
             </div>
-            <h2 className="font-cursive text-3xl sm:text-4xl font-bold text-amber-100 tracking-wide">
+            <h2 className="font-lazydog text-3xl sm:text-4xl font-bold text-amber-100 tracking-wide">
               No Child Should Sleep Hungry
             </h2>
           </div>
@@ -319,7 +319,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               alt={currentStory.slogan}
               className="absolute inset-0 w-full h-full object-cover opacity-60 transition-opacity duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-transparent pointer-events-none" />
 
             <div className="relative z-10 space-y-5 text-center text-white">
               {/* Tag Badge */}
@@ -329,7 +329,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
 
               {/* Slogan */}
-              <h3 className="font-cursive font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-2xl">
+              <h3 className="font-lazydog font-bold text-3xl sm:text-5xl text-amber-200 leading-tight drop-shadow-2xl">
                 "{currentStory.slogan}"
               </h3>
 
@@ -344,7 +344,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   <button
                     key={idx}
                     onClick={() => setActiveStoryIdx(idx)}
-                    className={`h-2.5 rounded-full transition-all cursor-pointer ${
+                    className={`h-2.5 rounded-full transition-all cursor-pointer hover:scale-125 ${
                       activeStoryIdx === idx ? 'w-10 bg-amber-400' : 'w-2.5 bg-white/40 hover:bg-white/70'
                     }`}
                   />
@@ -358,7 +358,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <section id="weather" className="py-16 px-6 max-w-5xl mx-auto border-t border-white/10">
           <div className="text-center max-w-xl mx-auto mb-8 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl">
             <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">BHUBANESWAR · ODISHA TELEMETRY</h2>
-            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Campus Climate & Weather Forecast</h3>
+            <h3 className="font-lazydog text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Campus Climate & Weather Forecast</h3>
           </div>
           <WeatherWidget />
         </section>
@@ -367,7 +367,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <section id="features" className="py-20 px-6 max-w-6xl mx-auto border-t border-white/10">
           <div className="text-center max-w-2xl mx-auto mb-14 p-6 rounded-3xl bg-black/60 border border-white/20 backdrop-blur-xl space-y-2">
             <h2 className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">Dual Interface Architecture</h2>
-            <h3 className="font-cursive text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Designed for Ops Authority & LH1-5 Students</h3>
+            <h3 className="font-lazydog text-2xl sm:text-3xl font-bold text-amber-100 tracking-wide">Designed for Ops Authority & LH1-5 Students</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
@@ -377,7 +377,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Building2 className="w-3.5 h-3.5" />
                 <span>Authority Dashboard</span>
               </div>
-              <h4 className="font-cursive text-2xl font-bold text-amber-100 tracking-wide">Operational Density & Control</h4>
+              <h4 className="font-lazydog text-2xl font-bold text-amber-100 tracking-wide">Operational Density & Control</h4>
               <ul className="space-y-3 text-xs text-slate-200 font-medium">
                 {[
                   'PDF Mess Menu Uploader & Schedule Replacement for LH1 to LH5',
@@ -396,7 +396,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateLogin}
-                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border border-amber-300/30"
+                className="w-full py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-wider hover:scale-105 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-amber-300/30"
               >
                 Log In to Authority Operations
               </button>
@@ -408,7 +408,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <Users className="w-3.5 h-3.5" />
                 <span>Student Mobile App (LH1 to LH5)</span>
               </div>
-              <h4 className="font-cursive text-2xl font-bold text-amber-100 tracking-wide">Personalized & Mobile-First</h4>
+              <h4 className="font-lazydog text-2xl font-bold text-amber-100 tracking-wide">Personalized & Mobile-First</h4>
               <ul className="space-y-3 text-xs text-slate-200 font-medium">
                 {[
                   'Personalized greeting & next-upcoming meal card for LH1 to LH5',
@@ -427,7 +427,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </ul>
               <button
                 onClick={onNavigateRegister}
-                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border border-emerald-400/30"
+                className="w-full py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider hover:scale-105 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-emerald-400/30"
               >
                 Register LH Student Dining Account
               </button>
@@ -443,18 +443,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <span>DEVELOPER CREDITS & ABOUT US</span>
             </div>
 
-            <h2 className="font-cursive font-bold text-4xl sm:text-5xl text-amber-100">
+            <h2 className="font-lazydog font-bold text-4xl sm:text-5xl text-amber-100">
               Powered by Team Astra
             </h2>
 
             <p className="max-w-2xl mx-auto text-xs sm:text-base text-slate-200 leading-relaxed font-medium">
-              Annapurna is designed and engineered by <strong className="text-amber-300">Team Astra</strong> to revolutionize campus dining operations across ITER Ladies Hostels (LH1, LH2, LH3, LH4, LH5).
+              Annapurna is designed and engineered by <strong className="text-amber-300 font-bold">Team Astra</strong> to revolutionize campus dining operations across ITER Ladies Hostels (LH1, LH2, LH3, LH4, LH5).
             </p>
 
             <div className="pt-4 flex justify-center">
               <button
                 onClick={() => setShowTeamAstraModal(true)}
-                className="px-9 py-4 rounded-full bg-gradient-to-r from-amber-500 via-[#C86D44] to-amber-500 hover:from-amber-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-widest shadow-2xl transition-all cursor-pointer flex items-center gap-2 border border-amber-300/40"
+                className="px-9 py-4 rounded-full bg-gradient-to-r from-amber-500 via-[#C86D44] to-amber-500 hover:from-amber-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-widest shadow-2xl hover:scale-110 hover:-translate-y-1 hover:shadow-amber-500/40 transition-all duration-300 cursor-pointer flex items-center gap-2 border border-amber-300/40"
               >
                 <Info className="w-4 h-4" />
                 <span>READ ABOUT TEAM ASTRA & VISION</span>
@@ -464,9 +464,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         </section>
 
         {/* Footer */}
-        <footer className="py-10 border-t border-white/10 text-center text-xs text-slate-300 bg-black/80 backdrop-blur-md">
+        <footer className="py-10 border-t border-white/10 text-center text-xs text-slate-300 bg-black/90 backdrop-blur-md font-lazydog">
           <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 font-cursive text-base font-bold text-amber-100 tracking-wider">
+            <div className="flex items-center gap-3 font-lazydog text-base font-bold text-amber-100 tracking-wider">
               <div className="rounded-full p-1 bg-white/20 border border-amber-400">
                 <img 
                   src="/logo.png" 

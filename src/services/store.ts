@@ -450,7 +450,20 @@ class AppStore {
   }
 
   public getTodayMeals(): Meal[] {
-    return this.meals || [];
+    const today = new Date().toISOString().split('T')[0];
+    const todayMeals = (this.meals || []).filter(m => m.date === today);
+
+    const source = todayMeals.length > 0 ? todayMeals : (this.meals || []);
+
+    const uniqueMap = new Map<MealType, Meal>();
+    source.forEach(m => {
+      if (!uniqueMap.has(m.meal_type)) {
+        uniqueMap.set(m.meal_type, m);
+      }
+    });
+
+    const order: MealType[] = ['breakfast', 'lunch', 'snacks', 'dinner'];
+    return order.map(t => uniqueMap.get(t)).filter((m): m is Meal => m !== undefined);
   }
 
   public getMealCheckins(mealId: string): Checkin[] {
