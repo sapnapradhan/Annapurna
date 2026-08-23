@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Utensils, Clock, QrCode, Users, MessageSquareQuote, 
-  Trash2, Truck, TrendingUp, Settings, LogOut, Bell, X
+  Trash2, Truck, TrendingUp, Settings, LogOut, Bell, X, ArrowLeft
 } from 'lucide-react';
 import { appStore } from '../../services/store';
 import { ThemeToggle } from '../common/ThemeToggle';
@@ -12,6 +12,7 @@ interface AuthorityLayoutProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onLogout: () => void;
+  onBackToHome?: () => void;
   children: React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
   activeTab,
   setActiveTab,
   onLogout,
+  onBackToHome,
   children
 }) => {
   const user = appStore.getCurrentUser();
@@ -58,8 +60,8 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
               className="h-10 w-auto object-contain shrink-0" 
             />
             <div>
-              <div className="font-cursive font-bold text-xl text-[#2C221E] dark:text-amber-100">Annapurna</div>
-              <div className="text-[10px] font-mono text-slate-600 dark:text-slate-400">Authority Ops Portal</div>
+              <div className="font-bold text-sm text-[#2C221E] dark:text-white">Annapurna</div>
+              <div className="text-[10px] font-mono text-[#C86D44] dark:text-amber-300">ITER LH1 - LH5</div>
             </div>
           </div>
 
@@ -72,15 +74,14 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`
-                    w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-all cursor-pointer
-                    ${isActive 
-                      ? 'bg-[#C86D44] text-white shadow-lg' 
-                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/10 dark:hover:bg-white/5'}
-                  `}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    isActive
+                      ? 'bg-[#C86D44] text-white shadow-md'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-white/10 dark:hover:bg-white/5'
+                  }`}
                 >
                   <Icon className="w-4 h-4 shrink-0" />
-                  <span className="truncate">{item.label}</span>
+                  <span>{item.label}</span>
                 </button>
               );
             })}
@@ -106,6 +107,17 @@ export const AuthorityLayout: React.FC<AuthorityLayoutProps> = ({
         {/* Top Header */}
         <header className="sticky top-0 z-30 bg-white/10 dark:bg-black/30 backdrop-blur-md border-b border-white/20 dark:border-white/10 px-6 py-3.5 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-3">
+            {onBackToHome && (
+              <button
+                type="button"
+                onClick={onBackToHome}
+                className="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-[#2C221E] dark:text-white text-xs font-mono font-bold flex items-center gap-1.5 backdrop-blur-md border border-white/20 shadow-sm transition-all cursor-pointer mr-2"
+                title="Go Back to Main Landing Home Page"
+              >
+                <ArrowLeft className="w-4 h-4 text-amber-500" />
+                <span>BACK TO HOME</span>
+              </button>
+            )}
             <h2 className="font-cursive font-bold text-xl text-[#2C221E] dark:text-white">
               Campus Food Operations
             </h2>

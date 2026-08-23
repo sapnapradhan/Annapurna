@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { appStore } from '../../services/store';
 import { CaptchaWidget } from '../../components/auth/CaptchaWidget';
 import { 
-  User, Mail, Lock, CheckCircle2, XCircle, ArrowRight, ShieldCheck, AlertCircle, UtensilsCrossed 
+  User, Mail, Lock, CheckCircle2, XCircle, ArrowRight, ShieldCheck, AlertCircle, UtensilsCrossed, ArrowLeft 
 } from 'lucide-react';
 
 interface RegisterPageProps {
   onNavigateLogin: () => void;
   onSuccessRedirect: () => void;
+  onBackToHome?: () => void;
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({
   onNavigateLogin,
-  onSuccessRedirect
+  onSuccessRedirect,
+  onBackToHome
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -73,7 +75,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#07080c] text-slate-100 flex items-center justify-center p-4 sm:p-6 font-sans">
+    <div className="min-h-screen bg-[#07080c] text-slate-100 flex flex-col items-center justify-center p-4 sm:p-6 font-sans relative">
+      {/* Top Left Back to Home Button */}
+      {onBackToHome && (
+        <div className="absolute top-6 left-6 z-20">
+          <button
+            type="button"
+            onClick={onBackToHome}
+            className="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white font-mono text-xs font-bold flex items-center gap-2 backdrop-blur-md border border-white/20 shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4 text-amber-400" />
+            <span>BACK TO HOME</span>
+          </button>
+        </div>
+      )}
+
       <div className="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-cinematic-surface border border-cinematic-border shadow-2xl space-y-6 backdrop-blur-xl">
         {/* Header */}
         <div className="text-center space-y-2">

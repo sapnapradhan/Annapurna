@@ -102,12 +102,19 @@ export const App: React.FC = () => {
     return <FoodRescuePage onBackToHome={() => setMainView('landing')} />;
   }
 
+  const handleGoHome = () => {
+    appStore.setRole('landing');
+    setRole('landing');
+    setMainView('landing');
+  };
+
   // 4. Auth Views (Only if role is landing)
   if (role === 'landing' && mainView === 'register') {
     return (
       <RegisterPage
         onNavigateLogin={() => setMainView('login')}
         onSuccessRedirect={() => setMainView('login')}
+        onBackToHome={() => setMainView('landing')}
       />
     );
   }
@@ -117,6 +124,7 @@ export const App: React.FC = () => {
       <LoginPage
         onNavigateRegister={() => setMainView('register')}
         onLoginSuccess={handleLoginSuccess}
+        onBackToHome={() => setMainView('landing')}
       />
     );
   }
@@ -141,6 +149,7 @@ export const App: React.FC = () => {
         activeTab={authorityTab}
         setActiveTab={setAuthorityTab}
         onLogout={handleLogout}
+        onBackToHome={handleGoHome}
       >
         {authorityTab === 'today' && <TodayMealsPage onNavigate={handleNavigateAuthority} />}
         {authorityTab === 'menu' && <MenuManagementPage />}
@@ -162,6 +171,7 @@ export const App: React.FC = () => {
       activeTab={studentTab}
       setActiveTab={setStudentTab}
       onLogout={handleLogout}
+      onBackToHome={handleGoHome}
     >
       {studentTab === 'home' && <StudentHomePage onNavigate={handleNavigateStudent} />}
       {studentTab === 'meals' && <StudentMealsPage onNavigate={handleNavigateStudent} />}

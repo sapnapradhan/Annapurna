@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Utensils, QrCode, CalendarCheck, User, LogOut } from 'lucide-react';
+import { Home, Utensils, QrCode, CalendarCheck, User, LogOut, ArrowLeft } from 'lucide-react';
 import { appStore } from '../../services/store';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { AudioPlayer } from '../common/AudioPlayer';
@@ -10,6 +10,7 @@ interface StudentLayoutProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onLogout: () => void;
+  onBackToHome?: () => void;
   children: React.ReactNode;
 }
 
@@ -17,6 +18,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
   activeTab,
   setActiveTab,
   onLogout,
+  onBackToHome,
   children
 }) => {
   const user = appStore.getCurrentUser();
@@ -53,6 +55,17 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
           </div>
 
           <div className="flex items-center gap-2">
+            {onBackToHome && (
+              <button
+                type="button"
+                onClick={onBackToHome}
+                className="px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 text-[#2C221E] dark:text-white text-[10px] font-mono font-bold flex items-center gap-1 backdrop-blur-md border border-white/20 shadow-sm transition-all cursor-pointer"
+                title="Go Back to Main Landing Home Page"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-amber-500" />
+                <span>Home</span>
+              </button>
+            )}
             <AudioPlayer />
             <VoiceAssistWidget label="Listen" textToRead={`Welcome back ${user.name}. Your next meal pass is ready. hostel ${user.hostel}.`} />
             <ThemeToggle />
