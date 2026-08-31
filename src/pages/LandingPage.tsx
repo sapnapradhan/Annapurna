@@ -432,7 +432,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Authority Side Card */}
-            <div className={`p-8 rounded-3xl border shadow-2xl space-y-6 backdrop-blur-xl ${
+            <div className={`p-8 rounded-3xl border shadow-2xl space-y-6 backdrop-blur-xl transition-all duration-300 hover:[transform:perspective(1000px)_rotateX(2deg)_rotateY(-2deg)_scale3d(1.02,1.02,1.02)] hover:border-amber-500/50 ${
               isDark 
                 ? 'bg-black/80 border-white/20 text-white' 
                 : 'bg-white/95 border-amber-900/15 text-slate-900 shadow-xl'
@@ -467,7 +467,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Student Side Card */}
-            <div className={`p-8 rounded-3xl border shadow-2xl space-y-6 backdrop-blur-xl ${
+            <div className={`p-8 rounded-3xl border shadow-2xl space-y-6 backdrop-blur-xl transition-all duration-300 hover:[transform:perspective(1000px)_rotateX(2deg)_rotateY(2deg)_scale3d(1.02,1.02,1.02)] hover:border-emerald-500/50 ${
               isDark 
                 ? 'bg-black/80 border-white/20 text-white' 
                 : 'bg-white/95 border-amber-900/15 text-slate-900 shadow-xl'
