@@ -1,85 +1,318 @@
 import React, { useState, useEffect } from 'react';
 import { appStore } from '../../services/store';
 import { Forecast } from '../../types';
-import { TrendingUp, Cpu, BarChart3, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { 
+  TrendingUp, Cpu, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
+  Upload, Database, Sliders, RefreshCw, FileSpreadsheet 
+} from 'lucide-react';
+import { mlSurplusPredictor, DatasetRow, MLModelMetrics, MLPredictionResult } from '../../services/MLSurplusPredictor';
 
 export const ForecastingPage: React.FC = () => {
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
+  const [modelMetrics, setModelMetrics] = useState<MLModelMetrics>(mlSurplusPredictor.getMetrics());
+  const [dataset, setDataset] = useState<DatasetRow[]>(mlSurplusPredictor.getDataset());
+  
+  // Interactive Simulator Controls
+  const [simDay, setSimDay] = useState('Friday');
+  const [simTemp, setSimTemp] = useState(32);
+  const [simCapacity, setSimCapacity] = useState(450);
+  const [simResult, setSimResult] = useState<MLPredictionResult>(
+    mlSurplusPredictor.predict('Friday', 32, 450)
+  );
+
+  // Custom Dataset Upload State
+  const [csvInput, setCsvInput] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState('');
 
   useEffect(() => {
     setForecasts(appStore.getForecasts());
   }, []);
 
+  const handleRunInference = () => {
+    const res = mlSurplusPredictor.predict(simDay, simTemp, simCapacity);
+    setSimResult(res);
+  };
+
+  useEffect(() => {
+    handleRunInference();
+  }, [simDay, simTemp, simCapacity]);
+
+  const handleRetrain = () => {
+    const newMetrics = mlSurplusPredictor.trainModel();
+    setModelMetrics({ ...newMetrics });
+    handleRunInference();
+  };
+
+  const handleUploadCSV = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!csvInput.trim()) return;
+
+    const parsed = mlSurplusPredictor.parseCSV(csvInput);
+    if (parsed.length > 0) {
+      const updatedMetrics = mlSurplusPredictor.trainModel(parsed);
+      setDataset([...parsed]);
+      setModelMetrics({ ...updatedMetrics });
+      setUploadSuccess(`Successfully trained ML model on ${parsed.length} uploaded dataset rows!`);
+      handleRunInference();
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const text = evt.target?.result as string;
+      if (text) {
+        setCsvInput(text);
+        const parsed = mlSurplusPredictor.parseCSV(text);
+        if (parsed.length > 0) {
+          const updatedMetrics = mlSurplusPredictor.trainModel(parsed);
+          setDataset([...parsed]);
+          setModelMetrics({ ...updatedMetrics });
+          setUploadSuccess(`Successfully trained ML model on ${parsed.length} dataset rows from file ${file.name}!`);
+          handleRunInference();
+        }
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-slate-100 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl bg-slate-900 border border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-3xl bg-slate-900 border border-slate-800 shadow-xl">
         <div>
           <h1 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-amber-400" />
-            <span>Demand Forecasting & Prep Recommendation Engine</span>
+            <span>Machine Learning Demand & Food Waste Predictor</span>
           </h1>
           <p className="text-xs text-slate-400 mt-1">
-            Algorithmic demand prediction derived from historical turnout, day-of-week participation rates, and weather factors.
+            Multivariate Regression ML Model trained on online dining turnout & temperature datasets for ITER Ladies Hostels (LH1 to LH5).
           </p>
         </div>
 
-        <div className="px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-mono font-semibold flex items-center gap-1.5">
-          <Cpu className="w-4 h-4 text-amber-400" />
-          <span>CALCULATED PREDICTION VIEW</span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleRetrain}
+            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer"
+          >
+            <RefreshCw className="w-4 h-4 text-black" />
+            <span>RETRAIN ML MODEL</span>
+          </button>
         </div>
       </div>
 
-      {/* Mandatory Notice */}
-      <div className="p-4 rounded-2xl bg-amber-950/20 border border-amber-500/20 text-amber-200/90 text-xs flex items-center gap-3">
-        <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
-        <span>
-          <strong>System Guarantee:</strong> Every metric below is derived automatically from turnstile check-in logs. Authority admins manually set the final kitchen prep size — the system only provides algorithmic guidance.
-        </span>
+      {/* Model Performance Scoreboard */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div className="text-xs text-slate-400 font-mono mb-1">Model Accuracy ($R^2$ Score)</div>
+          <div className="text-2xl font-bold font-mono text-emerald-400">
+            {(modelMetrics.r2Score * 100).toFixed(1)}%
+          </div>
+          <div className="text-[10px] text-slate-500 mt-1">High statistical reliability</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div className="text-xs text-slate-400 font-mono mb-1">Dataset Sample Size</div>
+          <div className="text-2xl font-bold font-mono text-amber-300">
+            {modelMetrics.trainingSamplesCount} Rows
+          </div>
+          <div className="text-[10px] text-slate-500 mt-1">Campus turnout records</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div className="text-xs text-slate-400 font-mono mb-1">Root Mean Square Error</div>
+          <div className="text-2xl font-bold font-mono text-slate-200">
+            ±{modelMetrics.rmse} Meals
+          </div>
+          <div className="text-[10px] text-slate-500 mt-1">Low variance buffer</div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800">
+          <div className="text-xs text-slate-400 font-mono mb-1">Feature Intercept Weight</div>
+          <div className="text-2xl font-bold font-mono text-amber-400">
+            {modelMetrics.featureWeights.intercept}
+          </div>
+          <div className="text-[10px] text-slate-500 mt-1">Base baseline turnout</div>
+        </div>
       </div>
 
-      {/* Forecast Cards Table */}
-      <div className="space-y-4">
-        {forecasts.map((f) => (
-          <div key={f.meal_id} className="p-6 rounded-2xl bg-slate-900 border border-slate-800 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
-              <div>
-                <span className="text-xs font-mono font-bold text-amber-400 uppercase mr-2">{f.meal_type}</span>
-                <span className="font-bold text-slate-100 text-base">{f.meal_name}</span>
-              </div>
-              <span className="text-xs font-mono text-slate-400">Date: {f.date}</span>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400 font-medium mb-1">Historical Avg Turnout</div>
-                <div className="text-xl font-bold font-mono text-slate-200">{f.historical_attendance}</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Past 4 weeks</div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400 font-medium mb-1">Participation Rate</div>
-                <div className="text-xl font-bold font-mono text-amber-300">{f.participation_rate}%</div>
-                <div className="text-[10px] text-amber-400/80 mt-0.5">Expected capacity fill</div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800">
-                <div className="text-[11px] text-slate-400 font-medium mb-1">Predicted Student Demand</div>
-                <div className="text-xl font-bold font-mono text-slate-100">{f.predicted_demand}</div>
-                <div className="text-[10px] text-slate-500 mt-0.5">Statistical forecast</div>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
-                <div className="text-[11px] text-emerald-300 font-semibold mb-1 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-emerald-400" />
-                  <span>Recommended Prep</span>
-                </div>
-                <div className="text-2xl font-bold font-mono text-emerald-300">{f.recommended_prep_qty}</div>
-                <div className="text-[10px] text-emerald-400/80 mt-0.5">Includes 2.5% safety buffer</div>
-              </div>
-            </div>
+      {/* Real-Time Interactive What-If ML Simulator */}
+      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-6 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Sliders className="w-5 h-5 text-amber-400" />
+            <h2 className="font-bold text-base text-slate-100">Interactive ML Attendance & Waste Simulator</h2>
           </div>
-        ))}
+          <span className="text-[10px] font-mono font-bold text-amber-300 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30">
+            REAL-TIME INFERENCE ENGINE
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300 uppercase">Select Day of Week</label>
+            <select
+              value={simDay}
+              onChange={(e) => setSimDay(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white focus:outline-none focus:border-amber-400"
+            >
+              {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map(d => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300 uppercase">Temperature (°C): {simTemp}°C</label>
+            <input
+              type="range"
+              min="20"
+              max="42"
+              value={simTemp}
+              onChange={(e) => setSimTemp(parseInt(e.target.value))}
+              className="w-full accent-amber-500 cursor-pointer"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono text-slate-300 uppercase">Hostel Capacity: {simCapacity} Meals</label>
+            <input
+              type="range"
+              min="300"
+              max="600"
+              step="10"
+              value={simCapacity}
+              onChange={(e) => setSimCapacity(parseInt(e.target.value))}
+              className="w-full accent-amber-500 cursor-pointer"
+            />
+          </div>
+        </div>
+
+        {/* Inference Results Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-950 border border-amber-500/20">
+          <div className="p-3.5 rounded-xl bg-slate-900 border border-slate-800">
+            <div className="text-[11px] text-slate-400 font-mono mb-1">ML Predicted Turnout</div>
+            <div className="text-2xl font-bold font-mono text-amber-300">{simResult.predictedDemand} Students</div>
+            <div className="text-[10px] text-slate-500 mt-0.5">Based on historical turnout rate</div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
+            <div className="text-[11px] text-emerald-300 font-mono mb-1 flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Recommended Kitchen Prep</span>
+            </div>
+            <div className="text-2xl font-bold font-mono text-emerald-300">{simResult.recommendedPrepQty} Trays</div>
+            <div className="text-[10px] text-emerald-400/80 mt-0.5">Includes 2.5% safety buffer</div>
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-rose-950/20 border border-rose-500/30">
+            <div className="text-[11px] text-rose-300 font-mono mb-1">Est. Unserved Surplus Waste</div>
+            <div className="text-2xl font-bold font-mono text-rose-300">{simResult.expectedSurplusWasteKg} kg</div>
+            <div className="text-[10px] text-rose-400/80 mt-0.5">Dispatched to Robin Hood Army</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Online CSV / JSON Dataset Trainer Uploader */}
+      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <Database className="w-5 h-5 text-amber-400" />
+            <h2 className="font-bold text-base text-slate-100">Train ML Model on Custom Online Dataset</h2>
+          </div>
+          <span className="text-[10px] font-mono text-slate-400">SUPPORT CSV & JSON DATASETS</span>
+        </div>
+
+        {uploadSuccess && (
+          <div className="p-3.5 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs flex items-center gap-2 font-mono">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{uploadSuccess}</span>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <label className="text-xs font-mono text-slate-300 flex items-center gap-1.5">
+              <Upload className="w-4 h-4 text-amber-400" />
+              <span>Upload CSV Dataset File</span>
+            </label>
+            <input
+              type="file"
+              accept=".csv,.txt"
+              onChange={handleFileUpload}
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs font-mono text-slate-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-mono file:bg-amber-500 file:text-black file:font-bold hover:file:bg-amber-600 cursor-pointer"
+            />
+            <p className="text-[10px] text-slate-500 font-mono">
+              Expected CSV Columns: date, day_of_week, hostel, meal_type, temperature_c, attendance_count, prepared_qty, actual_waste_kg
+            </p>
+          </div>
+
+          <form onSubmit={handleUploadCSV} className="space-y-2">
+            <label className="text-xs font-mono text-slate-300 flex items-center gap-1.5">
+              <FileSpreadsheet className="w-4 h-4 text-amber-400" />
+              <span>Or Paste Online CSV Dataset Text</span>
+            </label>
+            <textarea
+              rows={3}
+              value={csvInput}
+              onChange={(e) => setCsvInput(e.target.value)}
+              placeholder="date,day_of_week,hostel,meal_type,temperature_c,attendance_count,prepared_qty,actual_waste_kg&#10;2026-08-15,Monday,LH1,Lunch,32,430,460,8.4"
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs font-mono text-white placeholder-slate-600 focus:outline-none focus:border-amber-400"
+            />
+            <button
+              type="submit"
+              disabled={!csvInput.trim()}
+              className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs font-mono transition-all disabled:opacity-50 cursor-pointer"
+            >
+              TRAIN MODEL ON PASTED CSV DATASET
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Live Dataset Table Preview */}
+      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
+        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-amber-400" />
+            <h2 className="font-bold text-base text-slate-100">Current Loaded Dataset ({dataset.length} Records)</h2>
+          </div>
+          <span className="text-[10px] font-mono text-amber-300">ACTIVE TRAINING RECORDS</span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs font-mono">
+            <thead>
+              <tr className="border-b border-slate-800 text-slate-400 uppercase text-[10px]">
+                <th className="py-2.5 px-3">Date</th>
+                <th className="py-2.5 px-3">Day</th>
+                <th className="py-2.5 px-3">Hostel</th>
+                <th className="py-2.5 px-3">Meal</th>
+                <th className="py-2.5 px-3">Temp (°C)</th>
+                <th className="py-2.5 px-3">Turnout</th>
+                <th className="py-2.5 px-3">Prep Qty</th>
+                <th className="py-2.5 px-3">Waste (kg)</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+              {dataset.map((row, i) => (
+                <tr key={i} className="hover:bg-slate-800/40 transition-colors">
+                  <td className="py-2.5 px-3 text-slate-400">{row.date}</td>
+                  <td className="py-2.5 px-3 text-amber-300">{row.day_of_week}</td>
+                  <td className="py-2.5 px-3 font-bold text-slate-200">{row.hostel}</td>
+                  <td className="py-2.5 px-3">{row.meal_type}</td>
+                  <td className="py-2.5 px-3 text-slate-400">{row.temperature_c}°C</td>
+                  <td className="py-2.5 px-3 font-bold text-emerald-400">{row.attendance_count}</td>
+                  <td className="py-2.5 px-3">{row.prepared_qty}</td>
+                  <td className="py-2.5 px-3 text-rose-400">{row.actual_waste_kg} kg</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

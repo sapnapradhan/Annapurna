@@ -13,6 +13,8 @@ import { LiveStatusWidget } from '../components/landing/LiveStatusWidget';
 import { MusicChoiceModal } from '../components/common/MusicChoiceModal';
 import { VoiceAssistWidget } from '../components/common/VoiceAssistWidget';
 import { DynamicParticles } from '../components/common/DynamicParticles';
+import { ThreeDElementCanvas } from '../components/common/ThreeDElementCanvas';
+import { GoogleAIAssistantModal } from '../components/common/GoogleAIAssistantModal';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
@@ -67,6 +69,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [scrolled, setScrolled] = useState(false);
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [showTeamAstraModal, setShowTeamAstraModal] = useState(false);
+  const [showGoogleAIModal, setShowGoogleAIModal] = useState(false);
 
   const [showMusicPopup, setShowMusicPopup] = useState<boolean>(() => {
     return localStorage.getItem('annapurna_music_consent') === null;
@@ -225,9 +228,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Nav Links with Clean Spacing */}
-            <nav className="hidden lg:flex items-center gap-8 text-xs font-mono font-bold tracking-wider uppercase text-slate-700 dark:text-slate-200">
+            <nav className="hidden lg:flex items-center gap-6 text-xs font-mono font-bold tracking-wider uppercase text-slate-700 dark:text-slate-200">
               <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-300 hover:scale-105 transition-all duration-200">FEATURES</a>
               <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-300 hover:scale-105 transition-all duration-200">WEATHER</a>
+              <button
+                onClick={() => setShowGoogleAIModal(true)}
+                className="px-3 py-1 rounded-full bg-amber-500/20 text-[#C86D44] dark:text-amber-300 hover:scale-105 transition-all duration-200 flex items-center gap-1.5 cursor-pointer border border-amber-500/40 font-mono text-[10px]"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>GOOGLE AI STUDIO</span>
+              </button>
               <button
                 onClick={() => setShowTeamAstraModal(true)}
                 className="hover:text-[#C86D44] dark:hover:text-amber-300 hover:scale-105 transition-all duration-200 flex items-center gap-1.5 cursor-pointer text-[#C86D44] dark:text-amber-300"
@@ -285,6 +295,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             </div>
 
+            {/* Interactive 3D Canvas Emblem */}
+            <ThreeDElementCanvas />
+
             {/* High-Contrast Headline */}
             <h1 className="font-display-title font-bold text-3xl sm:text-5xl text-[#2C221E] dark:text-amber-100 leading-tight tracking-wide drop-shadow-2xl">
               Designed to Nourish. <br />
@@ -300,6 +313,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                onClick={() => setShowGoogleAIModal(true)}
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C86D44] hover:from-amber-600 hover:to-[#B35C33] text-black font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
+              >
+                <Sparkles className="w-4 h-4 text-black" />
+                <span>ASK GOOGLE AI STUDIO</span>
+              </button>
+
               <button
                 onClick={onNavigateRescue}
                 className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C86D44] hover:bg-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
@@ -534,6 +555,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div>© {new Date().getFullYear()} ANNAPURNA by Team Astra. All rights reserved.</div>
           </div>
         </footer>
+
+        {/* Google AI Studio Assistant Modal */}
+        <GoogleAIAssistantModal 
+          isOpen={showGoogleAIModal}
+          onClose={() => setShowGoogleAIModal(false)}
+        />
       </div>
     </div>
   );
