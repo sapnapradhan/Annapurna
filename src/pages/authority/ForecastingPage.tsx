@@ -6,12 +6,14 @@ import {
   Upload, Database, Sliders, RefreshCw, FileSpreadsheet, Building2, BookOpen, Bot, Layers
 } from 'lucide-react';
 import { mlSurplusPredictor, DatasetRow, MLModelMetrics, MLPredictionResult, INSTITUTION_DATASETS } from '../../services/MLSurplusPredictor';
+import { ClaudeAIDemoModal } from '../../components/common/ClaudeAIDemoModal';
 
 export const ForecastingPage: React.FC = () => {
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
   const [selectedInstId, setSelectedInstId] = useState<string>(mlSurplusPredictor.getActiveInstitutionId());
   const [modelMetrics, setModelMetrics] = useState<MLModelMetrics>(mlSurplusPredictor.getMetrics());
   const [dataset, setDataset] = useState<DatasetRow[]>(mlSurplusPredictor.getDataset());
+  const [showClaudeDemoModal, setShowClaudeDemoModal] = useState(false);
   
   // Interactive Simulator Controls
   const [simDay, setSimDay] = useState('Friday');
@@ -123,6 +125,14 @@ export const ForecastingPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowClaudeDemoModal(true)}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-400 hover:to-purple-500 text-black font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-amber-300/40 animate-pulse"
+          >
+            <Sparkles className="w-4 h-4 text-black" />
+            <span>⚡ LIVE CLAUDE ML DEMO FOR JUDGES</span>
+          </button>
+
           <button
             onClick={handleTrainWithAnthropic}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-[#C86D44] hover:from-purple-500 hover:to-[#B35C33] text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-purple-400/30"
@@ -392,6 +402,12 @@ export const ForecastingPage: React.FC = () => {
           </table>
         </div>
       </div>
+
+      {/* Live Claude ML Demo Modal */}
+      <ClaudeAIDemoModal
+        isOpen={showClaudeDemoModal}
+        onClose={() => setShowClaudeDemoModal(false)}
+      />
     </div>
   );
 };
