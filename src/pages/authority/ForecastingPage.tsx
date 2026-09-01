@@ -301,46 +301,6 @@ export const ForecastingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Educational Guide: What is Regression & Why are we using it? */}
-      <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-5 shadow-xl">
-        <div className="flex items-center gap-2 border-b border-slate-800 pb-3">
-          <BookOpen className="w-5 h-5 text-amber-400" />
-          <h2 className="font-bold text-base text-slate-100">SIH Judge Guide: What is Regression & How Anthropic AI is Used</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed">
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <div className="font-bold text-amber-300 font-mono uppercase text-[11px]">1. What is Regression?</div>
-            <p className="text-slate-300">
-              Regression is a fundamental Machine Learning algorithm that predicts a <strong>continuous numerical target variable</strong> (e.g. <em>Exact number of student meal trays</em>) based on input features (X₁ = Day of Week, X₂ = Temperature).
-            </p>
-            <div className="font-mono text-[10px] text-slate-400 p-2 rounded-lg bg-black/60 border border-white/5">
-              Formula: Y = W₀ + W₁·X₁ + W₂·X₂
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-2">
-            <div className="font-bold text-amber-300 font-mono uppercase text-[11px]">2. Why Use Regression?</div>
-            <p className="text-slate-300">
-              Mess food prep requires an exact numerical headcount, not a simple "Yes/No" classification. Regression minimizes Mean Squared Error (MSE), preventing both food shortages and massive over-cooking waste.
-            </p>
-            <div className="font-mono text-[10px] text-emerald-400 p-2 rounded-lg bg-black/60 border border-white/5">
-              High Accuracy: R² = 94.2% to 96.8%
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-purple-950/30 border border-purple-500/30 space-y-2">
-            <div className="font-bold text-purple-300 font-mono uppercase text-[11px]">3. Anthropic AI + Regression</div>
-            <p className="text-slate-300">
-              Regression computes the quantitative turnout numbers (Y = Student Headcount), while <strong>Anthropic Claude 3.5 Sonnet</strong> performs qualitative reasoning: zero-waste recipes for surplus food & student review sentiment analysis.
-            </p>
-            <div className="font-mono text-[10px] text-purple-300 p-2 rounded-lg bg-black/60 border border-white/5">
-              Hybrid AI/ML Architecture
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Online CSV / JSON Dataset Trainer Uploader */}
       <div className="p-6 rounded-3xl bg-slate-900 border border-slate-800 space-y-4 shadow-xl">
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">
