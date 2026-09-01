@@ -15,6 +15,7 @@ import { VoiceAssistWidget } from '../components/common/VoiceAssistWidget';
 import { DynamicParticles } from '../components/common/DynamicParticles';
 import { ThreeDElementCanvas } from '../components/common/ThreeDElementCanvas';
 import { GoogleAIAssistantModal } from '../components/common/GoogleAIAssistantModal';
+import { AnthropicAIAssistantModal } from '../components/common/AnthropicAIAssistantModal';
 
 interface LandingPageProps {
   onLoginSuccess: (role: UserRole) => void;
@@ -70,6 +71,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [activeStoryIdx, setActiveStoryIdx] = useState(0);
   const [showTeamAstraModal, setShowTeamAstraModal] = useState(false);
   const [showGoogleAIModal, setShowGoogleAIModal] = useState(false);
+  const [showAnthropicAIModal, setShowAnthropicAIModal] = useState(false);
 
   const [showMusicPopup, setShowMusicPopup] = useState<boolean>(() => {
     return localStorage.getItem('annapurna_music_consent') === null;
@@ -232,6 +234,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <a href="#features" className="hover:text-[#C86D44] dark:hover:text-amber-300 hover:scale-105 transition-all duration-200">FEATURES</a>
               <a href="#weather" className="hover:text-[#C86D44] dark:hover:text-amber-300 hover:scale-105 transition-all duration-200">WEATHER</a>
               <button
+                onClick={() => setShowAnthropicAIModal(true)}
+                className="px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 hover:scale-105 transition-all duration-200 flex items-center gap-1.5 cursor-pointer border border-purple-500/40 font-mono text-[10px]"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                <span>ANTHROPIC AI (CLAUDE)</span>
+              </button>
+              <button
                 onClick={() => setShowGoogleAIModal(true)}
                 className="px-3 py-1 rounded-full bg-amber-500/20 text-[#C86D44] dark:text-amber-300 hover:scale-105 transition-all duration-200 flex items-center gap-1.5 cursor-pointer border border-amber-500/40 font-mono text-[10px]"
               >
@@ -313,6 +322,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+              <button
+                onClick={() => setShowAnthropicAIModal(true)}
+                className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-purple-600 to-[#C86D44] hover:from-purple-500 hover:to-[#B35C33] text-white font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 border border-purple-300/40"
+              >
+                <Sparkles className="w-4 h-4 text-purple-300" />
+                <span>ASK ANTHROPIC CLAUDE</span>
+              </button>
+
               <button
                 onClick={() => setShowGoogleAIModal(true)}
                 className="group w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-[#C86D44] hover:from-amber-600 hover:to-[#B35C33] text-black font-bold text-xs uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2 border border-amber-300/40"
@@ -560,6 +577,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <GoogleAIAssistantModal 
           isOpen={showGoogleAIModal}
           onClose={() => setShowGoogleAIModal(false)}
+        />
+
+        {/* Anthropic AI Claude Assistant Modal */}
+        <AnthropicAIAssistantModal 
+          isOpen={showAnthropicAIModal}
+          onClose={() => setShowAnthropicAIModal(false)}
         />
       </div>
     </div>

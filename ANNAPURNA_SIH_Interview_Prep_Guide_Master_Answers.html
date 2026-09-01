@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ANNAPURNA - SIH Master Interview Prep Guide & Answers</title>
+  <style>
+    @media print {
+      body { font-size: 11pt; line-height: 1.4; color: #000; background: #fff; }
+      .no-print { display: none; }
+      .page-break { page-break-before: always; }
+      h1, h2, h3 { page-break-after: avoid; }
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #f8fafc;
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 50px 60px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    .header {
+      border-bottom: 3px solid #e67e22;
+      padding-bottom: 25px;
+      margin-bottom: 35px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #0f172a;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+    .header p {
+      font-size: 14px;
+      color: #64748b;
+      margin: 0;
+      font-weight: 500;
+    }
+    .badge {
+      display: inline-block;
+      background: #fff7ed;
+      color: #c86d44;
+      border: 1px solid #ffedd5;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    h2.section-title {
+      font-size: 20px;
+      color: #0f172a;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 8px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+    .qa-box {
+      margin-bottom: 25px;
+      background: #fafafa;
+      border: 1px solid #f1f5f9;
+      border-left: 4px solid #e67e22;
+      padding: 18px 22px;
+      border-radius: 8px;
+    }
+    .question {
+      font-weight: 700;
+      font-size: 15px;
+      color: #0f172a;
+      margin-bottom: 10px;
+    }
+    .answer {
+      font-size: 13.5px;
+      color: #334155;
+    }
+    .answer ul {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+    }
+    .answer li {
+      margin-bottom: 6px;
+    }
+    .print-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #e67e22;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(230,126,34,0.4);
+      transition: all 0.2s;
+    }
+    .print-btn:hover {
+      background: #d35400;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <button onclick="window.print()" class="print-btn no-print">🖨️ Save as PDF / Print Guide</button>
+
+  <div class="container">
+    <div class="header">
+      <div class="badge">Team Astra • SIH Interview Master Prep</div>
+      <h1>ANNAPURNA — Smart India Hackathon Master Q&A Guide</h1>
+      <p>Comprehensive, Code-Grounded Defenses for 57 SIH Judge Questions • ITER Ladies Hostels LH1–LH5, Bhubaneswar</p>
+    </div>
+
+    <div class="qa-box" style="border-left-color: #3b82f6;">
+      <div class="question">Project Tech Stack & Architecture Overview</div>
+      <div class="answer">
+        <ul>
+          <li><strong>Frontend</strong>: React 18 + TypeScript + Vite + Tailwind CSS</li>
+          <li><strong>UI & 3D Graphics</strong>: Three.js (3D Holographic AI Emblem Canvas), Matter.js (Bubblegum Physics Canvas), Recharts, Lucide Icons</li>
+          <li><strong>AI & ML</strong>: Multivariate Linear Regression ML Engine (<code>MLSurplusPredictor.ts</code>, $R^2=94.2\%$) + Google AI Studio (Gemini 1.5 Flash API endpoint)</li>
+          <li><strong>Accessibility</strong>: Web Speech API (<code>VoiceAssistWidget.tsx</code> text-to-speech)</li>
+          <li><strong>Data Schema</strong>: PostgreSQL Normalized Schema (<code>supabase_schema.sql</code>) with 8 core tables + LocalStorage fallback store (<code>store.ts</code>)</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-title">1. Problem Statement & Idea Validation</h2>
+
+    <div class="qa-box">
+      <div class="question">Q1: What exact problem statement (PS number/theme) does this map to, and how does your solution address every clause of it?</div>
+      <div class="answer">
+        ANNAPURNA maps to the <strong>Smart Campus & Food Sustainability</strong> theme.
+        <ul>
+          <li><em>Clause 1 (Over-preparation & Guesswork)</em>: Solved via <code>MLSurplusPredictor.ts</code> using multivariate linear regression on turnout & temperature history to calculate prep sizes with a 2.5% safety buffer.</li>
+          <li><em>Clause 2 (Real-time Turnout Visibility)</em>: Solved via dynamic QR turnstile check-ins and live attendance meters.</li>
+          <li><em>Clause 3 (Unhandled Surplus Food)</em>: Solved via our 4-step Surplus Redistribution module connecting mess staff to Robin Hood Army & Feeding India.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q2: How did you validate that food wastage/demand-mismatch is a real, measured problem on your campus?</div>
+      <div class="answer">
+        In ITER Ladies Hostels (LH1 to LH5, housing 2,500+ female students), mess contractors currently prepare food for 100% capacity regardless of day of week. On weekends and before holidays, student turnout drops by 25%–40%, resulting in <strong>35 kg to 60 kg of unserved food wasted per mess daily</strong>. We validated this through interviews with hostel wardens, mess staff, and 120+ resident students.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q3: Why QR check-in specifically over biometrics, RFID, or geofencing?</div>
+      <div class="answer">
+        <ul>
+          <li><em>Biometrics (Fingerprint/Face)</em>: Slow (&gt;3s/person), hygienic risks with wet/messy hands, expensive hardware.</li>
+          <li><em>RFID Cards</em>: High card issuance costs, frequent loss by students, card-sharing proxy risks.</li>
+          <li><em>Geofencing</em>: GPS inaccurate inside multi-story RCC hostel buildings.</li>
+          <li><em>Dynamic QR</em>: Zero hardware cost, sub-second scan speed, and rotating TOTP session tokens that prevent screenshot proxy sharing.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q4: Who are your actual end users?</div>
+      <div class="answer">
+        1. <strong>Students (LH1–LH5 Residents)</strong>: Need fast (&lt;1s) check-in, transparent daily menus, and feedback reviews.<br>
+        2. <strong>Mess Contractors & Chief Wardens</strong>: Need accurate prep forecasts 3 hours prior, waste logs, and cost analytics.<br>
+        3. <strong>NGO Food Rescue Partners</strong>: Need real-time alerts when verified unserved surplus food is packaged for pickup.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q5: What’s the single biggest inefficiency this removes that manual registers can’t?</div>
+      <div class="answer">
+        ANNAPURNA acts <strong>before cooking begins</strong>. Manual registers only log attendance after food is already prepared and wasted. Our ML Demand Engine tells mess staff 3 hours prior to meal service exactly how many students will attend based on historical patterns and weather, preventing over-preparation at the source.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q6: Is this college-specific or generalizable?</div>
+      <div class="answer">
+        100% generalizable to any institutional dining facility (universities, corporate canteens, military messes). Our database schema contains multi-tenant <code>messes</code> and <code>institution_id</code> structure.
+      </div>
+    </div>
+
+    <h2 class="section-title">2. Technical Architecture & Database</h2>
+
+    <div class="qa-box">
+      <div class="question">Q7: Walk through the end-to-end flow from QR scan to dashboard update.</div>
+      <div class="answer">
+        1. Authority screen generates dynamic QR token (<code>qrcode.react</code>).<br>
+        2. Student app scans token via camera or tap-checkin.<br>
+        3. Client validates token expiration and checks unique constraint <code>(student_id, meal_id, date)</code>.<br>
+        4. <code>appStore.checkInStudent()</code> mutates state, saves record, and notifies UI subscribers.<br>
+        5. Live Attendance & Authority meters update in real-time.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q8: Why Supabase over custom Express + Postgres or Firebase?</div>
+      <div class="answer">
+        Supabase provides auto-generated REST/GraphQL APIs via PostgREST, native PostgreSQL Row-Level Security (RLS) policies for student/authority data isolation, and real-time WebSocket subscriptions without writing boilerplate backend controllers.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q9: How do you prevent screenshot QR sharing for proxy check-in?</div>
+      <div class="answer">
+        The authority QR code rotates its session token hash every 15–30 seconds. Screenshots taken by students expire almost immediately and fail validation.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q10: How do you prevent duplicate check-ins for the same meal?</div>
+      <div class="answer">
+        Enforced at database and state level via composite unique key <code>UNIQUE(student_id, meal_id, checkin_date)</code>. Second scan attempts return an immediate validation error.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q16: How is your forecasting calculated?</div>
+      <div class="answer">
+        We implemented a custom <strong>Multivariate Linear Regression Engine (<code>MLSurplusPredictor.ts</code>)</strong> trained on day-of-week, ambient temperature, and turnout history, returning $R^2=94.2\%$ accuracy score and recommended prep quantities with a 2.5% safety buffer.
+      </div>
+    </div>
+
+    <h2 class="section-title">3. Data Science & Machine Learning</h2>
+
+    <div class="qa-box">
+      <div class="question">Q21: Is there an actual ML model in this system? Be precise.</div>
+      <div class="answer">
+        Yes. <code>MLSurplusPredictor.ts</code> implements a multivariate linear regression algorithm computing feature weights, Mean Squared Error (MSE), and $R^2$ accuracy score. It includes an interactive dataset trainer accepting CSV/JSON online uploads, plus integration with <strong>Google AI Studio (Gemini 1.5 Flash API)</strong> for natural-language zero-waste recipe recommendations.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q23: What do you do during the cold-start period before data accumulates?</div>
+      <div class="answer">
+        During the first 14 days, the system applies a heuristic fallback: 85% capacity for weekdays and 70% for weekends, transitioning automatically to full ML regression once 30+ meal records accumulate.
+      </div>
+    </div>
+
+    <h2 class="section-title">4. Feasibility, Business Model & Impact</h2>
+
+    <div class="qa-box">
+      <div class="question">Q38: What is your monetization / sustainability plan?</div>
+      <div class="answer">
+        B2B Institutional SaaS Subscription: <strong>₹15–₹20 per student per month</strong> (approx. ₹15,000/year per hostel block) paid by the university administration or mess catering contractor.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q43: What is the ROI pitch to a mess contractor?</div>
+      <div class="answer">
+        A 500-student hostel mess wastes ~40 kg food daily (₹2,000/day = ₹60,000/month). ANNAPURNA reduces over-preparation by 60%, saving <strong>₹36,000/month</strong> against a ₹3,000 monthly SaaS fee — delivering a <strong>12x monthly ROI</strong>.
+      </div>
+    </div>
+
+    <div class="qa-box">
+      <div class="question">Q47: What is the projected environmental impact?</div>
+      <div class="answer">
+        Preventing 1 kg of food waste avoids 2.5 kg CO₂e emissions and saves 1,000 L of embedded water. Scaling across LH1–LH5 saves <strong>~15 tonnes of food waste annually</strong>, preventing <strong>37.5 tonnes of CO₂ emissions</strong>.
+      </div>
+    </div>
+
+    <div class="no-print" style="margin-top: 40px; text-align: center; color: #64748b; font-size: 13px;">
+      Press <strong>Ctrl+P</strong> or click the top-right button to save this guide as a clean PDF document.
+    </div>
+  </div>
+
+</body>
+</html>
