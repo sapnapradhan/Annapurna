@@ -131,7 +131,7 @@ export const ForecastingPage: React.FC = () => {
             className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-emerald-400/40"
           >
             <Upload className="w-4 h-4 text-white rotate-180" />
-            <span>📥 DOWNLOAD CSV DATASET FOR SIH JUDGES</span>
+            <span>📥 DOWNLOAD CSV DATASET</span>
           </a>
 
           <button
