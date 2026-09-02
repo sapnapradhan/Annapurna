@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { mlSurplusPredictor, DatasetRow, MLModelMetrics, MLPredictionResult, INSTITUTION_DATASETS } from '../../services/MLSurplusPredictor';
 import { ClaudeAIDemoModal } from '../../components/common/ClaudeAIDemoModal';
+import { GoogleDatasetImportModal } from '../../components/common/GoogleDatasetImportModal';
 
 export const ForecastingPage: React.FC = () => {
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
@@ -14,6 +15,8 @@ export const ForecastingPage: React.FC = () => {
   const [modelMetrics, setModelMetrics] = useState<MLModelMetrics>(mlSurplusPredictor.getMetrics());
   const [dataset, setDataset] = useState<DatasetRow[]>(mlSurplusPredictor.getDataset());
   const [showClaudeDemoModal, setShowClaudeDemoModal] = useState(false);
+  const [showGoogleImportModal, setShowGoogleImportModal] = useState(false);
+  const [googleUrl, setGoogleUrl] = useState('https://storage.googleapis.com/sih-datasets/kiit_university_dining_dataset.csv');
   
   // Interactive Simulator Controls
   const [simDay, setSimDay] = useState('Friday');
@@ -125,6 +128,14 @@ export const ForecastingPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowGoogleImportModal(true)}
+            className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-cyan-400/40"
+          >
+            <Database className="w-4 h-4 text-cyan-200" />
+            <span>🌐 FETCH & TRAIN ON GOOGLE DATASET</span>
+          </button>
+
           <a
             href="/annapurna_multi_institution_dining_dataset.csv"
             download="annapurna_multi_institution_dining_dataset.csv"
@@ -416,6 +427,13 @@ export const ForecastingPage: React.FC = () => {
       <ClaudeAIDemoModal
         isOpen={showClaudeDemoModal}
         onClose={() => setShowClaudeDemoModal(false)}
+      />
+
+      {/* Live Google Dataset Import Modal */}
+      <GoogleDatasetImportModal
+        isOpen={showGoogleImportModal}
+        onClose={() => setShowGoogleImportModal(false)}
+        datasetUrl={googleUrl}
       />
     </div>
   );
