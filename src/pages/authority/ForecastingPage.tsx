@@ -3,11 +3,12 @@ import { appStore } from '../../services/store';
 import { Forecast } from '../../types';
 import { 
   TrendingUp, Cpu, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
-  Upload, Database, Sliders, RefreshCw, FileSpreadsheet, Building2, BookOpen, Bot, Layers
+  Upload, Database, Sliders, RefreshCw, FileSpreadsheet, Building2, BookOpen, Bot, Layers, Camera
 } from 'lucide-react';
 import { mlSurplusPredictor, DatasetRow, MLModelMetrics, MLPredictionResult, INSTITUTION_DATASETS } from '../../services/MLSurplusPredictor';
 import { ClaudeAIDemoModal } from '../../components/common/ClaudeAIDemoModal';
 import { GoogleDatasetImportModal } from '../../components/common/GoogleDatasetImportModal';
+import { RegisterOCRModal } from '../../components/common/RegisterOCRModal';
 
 export const ForecastingPage: React.FC = () => {
   const [forecasts, setForecasts] = useState<Forecast[]>([]);
@@ -16,6 +17,7 @@ export const ForecastingPage: React.FC = () => {
   const [dataset, setDataset] = useState<DatasetRow[]>(mlSurplusPredictor.getDataset());
   const [showClaudeDemoModal, setShowClaudeDemoModal] = useState(false);
   const [showGoogleImportModal, setShowGoogleImportModal] = useState(false);
+  const [showRegisterOcrModal, setShowRegisterOcrModal] = useState(false);
   const [googleUrl, setGoogleUrl] = useState('https://storage.googleapis.com/sih-datasets/kiit_university_dining_dataset.csv');
   
   // Interactive Simulator Controls
@@ -128,6 +130,14 @@ export const ForecastingPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setShowRegisterOcrModal(true)}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-black font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-amber-300/40 animate-pulse"
+          >
+            <Camera className="w-4 h-4 text-black" />
+            <span>📸 SCAN REGISTER PHOTO (OCR -&gt; CSV -&gt; ML)</span>
+          </button>
+
           <button
             onClick={() => setShowGoogleImportModal(true)}
             className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-cyan-400/40"
@@ -434,6 +444,12 @@ export const ForecastingPage: React.FC = () => {
         isOpen={showGoogleImportModal}
         onClose={() => setShowGoogleImportModal(false)}
         datasetUrl={googleUrl}
+      />
+
+      {/* Live Register OCR Modal */}
+      <RegisterOCRModal
+        isOpen={showRegisterOcrModal}
+        onClose={() => setShowRegisterOcrModal(false)}
       />
     </div>
   );
