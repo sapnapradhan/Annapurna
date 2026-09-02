@@ -1,0 +1,31 @@
+date,day_of_week,institution,hostel_block,meal_type,temperature_c,student_capacity,actual_attendance,prepared_qty_trays,actual_waste_kg,exam_flag,holiday_flag
+2026-08-01,Monday,SOA University,ITER LH1,Lunch,31,500,420,450,8.5,0,0
+2026-08-02,Tuesday,SOA University,ITER LH1,Lunch,32,500,415,450,9.2,0,0
+2026-08-03,Wednesday,SOA University,ITER LH1,Lunch,30,500,430,450,6.1,0,0
+2026-08-04,Thursday,SOA University,ITER LH1,Lunch,29,500,438,450,4.8,0,0
+2026-08-05,Friday,SOA University,ITER LH1,Lunch,33,500,395,440,12.3,0,0
+2026-08-06,Saturday,SOA University,ITER LH1,Lunch,34,500,360,420,15.1,0,1
+2026-08-07,Sunday,SOA University,ITER LH1,Lunch,33,500,340,400,14.5,0,1
+2026-08-08,Monday,SOA University,ITER LH2,Dinner,28,500,480,510,7.2,0,0
+2026-08-09,Tuesday,SOA University,ITER LH2,Dinner,29,500,475,510,8.1,0,0
+2026-08-10,Wednesday,SOA University,ITER LH2,Dinner,27,500,490,510,5.0,1,0
+2026-08-11,Thursday,SOA University,ITER LH3,Breakfast,26,450,380,410,6.8,1,0
+2026-08-12,Friday,SOA University,ITER LH3,Breakfast,28,450,365,400,9.4,1,0
+2026-08-13,Saturday,SOA University,ITER LH4,Lunch,32,450,350,400,13.0,0,1
+2026-08-14,Sunday,SOA University,ITER LH5,Dinner,30,450,330,380,12.8,0,1
+2026-08-15,Monday,KIIT University,Hostel Block A,Lunch,31,900,780,850,18.5,0,0
+2026-08-16,Tuesday,KIIT University,Hostel Block A,Lunch,32,900,765,850,20.2,0,0
+2026-08-17,Wednesday,KIIT University,Hostel Block B,Lunch,30,900,810,850,11.1,0,0
+2026-08-18,Thursday,KIIT University,Hostel Block B,Lunch,29,900,825,850,9.8,0,0
+2026-08-19,Friday,KIIT University,Hostel Block C,Lunch,33,900,710,820,25.3,0,0
+2026-08-20,Saturday,KIIT University,Hostel Block C,Lunch,34,900,640,800,32.1,0,1
+2026-08-21,Sunday,KIIT University,Hostel Block D,Lunch,33,900,610,780,30.5,0,1
+2026-08-22,Monday,OUTR Odisha,Raman Block,Dinner,28,400,340,380,7.5,0,0
+2026-08-23,Tuesday,OUTR Odisha,Raman Block,Dinner,29,400,335,380,8.2,0,0
+2026-08-24,Wednesday,OUTR Odisha,Visvesvaraya Block,Dinner,27,400,355,380,5.1,1,0
+2026-08-25,Thursday,OUTR Odisha,Visvesvaraya Block,Dinner,26,400,360,380,4.8,1,0
+2026-08-26,Friday,OUTR Odisha,Visvesvaraya Block,Dinner,28,400,310,360,11.0,0,0
+2026-08-27,Monday,AIIMS Bhubaneswar,PG Resident Mess,Lunch,30,300,260,280,4.2,0,0
+2026-08-28,Tuesday,AIIMS Bhubaneswar,PG Resident Mess,Lunch,31,300,258,280,4.5,0,0
+2026-08-29,Wednesday,AIIMS Bhubaneswar,UG MBBS Mess,Lunch,29,300,265,280,3.1,0,0
+2026-08-30,Thursday,AIIMS Bhubaneswar,UG MBBS Mess,Lunch,28,300,270,280,2.8,0,0

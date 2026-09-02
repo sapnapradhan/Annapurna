@@ -125,6 +125,15 @@ export const ForecastingPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="/annapurna_multi_institution_dining_dataset.csv"
+            download="annapurna_multi_institution_dining_dataset.csv"
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-emerald-400/40"
+          >
+            <Upload className="w-4 h-4 text-white rotate-180" />
+            <span>📥 DOWNLOAD CSV DATASET FOR SIH JUDGES</span>
+          </a>
+
           <button
             onClick={() => setShowClaudeDemoModal(true)}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-400 hover:to-purple-500 text-black font-bold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg cursor-pointer border border-amber-300/40 animate-pulse"
